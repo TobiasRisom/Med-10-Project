@@ -1,9 +1,16 @@
+using System;
 using UnityEngine;
 using TMPro;
 
 public class DataManager : MonoBehaviour
 {
-	private string name = "";
+	public string name = "";
+
+	private void Awake()
+	{
+		DontDestroyOnLoad(gameObject);
+	}
+
 	public void setName(bool ansat)
 	{
 		TMP_InputField nameInput;

@@ -8,6 +8,7 @@ TagManager:
   - beboerName
   - ansatName
   - nameDisplay
+  - dataManager
   layers:
   - Default
   - TransparentFX
