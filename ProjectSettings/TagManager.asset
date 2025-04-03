@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - codeInput
+  - beboerName
+  - ansatName
+  - nameDisplay
   layers:
   - Default
   - TransparentFX
