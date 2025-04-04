@@ -9,6 +9,7 @@ TagManager:
   - ansatName
   - nameDisplay
   - dataManager
+  - mainScreen
   layers:
   - Default
   - TransparentFX
