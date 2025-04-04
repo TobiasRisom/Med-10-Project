@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEditor.VersionControl;
+using UnityEngine.UI;
 
 public class DataManager : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class DataManager : MonoBehaviour
 								, {"Skab en tingenot", ":D", "Du burde lave en sjov tingest idag."}
 								, {"Av min finger", ":(", "Tag en pause."}
 	};
+
+	public int currentTask;
 
 	private void Awake()
 	{
@@ -57,6 +60,7 @@ public class DataManager : MonoBehaviour
 		{
 			GameObject newTask = Instantiate(taskTemplate, mainScreen.transform, false);
 			newTask.transform.localPosition = new Vector3(0, buffer * i, 0);
+			
 			tasks.Add(newTask);
 		}
 
