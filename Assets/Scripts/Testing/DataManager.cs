@@ -14,9 +14,10 @@ public class DataManager : MonoBehaviour
 
 	public List<GameObject> tasks;
 	
-	public string[,] taskData = { {"Støvsug Gulvet", ":)", "Husk at støvsuge gulvet en gang om ugen. Vær sikker på at gulvet i hele køkkenet og stuen bliver gjort.\nTør efter hvis der stadig ligger snavs."}
-								, {"Skab en tingenot", ":D", "Du burde lave en sjov tingest idag."}
-								, {"Av min finger", ":(", "Tag en pause."}
+	// Title, Emoji, Description, Identifier for if task requires a picture (P) or text (T).
+	public string[,] taskData = { {"Støvsug Gulvet", ":)", "Husk at støvsuge gulvet en gang om ugen. Vær sikker på at gulvet i hele køkkenet og stuen bliver gjort.\nTør efter hvis der stadig ligger snavs.", "P"}
+								, {"Skab en tingenot", ":D", "Du burde lave en sjov tingest idag.", "P"}
+								, {"Av min finger", ":(", "Tag en pause.", "T"}
 	};
 
 	public int currentTask;
@@ -53,7 +54,7 @@ public class DataManager : MonoBehaviour
 	public void spawnTasks()
 	{
 		GameObject mainScreen = GameObject.FindWithTag("mainScreen");
-		int taskAmount = taskData.GetLength(1);
+		int taskAmount = taskData.GetLength(0);
 		int buffer = -300;
 
 		for (int i = 0; i < taskAmount; i++)
@@ -68,11 +69,11 @@ public class DataManager : MonoBehaviour
 
 	public void setTasks()
 	{
-		int taskAmount = taskData.GetLength(1);
+		int taskAmount = taskData.GetLength(0);
 
 		for (int i = 0; i < taskAmount; i++)
 		{
-			for (int j = 0; j < 3; j++)
+			for (int j = 0; j < 4; j++)
 			{
 				tasks[i]
 					.transform.GetChild(j)

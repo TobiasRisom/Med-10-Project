@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MainScreenNavigation : MonoBehaviour
 {
@@ -16,19 +18,21 @@ public class MainScreenNavigation : MonoBehaviour
 	    setListeners(dm.tasks);
     }
 
-    private void setListeners(List<GameObject> tasks) // fix this
+    private void setListeners(List<GameObject> tasks)
     {
 	    for (int i = 0; i < tasks.Count; i++)
 	    {
 		    Button btn = tasks[i]
 			    .GetComponent<Button>();
 
-		    btn.onClick.AddListener(goToTask);
+		    int index = i;
+		    btn.onClick.AddListener(delegate { goToTask(index); });
 	    }
     }
 
-    public void goToTask()
+    public void goToTask(int taskIndex)
     {
-	    Debug.Log("debug");
+	    dm.currentTask = taskIndex;
+	    SceneManager.LoadScene("TaskScreen");
     }
 }
