@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TaskScreenNavigation : MonoBehaviour
 {
@@ -9,6 +10,15 @@ public class TaskScreenNavigation : MonoBehaviour
 	public TextMeshProUGUI taskTitle;
 	public TextMeshProUGUI taskEmoji;
 	public TextMeshProUGUI taskDescription;
+
+	public TMP_InputField userAnswer;
+	public TextMeshProUGUI sendThisAnswer;
+	public TextMeshProUGUI finalUserAnswer;
+	public Button finalConfirm;
+	public Button finalBack;
+
+	public Button confirmWriting;
+	public Button confirmPicture;
     void Start()
     {
 	    dm = GameObject.FindWithTag("dataManager")
@@ -16,11 +26,11 @@ public class TaskScreenNavigation : MonoBehaviour
 
 	    int taskIndex = dm.currentTask;
 
-	    taskTitle.text = dm.taskData[taskIndex, 0];
-	    taskEmoji.text = dm.taskData[taskIndex, 1];
-	    taskDescription.text = dm.taskData[taskIndex, 2];
+	    taskTitle.text = dm.TaskData[taskIndex].Titel;
+	    taskEmoji.text = dm.TaskData[taskIndex].Emoji;
+	    taskDescription.text = dm.TaskData[taskIndex].Description;
 
-	    if (dm.taskData[taskIndex, 3] == "P")
+	    if (dm.TaskData[taskIndex].AnswerFormat == "P")
 	    {
 		    transform.localPosition = new Vector3(0, transform.localPosition.y, transform.localPosition.z);
 	    }
@@ -29,6 +39,45 @@ public class TaskScreenNavigation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        checkInputFieldContents();
+    }
+
+    void checkInputFieldContents()
+    {
+	    if (userAnswer.text.Length > 0)
+	    {
+		    confirmWriting.gameObject.SetActive(true);
+	    }
+	    else
+	    {
+		    confirmWriting.gameObject.SetActive(false);
+	    }
+    }
+
+    public void goToConfirmAnswer() // Move on to confirm answer
+    {
+	    sendThisAnswer.gameObject.SetActive(true);
+	    finalConfirm.gameObject.SetActive(true);
+	    finalBack.gameObject.SetActive(true);
+	    
+	    finalUserAnswer.text = userAnswer.text;
+	    userAnswer.text = "";
+	    userAnswer.gameObject.SetActive(false);
+	    finalUserAnswer.gameObject.SetActive(true);
+    }
+
+    public void answerConfirmed()
+    {
+	    
+    }
+
+    public void answerGoBack()
+    {
+	    sendThisAnswer.gameObject.SetActive(false);
+	    finalConfirm.gameObject.SetActive(false);
+	    finalBack.gameObject.SetActive(false);
+	    
+	    userAnswer.gameObject.SetActive(true);
+	    finalUserAnswer.gameObject.SetActive(false);
     }
 }

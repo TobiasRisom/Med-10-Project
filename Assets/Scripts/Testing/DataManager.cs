@@ -14,17 +14,34 @@ public class DataManager : MonoBehaviour
 
 	public List<GameObject> tasks;
 	
+	public class Task
+	{
+		public string Titel { get; set; }
+		public string Emoji { get; set; }
+		public string Description { get; set; }
+		public string AnswerFormat { get; set; }
+	}
+	
 	// Title, Emoji, Description, Identifier for if task requires a picture (P) or text (T).
-	public string[,] taskData = { {"Støvsug Gulvet", ":)", "Husk at støvsuge gulvet en gang om ugen. Vær sikker på at gulvet i hele køkkenet og stuen bliver gjort.\nTør efter hvis der stadig ligger snavs.", "P"}
-								, {"Skab en tingenot", ":D", "Du burde lave en sjov tingest idag.", "P"}
-								, {"Av min finger", ":(", "Tag en pause.", "T"}
-	};
+	public List<Task> TaskData = new List<Task>();
 
 	public int currentTask;
 
 	private void Awake()
 	{
 		DontDestroyOnLoad(gameObject);
+	}
+
+	private void Start()
+	{
+		getInitialTestTasks();
+	}
+
+	private void getInitialTestTasks()
+	{
+		TaskData.Add(new Task { Titel = "Støvsug Gulvet", Emoji = ":)", Description = "Husk at støvsuge gulvet en gang om ugen. Vær sikker på at gulvet i hele køkkenet og stuen bliver gjort.\nTør efter hvis der stadig ligger snavs.", AnswerFormat = "P" });
+		TaskData.Add(new Task { Titel = "Skab en tingenot", Emoji = ":D", Description = "Du burde lave en sjov tingest idag.", AnswerFormat = "P" });
+		TaskData.Add(new Task { Titel = "Av min finger", Emoji = ":(", Description = "Tag en pause.", AnswerFormat = "T" });
 	}
 
 	public void setName(bool ansat)
@@ -54,7 +71,7 @@ public class DataManager : MonoBehaviour
 	public void spawnTasks()
 	{
 		GameObject mainScreen = GameObject.FindWithTag("mainScreen");
-		int taskAmount = taskData.GetLength(0);
+		int taskAmount = TaskData.Count;
 		int buffer = -300;
 
 		for (int i = 0; i < taskAmount; i++)
@@ -69,17 +86,26 @@ public class DataManager : MonoBehaviour
 
 	public void setTasks()
 	{
-		int taskAmount = taskData.GetLength(0);
+		int taskAmount = TaskData.Count;
 
 		for (int i = 0; i < taskAmount; i++)
 		{
-			for (int j = 0; j < 4; j++)
-			{
-				tasks[i]
-					.transform.GetChild(j)
-					.GetComponent<TextMeshProUGUI>()
-					.text = taskData[i, j];
-			}
+			tasks[i]
+				.transform.GetChild(0)
+				.GetComponent<TextMeshProUGUI>()
+				.text = TaskData[i].Titel;
+			tasks[i]
+				.transform.GetChild(1)
+				.GetComponent<TextMeshProUGUI>()
+				.text = TaskData[i].Emoji;
+			tasks[i]
+				.transform.GetChild(2)
+				.GetComponent<TextMeshProUGUI>()
+				.text = TaskData[i].Description;
+			tasks[i]
+				.transform.GetChild(3)
+				.GetComponent<TextMeshProUGUI>()
+				.text = TaskData[i].AnswerFormat;
 		}
 	}
 }
