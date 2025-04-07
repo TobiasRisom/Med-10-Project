@@ -2,6 +2,7 @@ using System.Net.Mime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TaskScreenNavigation : MonoBehaviour
 {
@@ -68,7 +69,8 @@ public class TaskScreenNavigation : MonoBehaviour
 
     public void answerConfirmed()
     {
-	    
+	    dm.TaskData.RemoveAt(dm.currentTask);
+	    SceneManager.LoadScene("MainScreen");
     }
 
     public void answerGoBack()

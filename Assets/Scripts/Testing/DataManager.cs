@@ -70,6 +70,7 @@ public class DataManager : MonoBehaviour
 
 	public void spawnTasks()
 	{
+		tasks.Clear(); // Reset list so we don't spawn in missing objects
 		GameObject mainScreen = GameObject.FindWithTag("mainScreen");
 		int taskAmount = TaskData.Count;
 		int buffer = -300;
