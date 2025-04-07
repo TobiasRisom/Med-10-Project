@@ -11,6 +11,6 @@ public class SetName : MonoBehaviour
 		dm = GameObject.FindWithTag("dataManager")
 		               .GetComponent<DataManager>();
 		GetComponent<TextMeshProUGUI>()
-		    .text = dm.name;
+		    .text = dm.userName;
 	}
 }

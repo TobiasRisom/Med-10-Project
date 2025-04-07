@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEditor.VersionControl;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DataManager : MonoBehaviour
 {
 	public GameObject taskTemplate;
-	public string name = "";
+	[FormerlySerializedAs("name")]
+	public string userName = "";
 
 	public string[] weekNames = {"Leif", "Leeeeiiiiiiffff", "LeifLeif", "Lief", "It'sMyLeif", "KarlosIkkeLeif", "Looooof"};
 
@@ -58,13 +60,13 @@ public class DataManager : MonoBehaviour
 			                                     .GetComponent<TMP_InputField>();
 		}
 
-		name = nameInput.text;
+		userName = nameInput.text;
 
 		GameObject[] nameDisplays = GameObject.FindGameObjectsWithTag("nameDisplay");
 		foreach (GameObject n in nameDisplays)
 		{
 			n.GetComponent<TextMeshProUGUI>()
-			 .text = name + "!";
+			 .text = userName + "!";
 		}
 	}
 

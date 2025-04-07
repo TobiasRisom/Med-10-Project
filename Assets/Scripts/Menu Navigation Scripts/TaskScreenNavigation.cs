@@ -15,6 +15,7 @@ public class TaskScreenNavigation : MonoBehaviour
 	public TMP_InputField userAnswer;
 	public TextMeshProUGUI sendThisAnswer;
 	public TextMeshProUGUI finalUserAnswer;
+	public Button cancelButton;
 	public Button finalConfirm;
 	public Button finalBack;
 
@@ -60,11 +61,19 @@ public class TaskScreenNavigation : MonoBehaviour
 	    sendThisAnswer.gameObject.SetActive(true);
 	    finalConfirm.gameObject.SetActive(true);
 	    finalBack.gameObject.SetActive(true);
+	    cancelButton.gameObject.SetActive(false);
 	    
 	    finalUserAnswer.text = userAnswer.text;
 	    userAnswer.text = "";
 	    userAnswer.gameObject.SetActive(false);
 	    finalUserAnswer.gameObject.SetActive(true);
+    }
+
+    public void cancel()
+    {
+	    answerGoBack();
+	    userAnswer.text = "";
+	    SceneManager.LoadScene("MainScreen");
     }
 
     public void answerConfirmed()
@@ -78,6 +87,7 @@ public class TaskScreenNavigation : MonoBehaviour
 	    sendThisAnswer.gameObject.SetActive(false);
 	    finalConfirm.gameObject.SetActive(false);
 	    finalBack.gameObject.SetActive(false);
+	    cancelButton.gameObject.SetActive(true);
 	    
 	    userAnswer.gameObject.SetActive(true);
 	    finalUserAnswer.gameObject.SetActive(false);
