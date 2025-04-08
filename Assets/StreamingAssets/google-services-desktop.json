@@ -1,0 +1,31 @@
+{
+  "project_info": {
+    "project_number": "312873910772",
+    "project_id": "med-10-unity-testing",
+    "storage_bucket": "med-10-unity-testing.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312873910772:ios:db77f1650e2c4b4808b9a1",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.com.unity.template.mobile2D"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6zs_mm9TdXiVng2ugAAzav3rhfTmnDJA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 0
+        },
+        "appinvite_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
