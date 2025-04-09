@@ -17,10 +17,10 @@ public class MainScreenNavigation : MonoBehaviour
 	    fish = GameObject.FindWithTag("dataManager")
 	                     .GetComponent<FirestoreHandler>();
 	    
-	    fish.ScheduleManager();
+	    //fish.ScheduleManager();
+	    fish.spawnTasks(fish.username);
     }
-    /*dm.spawnTasks();
-    dm.setTasks();
+    /*
     setListeners(dm.tasks);
 
 }

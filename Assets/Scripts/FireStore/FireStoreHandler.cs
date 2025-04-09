@@ -3,12 +3,26 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 
 public class FirestoreHandler : MonoBehaviour
 {
 	private FirebaseFirestore firestore;
-	private GameObject nameList;
+	public string username = "Leif";
+	
+	public class Task
+	{
+		public string Titel { get; set; }
+		public string Emoji { get; set; }
+		public string Description { get; set; }
+		public bool ImageFormat { get; set; }
+		public int Status { get; set; }
+	}
+	public List<Task> TaskData = new List<Task>(); // Stores data locally so we don't need to keep reading the database
+	public List<GameObject> tasks; // Stores the tasks game objects that are spawned in the Unity scene
+	public GameObject taskTemplate; // Template for all tasks shown on the main screen
 	
 	private void Awake()
 	{
@@ -50,9 +64,10 @@ public class FirestoreHandler : MonoBehaviour
 		// Snapshot of the current items in the defined document
 		docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
 		{
-			// "IsCompleted" on its own just means the task is done, but may have messed up and not returned anything. So we use "Result.Exists" as a backup.
-			if (task.IsCompleted && task.Result.Exists)
+			if (task.IsCompleted)
 			{
+				
+				Debug.Log("Weekly Schedule Accessed");
 				// The snapshot contains the results of our query!
 				DocumentSnapshot snapshot = task.Result;
 				
@@ -71,7 +86,7 @@ public class FirestoreHandler : MonoBehaviour
 
 	public void SetSchedule(Dictionary<string, object> schedule)
 	{
-		nameList = GameObject.FindWithTag("ScheduleNames");
+		GameObject nameList = GameObject.FindWithTag("ScheduleNames");
 		List<TextMeshProUGUI> nameFields = new List<TextMeshProUGUI>();
 
 		foreach (TextMeshProUGUI t in nameList.GetComponentsInChildren<TextMeshProUGUI>())
@@ -86,5 +101,137 @@ public class FirestoreHandler : MonoBehaviour
 		nameFields[4].text = schedule["Fredag"].ToString();
 		nameFields[5].text = schedule["Lørdag"].ToString();
 		nameFields[6].text = schedule["Søndag"].ToString();
+		
+		Debug.Log("Weekly schedule names added");
 	}
+
+	public void AddNewUser(string newUserName)
+	{
+		CollectionReference users = firestore.Collection("Users");
+		users.WhereEqualTo("Name", newUserName)
+		     .GetSnapshotAsync()
+		     .ContinueWithOnMainThread(task =>
+		     {
+			     if (task.IsCompleted)
+			     {
+				     QuerySnapshot snapshot = task.Result;
+
+				     // Checking if the user's name already exists
+				     if (!snapshot.Documents.Any())
+				     {
+					     DocumentReference newUserDoc = users.Document(newUserName);
+					     
+					     // Data for new user
+					     var data = new Dictionary<string, object>
+					     {
+						     {"Name", newUserName}
+					     };
+					     
+					     // Add the new user data 
+
+					     newUserDoc.SetAsync(data).ContinueWithOnMainThread(setTask =>
+						     {
+							     if (setTask.IsCompleted)
+							     {
+								     Debug.Log($"User {newUserName} added successfully!");
+							     }
+							     else
+							     {
+								     Debug.LogError($"Error adding user {newUserName}:" + setTask.Exception);
+							     }       
+						     });
+				     }
+				     else
+				     {
+					     Debug.Log($"User {newUserName} already exists, new user has not been added.");
+				     }
+			     }
+			     else
+			     {
+				     Debug.LogError("Error during check for user already existing: " + task.Exception);
+			     }
+		     });
+	}
+
+// Combined method to get both task count and task data
+// Combined method to get both task count and task data
+    private void GetTasksAndCount(string user, System.Action<int, List<Task>> callback)
+    {
+        var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks");
+
+        tasksReference.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                QuerySnapshot snapshot = task.Result;
+
+                // Create a list to store the tasks
+                List<Task> taskList = new List<Task>();
+
+                // Iterate through each document in the snapshot and create Task objects
+                foreach (DocumentSnapshot document in snapshot.Documents)
+                {
+                    Task newTask = new Task
+                    {
+                        Titel = document.GetValue<string>("Titel"),
+                        Emoji = document.GetValue<string>("Emoji"),
+                        Description = document.GetValue<string>("Description"),
+                        ImageFormat = document.GetValue<bool>("ImageFormat"),
+                        Status = document.GetValue<int>("Status")
+                    };
+
+                    // Add the task object to the list
+                    taskList.Add(newTask);
+                }
+
+                // Pass both the task count and the task list to the callback
+                callback(snapshot.Documents.Count(), taskList);
+            }
+            else
+            {
+                Debug.LogError("Error fetching tasks: " + task.Exception);
+                callback(0, new List<Task>()); // Return 0 and an empty list on error
+            }
+        });
+    }
+
+    // Function to spawn tasks after getting the task count and data
+    public void spawnTasks(string user)
+    {
+        tasks.Clear(); // Reset list so we don't spawn missing objects
+        GameObject mainScreen = GameObject.FindWithTag("mainScreen");
+
+        // Get both task count and task data in a single call
+        GetTasksAndCount(user, (taskAmount, taskList) =>
+        {
+            Debug.Log("Task amount: " + taskAmount);
+
+            // Store the tasks in TaskData
+            TaskData = taskList;
+
+            int buffer = -300;
+
+            // Instantiate a GameObject for each task and add it to the screen
+            for (int i = 0; i < TaskData.Count; i++)
+            {
+                // Instantiate the task GameObject
+                GameObject newTask = Instantiate(taskTemplate, mainScreen.transform, false);
+
+                // Set task's position
+                newTask.transform.localPosition = new Vector3(0, buffer * i, 0);
+                
+                newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = TaskData[i].Titel;
+                newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = TaskData[i].Emoji;
+                newTask.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = TaskData[i].Description;
+                newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = TaskData[i].ImageFormat ? "P" : "W";
+                newTask.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = TaskData[i].Status.ToString();
+
+                // Add the newly created task object to the tasks list
+                tasks.Add(newTask);
+            }
+
+            Debug.Log("Tasks spawned");
+        });
+    }
+
 }

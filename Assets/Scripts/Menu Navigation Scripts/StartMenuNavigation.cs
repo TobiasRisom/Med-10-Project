@@ -5,8 +5,20 @@ using UnityEngine.SceneManagement;
 
 public class StartMenuNavigation : MonoBehaviour
 {
-    private float pos = -1080;
-    private int code = 9827;
+    private readonly float pos = -1080;
+    private readonly int code = 9827;
+
+    public TMP_InputField codeInput;
+    public TMP_InputField beboerInput;
+    public TMP_InputField ansatInput;
+
+    private FirestoreHandler fish;
+
+    void Start()
+    {
+	    fish = GameObject.FindWithTag("dataManager")
+	                     .GetComponent<FirestoreHandler>();
+    }
     
 		public void changeWindow(int windowIndex)
         {
@@ -15,9 +27,6 @@ public class StartMenuNavigation : MonoBehaviour
 
         public void checkCode()
         {
-	        TMP_InputField codeInput = GameObject.FindWithTag("codeInput")
-	                                         .GetComponent<TMP_InputField>();
-
 	        int userCode = int.Parse(codeInput.text);
 	        
 
@@ -34,6 +43,7 @@ public class StartMenuNavigation : MonoBehaviour
 
         public void goToMainScreen()
         {
+	        //fish.AddNewUser("Leif");
 	        SceneManager.LoadScene("MainScreen");
         }
 }

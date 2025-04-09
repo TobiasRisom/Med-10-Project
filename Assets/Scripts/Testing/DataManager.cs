@@ -9,10 +9,7 @@ using UnityEngine.UI;
 public class DataManager : MonoBehaviour
 {
 	public GameObject taskTemplate;
-	[FormerlySerializedAs("name")]
 	public string userName = "";
-
-	public string[] weekNames = {"Leif", "Leeeeiiiiiiffff", "LeifLeif", "Lief", "It'sMyLeif", "KarlosIkkeLeif", "Looooof"};
 
 	public List<GameObject> tasks;
 	
@@ -22,9 +19,9 @@ public class DataManager : MonoBehaviour
 		public string Emoji { get; set; }
 		public string Description { get; set; }
 		public string AnswerFormat { get; set; }
+		public int Status { get; set; }
 	}
 	
-	// Title, Emoji, Description, Identifier for if task requires a picture (P) or text (T).
 	public List<Task> TaskData = new List<Task>();
 
 	public int currentTask;
@@ -44,47 +41,6 @@ public class DataManager : MonoBehaviour
 		TaskData.Add(new Task { Titel = "Støvsug Gulvet", Emoji = ":)", Description = "Husk at støvsuge gulvet en gang om ugen. Vær sikker på at gulvet i hele køkkenet og stuen bliver gjort.\nTør efter hvis der stadig ligger snavs.", AnswerFormat = "P" });
 		TaskData.Add(new Task { Titel = "Skab en tingenot", Emoji = ":D", Description = "Du burde lave en sjov tingest idag.", AnswerFormat = "P" });
 		TaskData.Add(new Task { Titel = "Av min finger", Emoji = ":(", Description = "Tag en pause.", AnswerFormat = "T" });
-	}
-
-	public void setName(bool ansat)
-	{
-		TMP_InputField nameInput;
-		if (ansat)
-		{
-			nameInput = GameObject.FindWithTag("ansatName")
-			                                     .GetComponent<TMP_InputField>();	
-		}
-		else
-		{
-			nameInput = GameObject.FindWithTag("beboerName")
-			                                     .GetComponent<TMP_InputField>();
-		}
-
-		userName = nameInput.text;
-
-		GameObject[] nameDisplays = GameObject.FindGameObjectsWithTag("nameDisplay");
-		foreach (GameObject n in nameDisplays)
-		{
-			n.GetComponent<TextMeshProUGUI>()
-			 .text = userName + "!";
-		}
-	}
-
-	public void spawnTasks()
-	{
-		tasks.Clear(); // Reset list so we don't spawn in missing objects
-		GameObject mainScreen = GameObject.FindWithTag("mainScreen");
-		int taskAmount = TaskData.Count;
-		int buffer = -300;
-
-		for (int i = 0; i < taskAmount; i++)
-		{
-			GameObject newTask = Instantiate(taskTemplate, mainScreen.transform, false);
-			newTask.transform.localPosition = new Vector3(0, buffer * i, 0);
-			
-			tasks.Add(newTask);
-		}
-
 	}
 
 	public void setTasks()
