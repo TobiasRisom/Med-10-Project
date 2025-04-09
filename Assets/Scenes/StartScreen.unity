@@ -2310,7 +2310,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25c0cac3c79c9ad4eb3f0af66039fdc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 2054109633}
 --- !u!1 &626516805
 GameObject:
   m_ObjectHideFlags: 0
@@ -4075,7 +4074,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskTemplate: {fileID: 1602897116379397259, guid: 2d5f9ff80c76a7a4cac6cde3abd20d10, type: 3}
-  userName: 
+  name: 
   weekNames:
   - Leif
   - Leeeeiiiiiiffff
@@ -4085,7 +4084,6 @@ MonoBehaviour:
   - KarlosIkkeLeif
   - Looooof
   tasks: []
-  currentTask: 0
 --- !u!1 &1300573632
 GameObject:
   m_ObjectHideFlags: 0
