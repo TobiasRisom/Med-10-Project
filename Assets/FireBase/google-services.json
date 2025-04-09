@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "58344720950",
+    "project_id": "med10database",
+    "storage_bucket": "med10database.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58344720950:android:8810c8dc2b41c14f18e697",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.com.unity.template.mobile2D"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxjw2ojNDgzgb17HP2NUkMD5YfcPvyt6U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
