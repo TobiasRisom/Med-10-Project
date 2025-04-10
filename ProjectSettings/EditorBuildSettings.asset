@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ANSAT_MainScreen.unity
     guid: 050b4202961963c4e975bfd4011f2523
+  - enabled: 1
+    path: Assets/Scenes/ANSAT_TaskCreationScreen.unity
+    guid: b7e36f2f635c70e4db96afeb5662f54b
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 2e7d0d224544ad7439053b2108dfab40, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: ef9ebd7548c1bbf489ebcef04546e4b8, type: 2}

@@ -73,3 +73,11 @@ crashlytics-build.properties
 *.asset
 /Assets/Font
 /Assets/Font
+Assets/Font/BeVietnamPro-SemiBold SDF.asset
+Assets/Font/BeVietnamPro-Regular SDF.asset
+Assets/Font/BeVietnamPro-Medium SDF.asset
+Assets/Font/BeVietnamPro-LightItalic SDF.asset
+Assets/Font/BeVietnamPro-Light SDF.asset
+Assets/Font/BeVietnamPro-ExtraBold SDF.asset
+Assets/Font/BeVietnamPro-BoldItalic SDF.asset
+Assets/Font/BeVietnamPro-Bold SDF.asset
