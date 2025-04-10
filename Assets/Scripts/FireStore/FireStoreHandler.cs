@@ -36,7 +36,7 @@ public class FirestoreHandler : MonoBehaviour
 		// Firstly, Firebase checks and attempts to fix any asynchronous dependencies, then continues
 		FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
 		           {
-			           if (task.IsCompleted && task.Result == DependencyStatus.Available)
+			           if (task.IsCompletedSuccessfully && task.Result == DependencyStatus.Available)
 			           {
 				           // Get the instance of Firebase associated with this project
 				           FirebaseApp app = FirebaseApp.DefaultInstance;
@@ -64,7 +64,7 @@ public class FirestoreHandler : MonoBehaviour
 		// Snapshot of the current items in the defined document
 		docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
 		{
-			if (task.IsCompleted)
+			if (task.IsCompletedSuccessfully)
 			{
 				
 				Debug.Log("Weekly Schedule Accessed");
@@ -105,6 +105,23 @@ public class FirestoreHandler : MonoBehaviour
 		Debug.Log("Weekly schedule names added");
 	}
 
+	public async void UpdateSchedule(Dictionary<string, object> newNames)
+	{
+		DocumentReference doc = firestore.Collection("Schedule").Document("Ugeskema");
+
+		var task = doc.UpdateAsync(newNames);
+		await task;
+
+		if (task.IsCompletedSuccessfully)
+		{
+			Debug.Log("Schedule updated!");
+		}
+		else
+		{
+			Debug.LogError("Schedule update failed.");
+		}
+	}
+
 	public void AddNewUser(string newUserName)
 	{
 		CollectionReference users = firestore.Collection("Users");
@@ -112,7 +129,7 @@ public class FirestoreHandler : MonoBehaviour
 		     .GetSnapshotAsync()
 		     .ContinueWithOnMainThread(task =>
 		     {
-			     if (task.IsCompleted)
+			     if (task.IsCompletedSuccessfully)
 			     {
 				     QuerySnapshot snapshot = task.Result;
 
@@ -152,16 +169,15 @@ public class FirestoreHandler : MonoBehaviour
 			     }
 		     });
 	}
-
-// Combined method to get both task count and task data
-// Combined method to get both task count and task data
+	
+// Combined method to get both task count and task data, change name at some point xP
     private void GetTasksAndCount(string user, System.Action<int, List<Task>> callback)
     {
         var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks");
 
         tasksReference.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if (task.IsCompleted)
+            if (task.IsCompletedSuccessfully)
             {
                 QuerySnapshot snapshot = task.Result;
 

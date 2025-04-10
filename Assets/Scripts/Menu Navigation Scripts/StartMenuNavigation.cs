@@ -46,4 +46,9 @@ public class StartMenuNavigation : MonoBehaviour
 	        //fish.AddNewUser("Leif");
 	        SceneManager.LoadScene("MainScreen");
         }
+
+        public void goToAnsatMainScreen()
+        {
+	        SceneManager.LoadScene("ANSAT_MainScreen");
+        }
 }
