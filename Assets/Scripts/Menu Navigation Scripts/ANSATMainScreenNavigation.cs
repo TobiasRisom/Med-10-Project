@@ -89,4 +89,9 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	    acceptEdit.gameObject.SetActive(false);
 	    undoEdit.gameObject.SetActive(false);
     }
+
+    public void goToTaskCreationScreen()
+    {
+	    SceneManager.LoadScene("ANSAT_TaskCreationScreen");
+    }
 }
