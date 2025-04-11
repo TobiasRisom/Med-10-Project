@@ -2232,6 +2232,7 @@ MonoBehaviour:
   status: {fileID: 149180806}
   usersToGetTask: {fileID: 129492875}
   howOftenToRepeatTask: {fileID: 854235611}
+  imageFormat: 0
 --- !u!1 &635206799
 GameObject:
   m_ObjectHideFlags: 0
@@ -3659,7 +3660,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 988659261}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 595124796}
+        m_TargetAssemblyTypeName: ANSATTaskScreenNavigation, Assembly-CSharp
+        m_MethodName: CreateNewTaskAndExit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &988659261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4344,7 +4357,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1147044470}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 595124796}
+        m_TargetAssemblyTypeName: ANSATTaskScreenNavigation, Assembly-CSharp
+        m_MethodName: changeWindow
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1147044470
 MonoBehaviour:
   m_ObjectHideFlags: 0

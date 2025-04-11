@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
 using Toggle = UnityEngine.UI.Toggle;
@@ -10,6 +12,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 {
 	private readonly float pos = -1080;
 	private bool preventRecursion = false;
+	private FirestoreHandler fish;
 
 	[Header("New Task Inputs")]
 	public TMP_InputField inputTitle;
@@ -29,6 +32,8 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	public TextMeshProUGUI usersToGetTask;
 	public TextMeshProUGUI howOftenToRepeatTask;
 
+	public bool imageFormat;
+
 	public enum Users
 	{
 		All,
@@ -44,6 +49,11 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	private Users whichUsers;
 	private Repetition howOften;
 
+	void Start()
+	{
+		fish = GameObject.FindWithTag("dataManager")
+		                 .GetComponent<FirestoreHandler>();
+	}
 
 	void Update()
 	{
@@ -125,7 +135,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	    }
     }
 
-    public void toggleManager(bool whichToggle)
+    public void toggleManager(bool whichToggle) // True = Text, False = Image
     {
 	    if (!preventRecursion)
 	    {
@@ -143,5 +153,29 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 
 		    preventRecursion = false;
 	    }
+
+	    if (inputImage.isOn)
+	    {
+		    imageFormat = true;
+	    }
+	    else
+	    {
+		    imageFormat = false;
+	    }
+    }
+
+    public void CreateNewTaskAndExit()
+    {
+	    FirestoreHandler.Task newTask = new FirestoreHandler.Task();
+
+	    newTask.Titel = confirmTitle.text;
+	    newTask.Emoji = confirmEmoji.text;
+	    newTask.Description = confirmDescription.text;
+	    newTask.ImageFormat = imageFormat;
+	    newTask.Status = 0;
+	    
+	    fish.addTaskToAllUsers(newTask);
+
+	    SceneManager.LoadScene("ANSAT_MainScreen");
     }
 }

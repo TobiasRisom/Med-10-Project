@@ -250,4 +250,48 @@ public class FirestoreHandler : MonoBehaviour
         });
     }
 
+    public void addTaskToAllUsers(Task newTask)
+    {
+	    firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(userTask =>
+	    {
+		    if (userTask.IsFaulted || userTask.IsCanceled)
+		    {
+			    Debug.LogError("Error getting users: " + userTask.Exception);
+			    return;
+		    }
+
+		    QuerySnapshot userSnapshots = userTask.Result;
+
+		    foreach (DocumentSnapshot userDoc in userSnapshots.Documents)
+		    {
+			    string userId = userDoc.Id;
+
+			    // Convert Task object to dictionary
+			    Dictionary<string, object> taskData = new Dictionary<string, object>
+			    {
+				    { "Titel",newTask.Titel },
+				    { "Emoji",newTask.Emoji },
+				    { "Description",newTask.Description },
+				    { "ImageFormat",newTask.ImageFormat },
+				    { "Status", newTask.Status }
+			    };
+
+			    // Add task to each user's Tasks subcollection
+			    string taskId = $"Task_{System.DateTime.Now.ToString("dd-MM-yy")}";
+			    DocumentReference taskRef = firestore.Collection("Users").Document(userId).Collection("Tasks").Document(taskId);
+			    taskRef.SetAsync(taskData).ContinueWithOnMainThread(t =>
+			    {
+				    if (t.IsCompleted)
+				    {
+					    Debug.Log("Task added to user: " + userId);
+				    }
+				    else
+				    {
+					    Debug.LogError("Failed to add task for user: " + userId + " | " + t.Exception);
+				    }
+			    });
+		    }
+	    });
+    }
+
 }
