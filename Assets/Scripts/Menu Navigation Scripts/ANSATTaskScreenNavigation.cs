@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
@@ -173,6 +174,21 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	    newTask.Description = confirmDescription.text;
 	    newTask.ImageFormat = imageFormat;
 	    newTask.Status = 0;
+	    
+	    switch(howOften)
+	    {
+		    case Repetition.Once:
+				newTask.Repeat = 0; // Once!
+				break;
+		    
+		    case Repetition.Daily:
+			    newTask.Repeat = 1; // Daily!
+			    break;
+		    
+		    case Repetition.Weekly:
+			    newTask.Repeat = (((int)System.DateTime.Now.DayOfWeek + 6) % 7) + 2; // 2 = Monday, 3 = Tuesday, etc...
+			    break;
+	    }
 	    
 	    fish.addTaskToAllUsers(newTask);
 

@@ -19,6 +19,7 @@ public class FirestoreHandler : MonoBehaviour
 		public string Description { get; set; }
 		public bool ImageFormat { get; set; }
 		public int Status { get; set; }
+		public int Repeat { get; set; }
 	}
 	public List<Task> TaskData = new List<Task>(); // Stores data locally so we don't need to keep reading the database
 	public List<GameObject> tasks; // Stores the tasks game objects that are spawned in the Unity scene
@@ -193,7 +194,8 @@ public class FirestoreHandler : MonoBehaviour
                         Emoji = document.GetValue<string>("Emoji"),
                         Description = document.GetValue<string>("Description"),
                         ImageFormat = document.GetValue<bool>("ImageFormat"),
-                        Status = document.GetValue<int>("Status")
+                        Status = document.GetValue<int>("Status"),
+                        Repeat = document.GetValue<int>("Repeat")
                     };
 
                     // Add the task object to the list
@@ -273,11 +275,12 @@ public class FirestoreHandler : MonoBehaviour
 				    { "Emoji",newTask.Emoji },
 				    { "Description",newTask.Description },
 				    { "ImageFormat",newTask.ImageFormat },
-				    { "Status", newTask.Status }
+				    { "Status", newTask.Status },
+				    {"Repeat", newTask.Repeat}
 			    };
 
 			    // Add task to each user's Tasks subcollection
-			    string taskId = $"Task_{System.DateTime.Now.ToString("dd-MM-yy")}";
+			    string taskId = $"Task_{System.DateTime.Now.ToString("dd-MM-yy-HH-mm-ss")}";
 			    DocumentReference taskRef = firestore.Collection("Users").Document(userId).Collection("Tasks").Document(taskId);
 			    taskRef.SetAsync(taskData).ContinueWithOnMainThread(t =>
 			    {
