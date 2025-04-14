@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
+using Unity.Mathematics.Geometry;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -14,6 +16,9 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 
 	public GameObject nameParent;
 	public GameObject textFieldParent;
+
+	public RectTransform userHolder;
+	public GameObject userButtonPrefab;
 	
 	string[] savedNames = { "", "", "", "", "", "", "" };
 
@@ -23,6 +28,7 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 	    
 	    fish.ScheduleManager();
+	    setUpUserButtons();
     }
 
     public void ScheduleEditMode()
@@ -93,5 +99,33 @@ public class ANSATMainScreenNavigation : MonoBehaviour
     public void goToTaskCreationScreen()
     {
 	    SceneManager.LoadScene("ANSAT_TaskCreationScreen");
+    }
+
+    private async void setUpUserButtons()
+    {
+	    List<string> userList = await fish.GetUsers();
+
+	    if (userList.Count == 0)
+	    {
+		    Debug.Log("No users found.");
+		    return;
+	    }
+
+	    GridLayoutGroup glg = userHolder.GetComponent<GridLayoutGroup>();
+
+	    foreach (string user in userList)
+	    {
+		    GameObject userButton = Instantiate(userButtonPrefab, glg.transform);
+		    userButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = user;
+
+		    Button btn = userButton.GetComponentInChildren<Button>();
+		    
+		    btn.onClick.AddListener(delegate { OnButtonClick(user); });
+	    }
+    }
+    
+    void OnButtonClick(string userName)
+    {
+	    Debug.Log("Button " + userName + " clicked!");
     }
 }

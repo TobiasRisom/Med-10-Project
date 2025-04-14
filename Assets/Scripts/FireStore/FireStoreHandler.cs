@@ -171,7 +171,28 @@ public class FirestoreHandler : MonoBehaviour
 		     });
 	}
 	
-// Combined method to get both task count and task data, change name at some point xP
+	public async Task<List<string>> GetUsers()
+	{
+		List<string> userNames = new List<string>();
+
+		CollectionReference colRef = firestore.Collection("Users");
+		
+		QuerySnapshot snapshot = await colRef.GetSnapshotAsync();
+
+		Debug.Log("List of users accessed");
+
+		foreach (DocumentSnapshot document in snapshot.Documents)
+		{
+			if (document.ContainsField("Name"))
+			{
+				string userName = document.GetValue<string>("Name");
+				userNames.Add(userName);
+			}
+		}
+
+		return userNames;
+	}
+	
     private void GetTasksAndCount(string user, System.Action<int, List<Task>> callback)
     {
         var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks");

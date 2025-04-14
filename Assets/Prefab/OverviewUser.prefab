@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8358165260967991584}
   - component: {fileID: 3331978279640977761}
   - component: {fileID: 9184523875324130778}
-  - component: {fileID: 5274406877766086402}
   m_Layer: 5
   m_Name: Text - User Name (1)
   m_TagString: Untagged
@@ -137,18 +136,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &5274406877766086402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 565877239894621018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 624b198de6b8c5b4b9cf8c6a0be00f14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3668745197318967973
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,8 +164,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 9115881473825204433}
   - {fileID: 8358165260967991584}
+  - {fileID: 9115881473825204433}
   - {fileID: 8108596426845520784}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -458,7 +445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.08627451}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
