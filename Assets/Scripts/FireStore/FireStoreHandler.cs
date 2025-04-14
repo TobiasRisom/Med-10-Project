@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class FirestoreHandler : MonoBehaviour
 {
@@ -271,9 +273,24 @@ public class FirestoreHandler : MonoBehaviour
                 // Add the newly created task object to the tasks list
                 tasks.Add(newTask);
             }
+            
+            for (int i = 0; i < tasks.Count; i++)
+            {
+	            Button btn = tasks[i]
+		            .GetComponent<Button>();
+
+	            int index = i;
+	            btn.onClick.AddListener(delegate { goToTask(index); });
+            }
 
             Debug.Log("Tasks spawned");
         });
+    }
+    
+    public void goToTask(int taskIndex)
+    {
+	    currentTask = taskIndex;
+	    SceneManager.LoadScene("TaskScreen");
     }
 
     public void addTaskToAllUsers(Task newTask)
