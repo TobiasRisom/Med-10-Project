@@ -25,10 +25,17 @@ public class FirestoreHandler : MonoBehaviour
 		public bool ImageFormat { get; set; }
 		public int Status { get; set; }
 		public int Repeat { get; set; }
+		public string Answer { get; set; }
 	}
 	public List<Task> TaskData = new List<Task>(); // Stores data locally so we don't need to keep reading the database
 	public List<GameObject> tasks; // Stores the tasks game objects that are spawned in the Unity scene
 	public GameObject taskTemplate; // Template for all tasks shown on the main screen
+
+	// Same variables but for verifying tasks
+	public List<Task> V_TaskData = new List<Task>();
+	public List<Task> V_tasks;
+	public GameObject v_taskTemplate;
+	
 	
 	private void Awake()
 	{
@@ -221,7 +228,8 @@ public class FirestoreHandler : MonoBehaviour
                         Description = document.GetValue<string>("Description"),
                         ImageFormat = document.GetValue<bool>("ImageFormat"),
                         Status = document.GetValue<int>("Status"),
-                        Repeat = document.GetValue<int>("Repeat")
+                        Repeat = document.GetValue<int>("Repeat"),
+                        Answer = document.GetValue<string>("Answer")
                     };
 
                     // Add the task object to the list
@@ -238,8 +246,7 @@ public class FirestoreHandler : MonoBehaviour
             }
         });
     }
-
-    // Function to spawn tasks after getting the task count and data
+    
     public void spawnTasks(string user)
     {
         tasks.Clear(); // Reset list so we don't spawn missing objects
@@ -286,6 +293,57 @@ public class FirestoreHandler : MonoBehaviour
             Debug.Log("Tasks spawned");
         });
     }
+
+    public void GetTasksAwaitingVerification()
+    {
+	    List<Task> list = new List<Task>();
+	    firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(usersTask =>
+	    {
+		    if (usersTask.IsCompleted && !usersTask.IsFaulted)
+		    {
+			    QuerySnapshot usersSnapshot = usersTask.Result;
+
+			    foreach (DocumentSnapshot userDoc in usersSnapshot.Documents)
+			    {
+				    string userId = userDoc.Id;
+				    CollectionReference tasksRef = firestore.Collection("Users").Document(userId).Collection("Tasks");
+
+				    tasksRef.WhereEqualTo("Status", 1).GetSnapshotAsync().ContinueWithOnMainThread(tasksTask =>
+				    {
+					    if (tasksTask.IsCompletedSuccessfully)
+					    {
+						    QuerySnapshot tasksSnapshot = tasksTask.Result;
+
+						    foreach (DocumentSnapshot document in tasksSnapshot.Documents)
+						    {
+							    Task newTask = new Task
+							    {
+								    Titel = document.GetValue<string>("Titel"),
+								    Emoji = document.GetValue<string>("Emoji"),
+								    Description = document.GetValue<string>("Description"),
+								    ImageFormat = document.GetValue<bool>("ImageFormat"),
+								    Status = document.GetValue<int>("Status"),
+								    Repeat = document.GetValue<int>("Repeat"),
+								    Answer = document.GetValue<string>("Answer")
+							    };
+
+							    // Add the task object to the list
+							    list.Add(newTask);
+						    }
+					    }
+					    else
+					    {
+						    Debug.LogError("Error getting tasks: " + tasksTask.Exception);
+					    }
+				    });
+			    }
+		    }
+		    else
+		    {
+			    Debug.LogError("Error getting users: " + usersTask.Exception);
+		    }
+	    });
+    }
     
     public void goToTask(int taskIndex)
     {
@@ -317,7 +375,8 @@ public class FirestoreHandler : MonoBehaviour
 				    { "Description",newTask.Description },
 				    { "ImageFormat",newTask.ImageFormat },
 				    { "Status", newTask.Status },
-				    {"Repeat", newTask.Repeat}
+				    {"Repeat", newTask.Repeat},
+				    {"Answer", newTask.Answer}
 			    };
 
 			    // Add task to each user's Tasks subcollection

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using Unity.Mathematics.Geometry;
 using UnityEngine;
@@ -13,6 +12,8 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	public Button edit;
 	public Button acceptEdit;
 	public Button undoEdit;
+
+	public GameObject taskToVerify;
 
 	public GameObject nameParent;
 	public GameObject textFieldParent;
@@ -29,6 +30,7 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	    
 	    fish.ScheduleManager();
 	    setUpUserButtons();
+	    fish.GetTasksAwaitingVerification();
     }
 
     public void ScheduleEditMode()

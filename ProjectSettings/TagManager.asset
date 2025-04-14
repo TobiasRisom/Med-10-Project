@@ -11,6 +11,7 @@ TagManager:
   - dataManager
   - mainScreen
   - ScheduleNames
+  - scrollView
   layers:
   - Default
   - TransparentFX
