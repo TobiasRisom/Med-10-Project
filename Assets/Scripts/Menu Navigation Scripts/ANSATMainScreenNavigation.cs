@@ -126,6 +126,7 @@ public class ANSATMainScreenNavigation : MonoBehaviour
     
     void OnButtonClick(string userName)
     {
-	    Debug.Log("Button " + userName + " clicked!");
+	    fish.currentUserInfo = userName;
+	    SceneManager.LoadScene("ANSAT_UserOverviewScreen");
     }
 }

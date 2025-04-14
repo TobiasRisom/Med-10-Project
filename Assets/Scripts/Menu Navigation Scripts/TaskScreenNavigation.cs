@@ -6,8 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class TaskScreenNavigation : MonoBehaviour
 {
-	private DataManager dm;
-	
+
 	public TextMeshProUGUI taskTitle;
 	public TextMeshProUGUI taskEmoji;
 	public TextMeshProUGUI taskDescription;
@@ -21,18 +20,20 @@ public class TaskScreenNavigation : MonoBehaviour
 
 	public Button confirmWriting;
 	public Button confirmPicture;
+
+	private FirestoreHandler fish;
     void Start()
     {
-	    dm = GameObject.FindWithTag("dataManager")
-	                   .GetComponent<DataManager>();
+	    fish = GameObject.FindWithTag("dataManager")
+	                   .GetComponent<FirestoreHandler>();
 
-	    int taskIndex = dm.currentTask;
+	    int taskIndex = fish.currentTask;
 
-	    taskTitle.text = dm.TaskData[taskIndex].Titel;
-	    taskEmoji.text = dm.TaskData[taskIndex].Emoji;
-	    taskDescription.text = dm.TaskData[taskIndex].Description;
+	    taskTitle.text = fish.TaskData[taskIndex].Titel;
+	    taskEmoji.text = fish.TaskData[taskIndex].Emoji;
+	    taskDescription.text = fish.TaskData[taskIndex].Description;
 
-	    if (dm.TaskData[taskIndex].AnswerFormat == "P")
+	    if (fish.TaskData[taskIndex].ImageFormat)
 	    {
 		    transform.localPosition = new Vector3(0, transform.localPosition.y, transform.localPosition.z);
 	    }
@@ -78,7 +79,7 @@ public class TaskScreenNavigation : MonoBehaviour
 
     public void answerConfirmed()
     {
-	    dm.TaskData.RemoveAt(dm.currentTask);
+	    fish.TaskData.RemoveAt(fish.currentTask);
 	    SceneManager.LoadScene("MainScreen");
     }
 

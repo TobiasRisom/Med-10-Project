@@ -12,6 +12,9 @@ public class FirestoreHandler : MonoBehaviour
 	private FirebaseFirestore firestore;
 	public string username = "Leif";
 	
+	public int currentTask;
+	public string currentUserInfo;
+	
 	public class Task
 	{
 		public string Titel { get; set; }
@@ -193,7 +196,7 @@ public class FirestoreHandler : MonoBehaviour
 		return userNames;
 	}
 	
-    private void GetTasksAndCount(string user, System.Action<int, List<Task>> callback)
+    public void GetTasksAndCount(string user, System.Action<int, List<Task>> callback)
     {
         var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks");
 
