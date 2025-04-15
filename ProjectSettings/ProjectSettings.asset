@@ -550,7 +550,7 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: 
+  cameraUsageDescription: "\xD8G App benytter dit kamera til at tage billeder."
   locationUsageDescription: 
   microphoneUsageDescription: 
   bluetoothUsageDescription: 

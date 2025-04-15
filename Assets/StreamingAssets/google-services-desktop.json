@@ -7,20 +7,22 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:58344720950:android:8810c8dc2b41c14f18e697",
+        "mobilesdk_app_id": "1:58344720950:ios:a7229dbb51b2e77918e697",
         "android_client_info": {
           "package_name": "com.DefaultCompany.com.unity.template.mobile2D"
         }
       },
-      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDxjw2ojNDgzgb17HP2NUkMD5YfcPvyt6U"
+          "current_key": "AIzaSyDzOp7Q3GuK9bjdkW0ATPDZUxLKg5Up7cU"
         }
       ],
       "services": {
+        "analytics_service": {
+          "status": 0
+        },
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "status": 1
         }
       }
     }

@@ -3,57 +3,75 @@ using UnityEngine.UI;
 
 public class CameraDisplay : MonoBehaviour
 {
-	private bool camAvailable;
-	private WebCamTexture backCam;
-	private Texture defaultBackground;
+    public RawImage cameraFeed;
+    public RawImage capturedImage;
+    public Button captureButton;
+    public Button confirmButton;
+    public Button retakeButton;
 
-	public RawImage background;
-	public AspectRatioFitter fit;
+    private WebCamTexture webCamTexture;
+    public Texture2D photo;
 
-	private void Start()
-	{
-		defaultBackground = background.texture;
-		WebCamDevice[] devices = WebCamTexture.devices;
+    void Start()
+    {
+        SetupCamera();
+        captureButton.onClick.AddListener(CapturePhoto);
+        retakeButton.onClick.AddListener(RetakePhoto);
+    }
 
-		if (devices.Length == 0)
-		{
-			Debug.Log("No camera detected");
-			camAvailable = false;
-			return;
-		}
+    void SetupCamera()
+    {
+        WebCamDevice[] devices = WebCamTexture.devices;
 
-		for (int i = 0; i < devices.Length; i++)
-		{
-			if (!devices[i].isFrontFacing)
-			{
-				backCam = new WebCamTexture(devices[i].name); //edit width and height here
-			}
-		}
+        if (devices.Length == 0)
+        {
+            Debug.LogWarning("No camera detected.");
+            return;
+        }
 
-		if (backCam == null)
-		{
-			Debug.Log("Unable to find back camera.");
-			return;
-		}
+        string selectedCam = devices[0].name;
 
-		backCam.Play();
-		background.texture = backCam;
+#if !UNITY_EDITOR
+        foreach (var device in devices)
+        {
+            if (!device.isFrontFacing)
+            {
+                selectedCam = device.name;
+                break;
+            }
+        }
+#endif
 
-		camAvailable = true;
-	}
+        webCamTexture = new WebCamTexture(selectedCam, Screen.width, Screen.height);
+        cameraFeed.texture = webCamTexture;
+        cameraFeed.material.mainTexture = webCamTexture;
+        webCamTexture.Play();
+    }
 
-	private void Update()
-	{
-		if (!camAvailable)
-			return;
+    void CapturePhoto()
+    {
+        if (webCamTexture == null || !webCamTexture.isPlaying)
+            return;
 
-		float ratio = (float)backCam.width / (float)backCam.height;
-		fit.aspectRatio = ratio;
+        photo = new Texture2D(webCamTexture.width, webCamTexture.height);
+        photo.SetPixels(webCamTexture.GetPixels());
+        photo.Apply();
 
-		float scaleY = backCam.videoVerticallyMirrored ? -1f : 1f;
-		background.rectTransform.localScale = new Vector3(1f, scaleY, 1f);
+        capturedImage.texture = photo;
+        capturedImage.gameObject.SetActive(true);
 
-		int orientation = -backCam.videoRotationAngle;
-		background.rectTransform.localEulerAngles = new Vector3(0, 0, orientation);
-	}
+        cameraFeed.gameObject.SetActive(false);
+        captureButton.gameObject.SetActive(false);
+        confirmButton.gameObject.SetActive(true);
+        retakeButton.gameObject.SetActive(true);
+    }
+
+    void RetakePhoto()
+    {
+        capturedImage.gameObject.SetActive(false);
+        cameraFeed.gameObject.SetActive(true);
+        captureButton.gameObject.SetActive(true);
+        confirmButton.gameObject.SetActive(false);
+        retakeButton.gameObject.SetActive(false);
+    }
 }

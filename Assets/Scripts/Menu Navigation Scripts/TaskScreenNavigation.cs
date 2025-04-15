@@ -22,10 +22,14 @@ public class TaskScreenNavigation : MonoBehaviour
 	public Button confirmPicture;
 
 	private FirestoreHandler fish;
+	private CameraDisplay cd;
     void Start()
     {
 	    fish = GameObject.FindWithTag("dataManager")
 	                   .GetComponent<FirestoreHandler>();
+
+	    cd = GameObject.FindWithTag("CameraDisplay")
+	                   .GetComponent<CameraDisplay>();
 
 	    int taskIndex = fish.currentTask;
 
@@ -77,10 +81,24 @@ public class TaskScreenNavigation : MonoBehaviour
 	    SceneManager.LoadScene("MainScreen");
     }
 
-    public void answerConfirmed()
+    public void writtenAnswerConfirmed()
     {
-	    fish.TaskData.RemoveAt(fish.currentTask);
-	    SceneManager.LoadScene("MainScreen");
+		fish.submitTask(fish.username, finalUserAnswer.text);
+		SceneManager.LoadScene("MainScreen");
+    }
+    
+    public void imageAnswerConfirmed()
+    {
+	    if (cd.photo != null)
+	    {
+		    byte[] imageBytes = cd.photo.EncodeToJPG(); 
+		    string base64Image = System.Convert.ToBase64String(imageBytes);
+		    int fileSizeBytes = base64Image.Length;
+		    float fileSizeKB = fileSizeBytes / 1024f;
+		    
+		    fish.submitTask(fish.username, base64Image);
+		    SceneManager.LoadScene("MainScreen");
+	    }
     }
 
     public void answerGoBack()

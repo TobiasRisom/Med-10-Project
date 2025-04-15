@@ -12,6 +12,7 @@ TagManager:
   - mainScreen
   - ScheduleNames
   - scrollView
+  - CameraDisplay
   layers:
   - Default
   - TransparentFX

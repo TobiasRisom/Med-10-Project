@@ -207,7 +207,7 @@ public class FirestoreHandler : MonoBehaviour
 	
     public void GetTasksAndCount(string user, System.Action<int, List<Task>> callback)
     {
-        var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks");
+        var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks").OrderBy(FieldPath.DocumentId);
 
         tasksReference.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -249,6 +249,7 @@ public class FirestoreHandler : MonoBehaviour
     
     public void spawnTasks(string user)
     {
+	    Debug.Log("Running SpawnTasks");
         tasks.Clear(); // Reset list so we don't spawn missing objects
         GameObject mainScreen = GameObject.FindWithTag("mainScreen");
 
@@ -349,6 +350,30 @@ public class FirestoreHandler : MonoBehaviour
     {
 	    currentTask = taskIndex;
 	    SceneManager.LoadScene("TaskScreen");
+    }
+
+    public async void submitTask(string user, string answer)
+    {
+	    DocumentReference docRef = firestore.Collection("Users").Document(user);
+
+	    Query query = docRef.Collection("Tasks")
+	                              .OrderBy(FieldPath.DocumentId)
+	                              .Limit(1);
+
+	    QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+	    var docs = snapshot.Documents.ToList();
+
+	    DocumentReference newRef = docs[currentTask].Reference;
+	    
+	    Dictionary<string, object> updates = new Dictionary<string, object>
+	    {
+		    { "Answer", answer },
+		    { "Status", 1 } 
+	    };
+	    
+	    await newRef.UpdateAsync(updates);
+	    Debug.Log("Task updated successfully!");
     }
 
     public void addTaskToAllUsers(Task newTask)
