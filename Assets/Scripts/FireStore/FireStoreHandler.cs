@@ -317,6 +317,11 @@ public class FirestoreHandler : MonoBehaviour
 
 						    foreach (DocumentSnapshot document in tasksSnapshot.Documents)
 						    {
+							    if (document.GetValue<int>("Status") == 2)
+							    {
+								    continue;
+							    }
+							    
 							    Task newTask = new Task
 							    {
 								    Titel = document.GetValue<string>("Titel"),
@@ -357,13 +362,12 @@ public class FirestoreHandler : MonoBehaviour
 	    DocumentReference docRef = firestore.Collection("Users").Document(user);
 
 	    Query query = docRef.Collection("Tasks")
-	                              .OrderBy(FieldPath.DocumentId)
-	                              .Limit(1);
+	                        .OrderBy(FieldPath.DocumentId);
 
 	    QuerySnapshot snapshot = await query.GetSnapshotAsync();
 
 	    var docs = snapshot.Documents.ToList();
-
+		Debug.Log("Current task: "+currentTask);
 	    DocumentReference newRef = docs[currentTask].Reference;
 	    
 	    Dictionary<string, object> updates = new Dictionary<string, object>

@@ -40,6 +40,11 @@ public class TaskScreenNavigation : MonoBehaviour
 	    if (fish.TaskData[taskIndex].ImageFormat)
 	    {
 		    transform.localPosition = new Vector3(0, transform.localPosition.y, transform.localPosition.z);
+		    cd.SetupCamera();
+	    }
+	    else
+	    {
+		    transform.localPosition = new Vector3(1080, transform.localPosition.y, transform.localPosition.z);
 	    }
     }
 

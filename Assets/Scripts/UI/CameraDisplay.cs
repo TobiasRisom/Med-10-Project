@@ -14,12 +14,10 @@ public class CameraDisplay : MonoBehaviour
 
     void Start()
     {
-        SetupCamera();
-        captureButton.onClick.AddListener(CapturePhoto);
-        retakeButton.onClick.AddListener(RetakePhoto);
+
     }
 
-    void SetupCamera()
+    public void SetupCamera()
     {
         WebCamDevice[] devices = WebCamTexture.devices;
 
@@ -46,6 +44,9 @@ public class CameraDisplay : MonoBehaviour
         cameraFeed.texture = webCamTexture;
         cameraFeed.material.mainTexture = webCamTexture;
         webCamTexture.Play();
+        
+        captureButton.onClick.AddListener(CapturePhoto);
+        retakeButton.onClick.AddListener(RetakePhoto);
     }
 
     void CapturePhoto()
