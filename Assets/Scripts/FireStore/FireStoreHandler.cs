@@ -297,7 +297,7 @@ public class FirestoreHandler : MonoBehaviour
         });
     }
 
-public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback)
+	public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback)
 {
 	V_Users.Clear();
     List<Task> verifiedTasks = new List<Task>();
@@ -442,8 +442,8 @@ public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback
 				int index = i; // looks stupid but necessary due to scope
 				string storedUser = V_Users[index];
 				string storedTitle = V_TaskData[index].Titel;
-				accept.onClick.AddListener(delegate { acceptTask(storedUser, storedTitle); });
-				reject.onClick.AddListener(delegate { rejectTask(index); });
+				accept.onClick.AddListener(delegate { acceptOrRejectTask(storedUser, storedTitle, 2); });
+				reject.onClick.AddListener(delegate { acceptOrRejectTask(storedUser, storedTitle, 0); });
 				
 				Debug.Log("Spawned task with parameters: " + storedUser + " & " + storedTitle);
 				
@@ -454,7 +454,7 @@ public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback
 		});
 	}
 
-	public async void acceptTask(string user, string taskTitle)
+	public async void acceptOrRejectTask(string user, string taskTitle, int status)
 	{
 		GameObject content = GameObject.FindWithTag("content");
 		ANSATContentHandler ch = content.GetComponent<ANSATContentHandler>();
@@ -469,7 +469,7 @@ public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback
 	    
 		Dictionary<string, object> updates = new Dictionary<string, object>
 		{
-			{ "Status", 2 } 
+			{ "Status", status } 
 		};
 	    
 		await newRef.UpdateAsync(updates);
@@ -487,14 +487,6 @@ public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback
 		}
 		Debug.Log("Task updated successfully!");
 	}
-
-	public void rejectTask(int taskIndex)
-	{
-		
-	}
-
-
-
 
     
     public void goToTask(int taskIndex)
@@ -571,5 +563,30 @@ public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback
 		    }
 	    });
     }
+    
+    public async Task<Dictionary<string, string>> GetLeaderboard()
+    {
+	    Dictionary<string, string> leaderboard = new Dictionary<string, string>();
+	    
+	    await firestore.Collection("Users")
+	                   .OrderByDescending("Points")
+	                   .GetSnapshotAsync()
+	                   .ContinueWithOnMainThread(task => {
+		      
+		                   if (!task.IsCompletedSuccessfully)
+		                   {
+			                   Debug.LogError("Failed to get users");
+			                   return;
+		                   }
 
+		                   QuerySnapshot snapshot = task.Result;
+
+		                   foreach (DocumentSnapshot document in snapshot.Documents)
+		                   {
+			                   Dictionary<string, object> userData = document.ToDictionary();
+			                   leaderboard[document.Id] = userData["Points"].ToString();
+		                   }
+	                   });
+	    return leaderboard;
+    }
 }

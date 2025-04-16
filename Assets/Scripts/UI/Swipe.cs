@@ -10,6 +10,7 @@ public class Swipe : MonoBehaviour, IDragHandler, IEndDragHandler
 	public float percentThreshold = 0.2f;
 	public float easing = 0.5f;
 	public int currentPage = 0; // -1 = Left (Week), 0 = Middle (tasks), 1 = Right (Pet)
+	public int pageAmount = 1;
     void Start()
     {
 	    panelLocation = transform.position;
@@ -28,7 +29,7 @@ public class Swipe : MonoBehaviour, IDragHandler, IEndDragHandler
 	    if (Mathf.Abs(percentage) >= percentThreshold)
 	    {
 		    Vector3 newLocation = panelLocation;
-		    if (percentage > 0 && currentPage < 1)
+		    if (percentage > 0 && currentPage < pageAmount)
 		    {
 			    newLocation += new Vector3(-Screen.width, 0, 0);
 			    currentPage++;
