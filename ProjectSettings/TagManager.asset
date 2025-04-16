@@ -13,6 +13,9 @@ TagManager:
   - ScheduleNames
   - scrollView
   - CameraDisplay
+  - V_Written
+  - V_Image
+  - content
   layers:
   - Default
   - TransparentFX

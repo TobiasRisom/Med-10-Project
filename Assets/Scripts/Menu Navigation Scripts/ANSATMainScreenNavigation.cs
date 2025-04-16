@@ -30,7 +30,7 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	    
 	    fish.ScheduleManager();
 	    setUpUserButtons();
-	    fish.GetTasksAwaitingVerification();
+	    fish.spawnVerifiedTasks();
     }
 
     public void ScheduleEditMode()

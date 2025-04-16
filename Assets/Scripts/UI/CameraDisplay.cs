@@ -12,12 +12,20 @@ public class CameraDisplay : MonoBehaviour
     private WebCamTexture webCamTexture;
     public Texture2D photo;
 
+    private FirestoreHandler fish;
+
     void Start()
     {
+	    fish = GameObject.FindWithTag("dataManager")
+	                     .GetComponent<FirestoreHandler>();
 
+	    if (fish.TaskData[fish.currentTask].ImageFormat)
+	    {
+		    SetupCamera();
+	    }
     }
 
-    public void SetupCamera()
+    private void SetupCamera()
     {
         WebCamDevice[] devices = WebCamTexture.devices;
 

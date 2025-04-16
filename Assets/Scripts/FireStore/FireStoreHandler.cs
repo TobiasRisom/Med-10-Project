@@ -1,3 +1,4 @@
+using System;
 using Firebase;
 using Firebase.Firestore;
 using Firebase.Extensions;
@@ -33,8 +34,9 @@ public class FirestoreHandler : MonoBehaviour
 
 	// Same variables but for verifying tasks
 	public List<Task> V_TaskData = new List<Task>();
-	public List<Task> V_tasks;
+	public List<GameObject> V_tasks;
 	public GameObject v_taskTemplate;
+	public List<String> V_Users = new List<String>();
 	
 	
 	private void Awake()
@@ -287,7 +289,7 @@ public class FirestoreHandler : MonoBehaviour
 	            Button btn = tasks[i]
 		            .GetComponent<Button>();
 
-	            int index = i;
+	            int index = i; // looks stupid but necessary due to scope
 	            btn.onClick.AddListener(delegate { goToTask(index); });
             }
 
@@ -295,61 +297,205 @@ public class FirestoreHandler : MonoBehaviour
         });
     }
 
-    public void GetTasksAwaitingVerification()
+public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback)
+{
+	V_Users.Clear();
+    List<Task> verifiedTasks = new List<Task>();
+
+    // Get the list of users from Firestore
+    firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(usersTask =>
     {
-	    List<Task> list = new List<Task>();
-	    firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(usersTask =>
-	    {
-		    if (usersTask.IsCompleted && !usersTask.IsFaulted)
-		    {
-			    QuerySnapshot usersSnapshot = usersTask.Result;
+        if (!usersTask.IsCompletedSuccessfully)
+        {
+            Debug.LogError("Failed to get users: " + usersTask.Exception);
+            callback(0, verifiedTasks);
+            return;
+        }
 
-			    foreach (DocumentSnapshot userDoc in usersSnapshot.Documents)
-			    {
-				    string userId = userDoc.Id;
-				    CollectionReference tasksRef = firestore.Collection("Users").Document(userId).Collection("Tasks");
+        QuerySnapshot usersSnapshot = usersTask.Result;
 
-				    tasksRef.WhereEqualTo("Status", 1).GetSnapshotAsync().ContinueWithOnMainThread(tasksTask =>
-				    {
-					    if (tasksTask.IsCompletedSuccessfully)
-					    {
-						    QuerySnapshot tasksSnapshot = tasksTask.Result;
+        if (usersSnapshot.Count == 0)
+        {
+            callback(0, verifiedTasks);
+            return;
+        }
 
-						    foreach (DocumentSnapshot document in tasksSnapshot.Documents)
-						    {
-							    if (document.GetValue<int>("Status") == 2)
-							    {
-								    continue;
-							    }
-							    
-							    Task newTask = new Task
-							    {
-								    Titel = document.GetValue<string>("Titel"),
-								    Emoji = document.GetValue<string>("Emoji"),
-								    Description = document.GetValue<string>("Description"),
-								    ImageFormat = document.GetValue<bool>("ImageFormat"),
-								    Status = document.GetValue<int>("Status"),
-								    Repeat = document.GetValue<int>("Repeat"),
-								    Answer = document.GetValue<string>("Answer")
-							    };
+        List<System.Threading.Tasks.Task> asyncTasks = new List<System.Threading.Tasks.Task>();
+        
+        foreach (DocumentSnapshot userDoc in usersSnapshot.Documents)
+        {
+            string userId = userDoc.Id;
+            Debug.Log($"Querying tasks for user: {userId}");
 
-							    // Add the task object to the list
-							    list.Add(newTask);
-						    }
-					    }
-					    else
-					    {
-						    Debug.LogError("Error getting tasks: " + tasksTask.Exception);
-					    }
-				    });
-			    }
-		    }
-		    else
-		    {
-			    Debug.LogError("Error getting users: " + usersTask.Exception);
-		    }
-	    });
-    }
+            // Fetch tasks for this user (async operation)
+            System.Threading.Tasks.Task t = firestore.Collection("Users").Document(userId).Collection("Tasks")
+                .WhereEqualTo("Status", 1)
+                .GetSnapshotAsync()
+                .ContinueWithOnMainThread(tasksTask =>
+                {
+                    if (tasksTask.IsCompletedSuccessfully)
+                    {
+                        QuerySnapshot taskSnapshot = tasksTask.Result;
+                        Debug.Log($"Found {taskSnapshot.Count} tasks with Status == 1 for user: {userId}");
+                        foreach (DocumentSnapshot document in taskSnapshot.Documents)
+                        { 
+	                        Task newTask = new Task
+                            {
+                                Titel = document.GetValue<string>("Titel"),
+                                Emoji = document.GetValue<string>("Emoji"),
+                                Description = document.GetValue<string>("Description"),
+                                ImageFormat = document.GetValue<bool>("ImageFormat"),
+                                Status = document.GetValue<int>("Status"),
+                                Repeat = document.GetValue<int>("Repeat"),
+                                Answer = document.GetValue<string>("Answer")
+                            };
+
+                            verifiedTasks.Add(newTask); // Add custom task to the list
+                            V_Users.Add(userId);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError($"Error getting tasks for user {userId}: " + tasksTask.Exception);
+                    }
+                });
+
+            asyncTasks.Add(t); // Add the async task (System.Threading.Tasks.Task) to the list
+        }
+
+        // Wait for all async tasks to complete before triggering the callback
+        System.Threading.Tasks.Task.WhenAll(asyncTasks).ContinueWithOnMainThread(_ =>
+        {
+            callback(verifiedTasks.Count, verifiedTasks); // All tasks completed, call the callback
+        });
+    });
+}
+
+
+
+
+	public void spawnVerifiedTasks()
+	{
+		V_tasks.Clear();
+		GameObject content = GameObject.FindWithTag("content");
+		ANSATContentHandler ch = content.GetComponent<ANSATContentHandler>();
+
+		GetTasksAwaitingVerification((taskAmount, taskList) =>
+		{
+
+			V_TaskData = taskList;
+			for (int i = 0; i < V_TaskData.Count; i++)
+			{
+				GameObject newTask = Instantiate(v_taskTemplate, content.transform);
+				
+				newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = V_TaskData[i].Titel;
+				newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = V_Users[i];
+
+				if (V_TaskData[i].ImageFormat)
+				{
+					newTask.transform.GetChild(2).gameObject.SetActive(true);
+					newTask.transform.GetChild(3).gameObject.SetActive(false);
+					newTask.transform.GetChild(4).gameObject.SetActive(false);
+					
+					// Convert base64 to byte array
+					byte[] imageBytes = Convert.FromBase64String(V_TaskData[i].Answer);
+
+					// Create a texture from the bytes
+					Texture2D texture = new Texture2D(2, 2); // The size will be replaced by LoadImage
+					if (!texture.LoadImage(imageBytes))
+					{
+						Debug.LogError("Failed to load image from base64 string.");
+						continue;
+					}
+					
+					// Create a Sprite from the texture
+					Sprite sprite = Sprite.Create(
+						texture,
+						new Rect(0, 0, texture.width, texture.height),
+						new Vector2(0.5f, 0.5f)
+					);
+					
+					// Assign the sprite to the Image component
+					Image img = newTask.transform.GetChild(2).GetComponent<Image>();
+					img.sprite = sprite;
+				}
+				else
+				{
+					newTask.transform.GetChild(2).gameObject.SetActive(false);
+					newTask.transform.GetChild(3).gameObject.SetActive(true);
+					newTask.transform.GetChild(4).gameObject.SetActive(true);
+					
+					TextMeshProUGUI answer = newTask.transform.GetChild(4).gameObject.GetComponent<TextMeshProUGUI>();
+					answer.text = V_TaskData[i].Answer;
+				}
+				V_tasks.Add(newTask);
+			}
+			
+			for (int i = 0; i < V_tasks.Count; i++)
+			{
+				Debug.Log(V_Users[i]);
+
+				Button accept = V_tasks[i].transform.GetChild(5).GetComponent<Button>();
+				
+				Button reject = V_tasks[i].transform.GetChild(6).GetComponent<Button>();
+
+				int index = i; // looks stupid but necessary due to scope
+				string storedUser = V_Users[index];
+				string storedTitle = V_TaskData[index].Titel;
+				accept.onClick.AddListener(delegate { acceptTask(storedUser, storedTitle); });
+				reject.onClick.AddListener(delegate { rejectTask(index); });
+				
+				Debug.Log("Spawned task with parameters: " + storedUser + " & " + storedTitle);
+				
+				ch.AddItem(V_tasks[i]);
+			}
+
+			Debug.Log("Verified tasks spawned.");
+		});
+	}
+
+	public async void acceptTask(string user, string taskTitle)
+	{
+		GameObject content = GameObject.FindWithTag("content");
+		ANSATContentHandler ch = content.GetComponent<ANSATContentHandler>();
+		CollectionReference colRef = firestore.Collection("Users").Document(user).Collection("Tasks");
+		
+		Query query = colRef.WhereEqualTo("Titel", taskTitle).Limit(1);
+		QuerySnapshot snapshot = await query.GetSnapshotAsync();
+		
+		var docs = snapshot.Documents.ToList();
+		
+		DocumentReference newRef = docs[0].Reference;
+	    
+		Dictionary<string, object> updates = new Dictionary<string, object>
+		{
+			{ "Status", 2 } 
+		};
+	    
+		await newRef.UpdateAsync(updates);
+
+		for (int i = 0; i < V_TaskData.Count(); i++)
+		{
+			if (V_Users[i] == user && V_TaskData[i].Titel == taskTitle)
+			{
+				V_Users.RemoveAt(i);
+				V_tasks.RemoveAt(i);
+				V_TaskData.RemoveAt(i);
+				ch.RemoveItem(i);
+				break;
+			}
+		}
+		Debug.Log("Task updated successfully!");
+	}
+
+	public void rejectTask(int taskIndex)
+	{
+		
+	}
+
+
+
+
     
     public void goToTask(int taskIndex)
     {
