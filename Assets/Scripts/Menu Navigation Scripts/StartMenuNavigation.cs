@@ -15,8 +15,10 @@ public class StartMenuNavigation : MonoBehaviour
     public GameObject startNoUser;
     public GameObject startUserExists;
     public TextMeshProUGUI welcomeWithName;
-    public TextMeshProUGUI myNameIsNot;
 
+    public TextMeshProUGUI nameDisplay1;
+    public TextMeshProUGUI nameDisplay2;
+    
     private FirestoreHandler fish;
 
     private string userName;
@@ -48,6 +50,14 @@ public class StartMenuNavigation : MonoBehaviour
 		public void changeWindow(int windowIndex)
         {
             transform.localPosition = new Vector3(pos * windowIndex, transform.localPosition.y, transform.localPosition.z);
+        }
+
+        public void setName(string n)
+        {
+			PlayerPrefs.SetString("Name", n);
+
+	        nameDisplay1.name = n;
+	        nameDisplay2.name = n;
         }
 
         public void checkCode()
