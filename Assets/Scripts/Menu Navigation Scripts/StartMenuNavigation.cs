@@ -12,12 +12,37 @@ public class StartMenuNavigation : MonoBehaviour
     public TMP_InputField beboerInput;
     public TMP_InputField ansatInput;
 
+    public GameObject startNoUser;
+    public GameObject startUserExists;
+    public TextMeshProUGUI welcomeWithName;
+    public TextMeshProUGUI myNameIsNot;
+
     private FirestoreHandler fish;
+
+    private string userName;
 
     void Start()
     {
 	    fish = GameObject.FindWithTag("dataManager")
 	                     .GetComponent<FirestoreHandler>();
+	    
+	    
+		//PlayerPrefs.SetString("Name", "Thomas");
+	    userName = PlayerPrefs.GetString("Name", "NoN");
+
+	    if (userName == "NoN")
+	    {
+		    // No user
+		    startNoUser.SetActive(true);
+		    startUserExists.SetActive(false);
+	    }
+	    else
+	    {
+		    // User exists
+		    startNoUser.SetActive(false);
+		    startUserExists.SetActive(true);
+		    welcomeWithName.text = "Velkommen tilbage" + "\n" + userName + "!";
+	    }
     }
     
 		public void changeWindow(int windowIndex)
@@ -41,6 +66,11 @@ public class StartMenuNavigation : MonoBehaviour
 	        }
         }
 
+        public void setRole(string role)
+        {
+	        PlayerPrefs.SetString("Role", role);
+        }
+
         public void goToMainScreen()
         {
 	        //fish.AddNewUser("Leif");
@@ -50,5 +80,19 @@ public class StartMenuNavigation : MonoBehaviour
         public void goToAnsatMainScreen()
         {
 	        SceneManager.LoadScene("ANSAT_MainScreen");
+        }
+
+        public void goToEitherMain()
+        {
+	        string role = PlayerPrefs.GetString("Role");
+
+	        if (role == "Beboer")
+	        {
+		        SceneManager.LoadScene("MainScreen");
+	        }
+	        else
+	        {
+		        SceneManager.LoadScene("ANSAT_MainScreen");
+	        }
         }
 }
