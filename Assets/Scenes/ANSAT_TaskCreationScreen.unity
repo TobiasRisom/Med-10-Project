@@ -465,6 +465,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 595124796}
+        m_TargetAssemblyTypeName: ANSATTaskScreenNavigation, Assembly-CSharp
+        m_MethodName: setRepetition
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: En Gang
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &134460751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1154,6 +1166,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 595124796}
+        m_TargetAssemblyTypeName: ANSATTaskScreenNavigation, Assembly-CSharp
+        m_MethodName: setUsers
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Alle
           m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &207053468
@@ -2232,6 +2256,11 @@ MonoBehaviour:
   status: {fileID: 149180806}
   usersToGetTask: {fileID: 129492875}
   howOftenToRepeatTask: {fileID: 854235611}
+  displays:
+  - {fileID: 938821447}
+  - {fileID: 129492875}
+  - {fileID: 1891069638}
+  - {fileID: 854235611}
   imageFormat: 0
 --- !u!1 &635206799
 GameObject:
@@ -2338,6 +2367,18 @@ MonoBehaviour:
           m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 595124796}
+        m_TargetAssemblyTypeName: ANSATTaskScreenNavigation, Assembly-CSharp
+        m_MethodName: setRepetition
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Ugentligt
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &635206802
@@ -5281,6 +5322,18 @@ MonoBehaviour:
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 595124796}
+        m_TargetAssemblyTypeName: ANSATTaskScreenNavigation, Assembly-CSharp
+        m_MethodName: setRepetition
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Dagligt
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1533130900

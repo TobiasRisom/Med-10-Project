@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
 using Toggle = UnityEngine.UI.Toggle;
@@ -32,6 +33,8 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	public TextMeshProUGUI status;
 	public TextMeshProUGUI usersToGetTask;
 	public TextMeshProUGUI howOftenToRepeatTask;
+
+	public List<TextMeshProUGUI> displays = new List<TextMeshProUGUI>();
 
 	public bool imageFormat;
 
@@ -193,5 +196,17 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	    fish.addTaskToAllUsers(newTask);
 
 	    SceneManager.LoadScene("ANSAT_MainScreen");
+    }
+
+    public void setUsers(string whoGetsIt)
+    {
+	    displays[0].text = whoGetsIt;
+	    displays[1].text = whoGetsIt;
+    }
+
+    public void setRepetition(string rep)
+    {
+	    displays[2].text = rep;
+	    displays[3].text = rep;
     }
 }
