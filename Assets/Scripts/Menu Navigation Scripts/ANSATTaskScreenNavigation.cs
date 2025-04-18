@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -189,7 +190,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 			    break;
 		    
 		    case Repetition.Weekly:
-			    newTask.Repeat = (((int)System.DateTime.Now.DayOfWeek + 6) % 7) + 2; // 2 = Monday, 3 = Tuesday, etc...
+			    newTask.Repeat = (((int)DateTime.Now.DayOfWeek + 6) % 7) + 2; // 2 = Monday, 3 = Tuesday, etc...
 			    break;
 	    }
 	    

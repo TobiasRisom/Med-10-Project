@@ -370,10 +370,6 @@ public class FirestoreHandler : MonoBehaviour
         });
     });
 }
-
-
-
-
 	public void spawnVerifiedTasks()
 	{
 		V_tasks.Clear();
@@ -563,6 +559,83 @@ public class FirestoreHandler : MonoBehaviour
 		    }
 	    });
     }
+
+ public void UpdateDailyAndWeeklyTasks(int today)
+{
+    V_Users.Clear();
+    List<Task> verifiedTasks = new List<Task>();
+
+    firestore.Collection("Users")
+             .GetSnapshotAsync()
+             .ContinueWithOnMainThread(usersTask =>
+             {
+                 if (!usersTask.IsCompletedSuccessfully)
+                 {
+                     Debug.LogError("Failed to get users: " + usersTask.Exception);
+                     return;
+                 }
+
+                 QuerySnapshot usersSnapshot = usersTask.Result;
+                 foreach (DocumentSnapshot userDoc in usersSnapshot.Documents)
+                 {
+                     string userId = userDoc.Id;
+                     Debug.Log($"Querying tasks for user: {userId}");
+
+                     // Fetch all tasks for this user
+                     var t = firestore.Collection("Users")
+                                      .Document(userId)
+                                      .Collection("Tasks")
+                                      .GetSnapshotAsync()
+                                      .ContinueWithOnMainThread(tasksTask =>
+                                      {
+                                          if (tasksTask.IsCompletedSuccessfully)
+                                          {
+                                              QuerySnapshot taskSnapshot = tasksTask.Result;
+
+                                              foreach (DocumentSnapshot taskDoc in taskSnapshot.Documents)
+                                              {
+                                                  if (taskDoc.TryGetValue("Status", out int status))
+                                                  {
+                                                      if (status == 2 || status == today)
+                                                      {
+                                                          // Update status to 0
+                                                          Dictionary<string, object> updates = new Dictionary<string, object>
+                                                          {
+                                                              { "Status", 0 }
+                                                          };
+
+                                                          firestore.Collection("Users")
+                                                                   .Document(userId)
+                                                                   .Collection("Tasks")
+                                                                   .Document(taskDoc.Id)
+                                                                   .UpdateAsync(updates)
+                                                                   .ContinueWithOnMainThread(updateTask =>
+                                                                   {
+                                                                       if (updateTask.IsCompletedSuccessfully)
+                                                                       {
+                                                                           Debug.Log($"Task {taskDoc.Id} for user {userId} updated to Status 0.");
+                                                                       }
+                                                                       else
+                                                                       {
+                                                                           Debug.LogError($"Failed to update task {taskDoc.Id} for user {userId}: {updateTask.Exception}");
+                                                                       }
+                                                                   });
+                                                      }
+                                                  }
+                                                  else
+                                                  {
+                                                      Debug.LogWarning($"Task {taskDoc.Id} for user {userId} has no 'Status' field.");
+                                                  }
+                                              }
+                                          }
+                                          else
+                                          {
+                                              Debug.LogError($"Error getting tasks for user {userId}: " + tasksTask.Exception);
+                                          }
+                                      });
+                 }
+             });
+}
     
     public async Task<Dictionary<string, string>> GetLeaderboard()
     {
