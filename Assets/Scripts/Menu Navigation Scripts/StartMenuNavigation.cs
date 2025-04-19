@@ -34,7 +34,7 @@ public class StartMenuNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 	    
 	    
-		PlayerPrefs.SetString("Name", "NoN");
+		//PlayerPrefs.SetString("Name", "NoN");
 	    userName = PlayerPrefs.GetString("Name", "NoN");
 
 	    if (userName == "NoN")
@@ -95,7 +95,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
 	        
 	        
-	        //fish.AddNewUser("Leif");
+	        fish.AddNewUser("Leif");
 	        SceneManager.LoadScene("MainScreen");
         }
 
@@ -107,11 +107,6 @@ public class StartMenuNavigation : MonoBehaviour
         public void goToEitherMain()
         {
 	        string role = PlayerPrefs.GetString("Role");
-	        
-	        if (isItUpdateTime())
-	        {
-		        UpdateTasks();
-	        }
 
 	        if (role == "Beboer")
 	        {
@@ -121,31 +116,5 @@ public class StartMenuNavigation : MonoBehaviour
 	        {
 		        SceneManager.LoadScene("ANSAT_MainScreen");
 	        }
-        }
-        
-        private Boolean isItUpdateTime()
-        {
-	        DateTime now = DateTime.Now;
-	        string updateTime = PlayerPrefs.GetString("UpdateTime");
-	    
-	        if (DateTime.TryParse(updateTime, out DateTime storedTime))
-	        {
-		        if (now >= storedTime)
-		        {
-			        // Update Time!
-			        return true;
-		        }
-	        }
-	        return false;
-        }
-
-        private void UpdateTasks()
-        {
-	        fish.UpdateDailyAndWeeklyTasks((((int)DateTime.Now.DayOfWeek + 6) % 7) + 2); // Monday = 2, Tuesday = 3, Wednesday = 4...
-	        
-	        // Change next update date to tomorrow
-	        DateTime tomorrow = DateTime.Now.Date.AddDays(1);
-	        DateTime nextUpdate = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 3, 0, 0);
-	        PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
         }
 }
