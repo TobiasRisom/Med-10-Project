@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using DG.Tweening;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -36,6 +37,9 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	public TextMeshProUGUI howOftenToRepeatTask;
 
 	public List<TextMeshProUGUI> displays = new List<TextMeshProUGUI>();
+	
+	private float tweenSpeed = 0.5f;
+	private Ease tweenEase = Ease.OutQuad;
 
 	public bool imageFormat;
 
@@ -78,7 +82,8 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 
 	public void changeWindow(int windowIndex)
 	{
-		transform.localPosition = new Vector3(pos * windowIndex, transform.localPosition.y, transform.localPosition.z);
+		float targetX = pos * windowIndex;
+		transform.DOLocalMoveX(targetX, tweenSpeed).SetEase(tweenEase);
 	}
 
 	public void setRepetitionParameter(int time) // 0 = Once, 1 = Daily, 2 = Weekly

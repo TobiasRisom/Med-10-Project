@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using TMPro;
 using Unity.Mathematics.Geometry;
 using UnityEngine;
@@ -23,18 +24,33 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	public GameObject userButtonPrefab;
 
 	public GameObject leaderboardText;
+
+	public GameObject noMoreTasks;
+	private GameObject content;
 	
 	string[] savedNames = { "", "", "", "", "", "", "" };
+	
+	private int pos = -1080;
+
+	private float tweenSpeed = 0.5f;
+	private Ease tweenEase = Ease.OutQuad;
 
     void Start()
     {
 	    fish = GameObject.FindWithTag("dataManager")
 	                     .GetComponent<FirestoreHandler>();
+
+	    content = GameObject.FindWithTag("content");
 	    
 	    fish.ScheduleManager();
 	    setUpUserButtons();
 	    fish.spawnVerifiedTasks();
 	    SetUpLeaderboard();
+    }
+
+    void Update()
+    {
+	    checkForNoMoreTasks();
     }
 
     public void ScheduleEditMode()
@@ -204,5 +220,16 @@ public class ANSATMainScreenNavigation : MonoBehaviour
     {
 	    fish.currentUserInfo = userName;
 	    SceneManager.LoadScene("ANSAT_UserOverviewScreen");
+    }
+    
+    public void changeWindow(int windowIndex)
+    {
+	    float targetX = pos * windowIndex;
+	    transform.DOLocalMoveX(targetX, tweenSpeed).SetEase(tweenEase);
+    }
+
+    private void checkForNoMoreTasks()
+    {
+	    noMoreTasks.SetActive(content.transform.childCount == 0);
     }
 }

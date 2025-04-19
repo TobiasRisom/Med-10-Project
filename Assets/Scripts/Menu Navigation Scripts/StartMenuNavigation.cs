@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,9 @@ public class StartMenuNavigation : MonoBehaviour
     public TextMeshProUGUI nameDisplay2;
     
     private FirestoreHandler fish;
+    
+    private float tweenSpeed = 0.5f;
+    private Ease tweenEase = Ease.OutQuad;
 
     private string userName;
 
@@ -48,10 +52,11 @@ public class StartMenuNavigation : MonoBehaviour
 	    }
     }
     
-		public void changeWindow(int windowIndex)
-        {
-            transform.localPosition = new Vector3(pos * windowIndex, transform.localPosition.y, transform.localPosition.z);
-        }
+	    public void changeWindow(int windowIndex)
+	    {
+		    float targetX = pos * windowIndex;
+		    transform.DOLocalMoveX(targetX, tweenSpeed).SetEase(tweenEase);
+	    }
 
         public void setName(string n)
         {
