@@ -16,6 +16,7 @@ TagManager:
   - V_Written
   - V_Image
   - content
+  - UserToggles
   layers:
   - Default
   - TransparentFX

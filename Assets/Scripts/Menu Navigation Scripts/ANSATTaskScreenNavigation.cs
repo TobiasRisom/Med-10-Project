@@ -39,11 +39,9 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 
 	public bool imageFormat;
 
-	public enum Users
-	{
-		All,
-		NotAll
-	}
+	private List<string> users = new List<string>();
+	public GameObject userToggleParent;
+	
 	private enum Repetition
 	{
 		Once,
@@ -51,13 +49,14 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 		Weekly
 	}
 	
-	private Users whichUsers;
 	private Repetition howOften;
 
 	void Start()
 	{
 		fish = GameObject.FindWithTag("dataManager")
 		                 .GetComponent<FirestoreHandler>();
+		
+		fish.SetUserToggles();
 	}
 
 	void Update()
@@ -76,25 +75,13 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 			return false;
 		}
 	}
-	
-    public void changeWindow(int windowIndex)
-    {
-	    transform.localPosition = new Vector3(pos * windowIndex, transform.localPosition.y, transform.localPosition.z);
-    }
 
-    public void setUsersParameter(bool all)
-    {
-	    if (all)
-	    {
-		    whichUsers = Users.All;
-	    }
-	    else
-	    {
-		    whichUsers = Users.NotAll;
-	    }
-    }
+	public void changeWindow(int windowIndex)
+	{
+		transform.localPosition = new Vector3(pos * windowIndex, transform.localPosition.y, transform.localPosition.z);
+	}
 
-    public void setRepetitionParameter(int time) // 0 = Once, 1 = Daily, 2 = Weekly
+	public void setRepetitionParameter(int time) // 0 = Once, 1 = Daily, 2 = Weekly
     {
 	    if (time == 0)
 	    {
@@ -110,6 +97,20 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	    }
     }
 
+	public void setUserAmount()
+	{
+		users.Clear();
+		foreach (RectTransform rectTransform in userToggleParent.transform)
+		{
+			Toggle toggle = rectTransform.gameObject.GetComponent<Toggle>();
+			if (toggle.isOn)
+			{
+				users.Add(toggle.GetComponentInChildren<TextMeshProUGUI>().text);
+				print("Added user: " + toggle.GetComponentInChildren<TextMeshProUGUI>().text);
+			}
+		}
+	}
+
     public void setTextFieldsToConfirm()
     {
 	    confirmTitle.text = inputTitle.text;
@@ -117,14 +118,9 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	    confirmDescription.text = inputDescription.text;
 	    answerFormat.text = inputText.isOn ? "T" : "P";
 	    status.text = "0";
-	    if (whichUsers == Users.All)
-	    {
-		    usersToGetTask.text = "Alle";
-	    }
-	    else
-	    {
-		    usersToGetTask.text = "Nogle";
-	    }
+
+	    usersToGetTask.text = users.Count + " beboere";
+
 
 	    if (howOften == Repetition.Once)
 	    {
@@ -194,20 +190,25 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 			    break;
 	    }
 	    
-	    fish.addTaskToAllUsers(newTask);
+	    fish.addTaskToUsers(newTask, users);
 
 	    SceneManager.LoadScene("ANSAT_MainScreen");
     }
 
-    public void setUsers(string whoGetsIt)
+    public void setUsers()
     {
-	    displays[0].text = whoGetsIt;
-	    displays[1].text = whoGetsIt;
+	    displays[0].text = users.Count + " beboere";
+	    displays[1].text = users.Count + " beboere";
     }
 
     public void setRepetition(string rep)
     {
 	    displays[2].text = rep;
 	    displays[3].text = rep;
+    }
+
+    public void GoBack()
+    {
+	    SceneManager.LoadScene("ANSAT_MainScreen");
     }
 }

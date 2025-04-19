@@ -46,11 +46,6 @@ public class StartMenuNavigation : MonoBehaviour
 		    startUserExists.SetActive(true);
 		    welcomeWithName.text = "Velkommen tilbage" + "\n" + userName + "!";
 	    }
-	    
-	    if (isItUpdateTime())
-	    {
-		    UpdateTasks();
-	    }
     }
     
 		public void changeWindow(int windowIndex)
@@ -107,6 +102,11 @@ public class StartMenuNavigation : MonoBehaviour
         public void goToEitherMain()
         {
 	        string role = PlayerPrefs.GetString("Role");
+	        
+	        if (isItUpdateTime())
+	        {
+		        UpdateTasks();
+	        }
 
 	        if (role == "Beboer")
 	        {

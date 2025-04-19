@@ -37,6 +37,8 @@ public class FirestoreHandler : MonoBehaviour
 	public List<GameObject> V_tasks;
 	public GameObject v_taskTemplate;
 	public List<String> V_Users = new List<String>();
+
+	public GameObject userToggle;
 	
 	
 	private void Awake()
@@ -514,13 +516,13 @@ public class FirestoreHandler : MonoBehaviour
 	    Debug.Log("Task updated successfully!");
     }
 
-    public void addTaskToAllUsers(Task newTask)
+    public void addTaskToUsers(Task newTask, List<string> users)
     {
 	    firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(userTask =>
 	    {
-		    if (userTask.IsFaulted || userTask.IsCanceled)
+		    if (!userTask.IsCompletedSuccessfully)
 		    {
-			    Debug.LogError("Error getting users: " + userTask.Exception);
+			    Debug.LogError("Task not completed");
 			    return;
 		    }
 
@@ -530,20 +532,24 @@ public class FirestoreHandler : MonoBehaviour
 		    {
 			    string userId = userDoc.Id;
 
+			    // Only add task if userId is in the provided list
+			    if (!users.Contains(userId))
+				    continue;
+
 			    // Convert Task object to dictionary
 			    Dictionary<string, object> taskData = new Dictionary<string, object>
 			    {
-				    { "Titel",newTask.Titel },
-				    { "Emoji",newTask.Emoji },
-				    { "Description",newTask.Description },
-				    { "ImageFormat",newTask.ImageFormat },
+				    { "Titel", newTask.Titel },
+				    { "Emoji", newTask.Emoji },
+				    { "Description", newTask.Description },
+				    { "ImageFormat", newTask.ImageFormat },
 				    { "Status", newTask.Status },
-				    {"Repeat", newTask.Repeat},
-				    {"Answer", newTask.Answer}
+				    { "Repeat", newTask.Repeat },
+				    { "Answer", newTask.Answer }
 			    };
 
-			    // Add task to each user's Tasks subcollection
-			    string taskId = $"Task_{System.DateTime.Now.ToString("dd-MM-yy-HH-mm-ss")}";
+			    // Add task to selected user's Tasks subcollection
+			    string taskId = $"Task_{DateTime.Now.ToString("dd-MM-yy-HH-mm-ss")}";
 			    DocumentReference taskRef = firestore.Collection("Users").Document(userId).Collection("Tasks").Document(taskId);
 			    taskRef.SetAsync(taskData).ContinueWithOnMainThread(t =>
 			    {
@@ -661,5 +667,35 @@ public class FirestoreHandler : MonoBehaviour
 		                   }
 	                   });
 	    return leaderboard;
+    }
+
+    public void SetUserToggles()
+    {
+	    GameObject layout = GameObject.FindWithTag("UserToggles");
+	    firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(task =>
+	    {
+		    if (task.IsFaulted || task.IsCanceled)
+		    {
+			    Debug.LogError("Failed to retrieve users from Firestore.");
+			    return;
+		    }
+
+		    QuerySnapshot snapshot = task.Result;
+		    foreach (DocumentSnapshot document in snapshot.Documents)
+		    {
+			    string userId = document.Id;
+			    GameObject toggleObj = Instantiate(userToggle, layout.transform);
+			    TextMeshProUGUI label = toggleObj.GetComponentInChildren<TextMeshProUGUI>();
+
+			    if (label != null)
+			    {
+				    label.text = userId;
+			    }
+			    else
+			    {
+				    Debug.LogWarning("Toggle prefab missing Text component in children.");
+			    }
+		    }
+	    });
     }
 }

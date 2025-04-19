@@ -1868,7 +1868,6 @@ GameObject:
   - component: {fileID: 1125500945}
   - component: {fileID: 1125500947}
   - component: {fileID: 1125500946}
-  - component: {fileID: 1125500948}
   m_Layer: 5
   m_Name: Week Overview Panel
   m_TagString: Untagged
@@ -1936,26 +1935,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1125500944}
   m_CullTransparentMesh: 1
---- !u!114 &1125500948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1125500944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 639dd48897b4d2c48938036cb27e39c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textFields:
-  - {fileID: 926687832}
-  - {fileID: 1232199191}
-  - {fileID: 579345609}
-  - {fileID: 1612547587}
-  - {fileID: 1254530733}
-  - {fileID: 1291119833}
-  - {fileID: 433807750}
 --- !u!1 &1148125326
 GameObject:
   m_ObjectHideFlags: 0
