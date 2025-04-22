@@ -256,6 +256,9 @@ public class FirestoreHandler : MonoBehaviour
 	    Debug.Log("Running SpawnTasks");
         tasks.Clear(); // Reset list so we don't spawn missing objects
         GameObject mainScreen = GameObject.FindWithTag("mainScreen");
+        
+        GameObject content = GameObject.FindWithTag("content");
+        ContentHandler ch = content.GetComponent<ContentHandler>();
 
         // Get both task count and task data in a single call
         GetTasksAndCount(user, (taskAmount, taskList) =>
@@ -265,16 +268,11 @@ public class FirestoreHandler : MonoBehaviour
             // Store the tasks in TaskData
             TaskData = taskList;
 
-            int buffer = -300;
-
             // Instantiate a GameObject for each task and add it to the screen
             for (int i = 0; i < TaskData.Count; i++)
             {
                 // Instantiate the task GameObject
-                GameObject newTask = Instantiate(taskTemplate, mainScreen.transform, false);
-
-                // Set task's position
-                newTask.transform.localPosition = new Vector3(0, buffer * i, 0);
+                GameObject newTask = Instantiate(taskTemplate, content.transform, false);
                 
                 newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = TaskData[i].Titel;
                 newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = TaskData[i].Emoji;
@@ -293,6 +291,8 @@ public class FirestoreHandler : MonoBehaviour
 
 	            int index = i; // looks stupid but necessary due to scope
 	            btn.onClick.AddListener(delegate { goToTask(index); });
+	            
+	            ch.AddItem(tasks[i]);
             }
 
             Debug.Log("Tasks spawned");
@@ -376,7 +376,7 @@ public class FirestoreHandler : MonoBehaviour
 	{
 		V_tasks.Clear();
 		GameObject content = GameObject.FindWithTag("content");
-		ANSATContentHandler ch = content.GetComponent<ANSATContentHandler>();
+		ContentHandler ch = content.GetComponent<ContentHandler>();
 
 		GetTasksAwaitingVerification((taskAmount, taskList) =>
 		{
@@ -455,7 +455,7 @@ public class FirestoreHandler : MonoBehaviour
 	public async void acceptOrRejectTask(string user, string taskTitle, int status)
 	{
 		GameObject content = GameObject.FindWithTag("content");
-		ANSATContentHandler ch = content.GetComponent<ANSATContentHandler>();
+		ContentHandler ch = content.GetComponent<ContentHandler>();
 		CollectionReference colRef = firestore.Collection("Users").Document(user).Collection("Tasks");
 		
 		Query query = colRef.WhereEqualTo("Titel", taskTitle).Limit(1);
@@ -567,9 +567,8 @@ public class FirestoreHandler : MonoBehaviour
     }
 
  public void UpdateDailyAndWeeklyTasks(int today)
-{
-    V_Users.Clear();
-    List<Task> verifiedTasks = new List<Task>();
+ {
+	 V_Users.Clear();
 
     firestore.Collection("Users")
              .GetSnapshotAsync()

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
 
-public class ANSATContentHandler : MonoBehaviour
+public class ContentHandler : MonoBehaviour
 {
 	public float spacing = 30f;
 	public float animationDuration = 0.3f;
