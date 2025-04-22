@@ -17,6 +17,8 @@ TagManager:
   - V_Image
   - content
   - UserToggles
+  - ScreenContentHolder
+  - ZoomInPanel
   layers:
   - Default
   - TransparentFX

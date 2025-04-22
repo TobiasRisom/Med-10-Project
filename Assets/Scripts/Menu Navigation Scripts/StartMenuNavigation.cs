@@ -73,11 +73,11 @@ public class StartMenuNavigation : MonoBehaviour
 
 	        if (userCode == code)
 	        {
-		        changeWindow(4);
+		        changeWindow(5);
 	        }
 	        else
 	        {
-		        changeWindow(5);
+		        changeWindow(6);
 		        codeInput.text = "";
 	        }
         }

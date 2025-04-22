@@ -433,9 +433,9 @@ public class FirestoreHandler : MonoBehaviour
 			{
 				Debug.Log(V_Users[i]);
 
-				Button accept = V_tasks[i].transform.GetChild(5).GetComponent<Button>();
+				Button accept = V_tasks[i].transform.GetChild(6).GetComponent<Button>();
 				
-				Button reject = V_tasks[i].transform.GetChild(6).GetComponent<Button>();
+				Button reject = V_tasks[i].transform.GetChild(7).GetComponent<Button>();
 
 				int index = i; // looks stupid but necessary due to scope
 				string storedUser = V_Users[index];

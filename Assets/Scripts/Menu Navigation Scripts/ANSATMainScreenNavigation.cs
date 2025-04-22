@@ -35,6 +35,8 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	private float tweenSpeed = 0.5f;
 	private Ease tweenEase = Ease.OutQuad;
 
+	public GameObject ZoomInPanel;
+
     void Start()
     {
 	    fish = GameObject.FindWithTag("dataManager")
@@ -51,6 +53,19 @@ public class ANSATMainScreenNavigation : MonoBehaviour
     void Update()
     {
 	    checkForNoMoreTasks();
+    }
+
+    public void ZoomOut()
+    {
+	    ZoomInPanel.SetActive(false);
+    }
+
+    public void UpdateEverything()
+    {
+	    fish.ScheduleManager();
+	    setUpUserButtons();
+	    fish.spawnVerifiedTasks();
+	    SetUpLeaderboard();
     }
 
     public void ScheduleEditMode()

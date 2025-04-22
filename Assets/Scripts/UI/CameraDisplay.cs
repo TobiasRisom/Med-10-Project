@@ -16,13 +16,13 @@ public class CameraDisplay : MonoBehaviour
 
     void Start()
     {
-	    fish = GameObject.FindWithTag("dataManager")
-	                     .GetComponent<FirestoreHandler>();
+        fish = GameObject.FindWithTag("dataManager")
+                         .GetComponent<FirestoreHandler>();
 
-	    if (fish.TaskData[fish.currentTask].ImageFormat)
-	    {
-		    SetupCamera();
-	    }
+        if (fish.TaskData[fish.currentTask].ImageFormat)
+        {
+            SetupCamera();
+        }
     }
 
     private void SetupCamera()
@@ -38,9 +38,10 @@ public class CameraDisplay : MonoBehaviour
         string selectedCam = devices[0].name;
 
 #if !UNITY_EDITOR
+        // Try selecting the back-facing camera on Android
         foreach (var device in devices)
         {
-            if (!device.isFrontFacing)
+            if (!device.isFrontFacing)  // Prefer back camera
             {
                 selectedCam = device.name;
                 break;
@@ -48,11 +49,34 @@ public class CameraDisplay : MonoBehaviour
         }
 #endif
 
-        webCamTexture = new WebCamTexture(selectedCam, Screen.width, Screen.height);
+        // Debugging: log the selected camera
+        Debug.Log("Selected camera: " + selectedCam);
+
+        // Create a new WebCamTexture with a resolution that is reasonable for mobile devices
+        webCamTexture = new WebCamTexture(selectedCam, 640, 480); // 640x480 resolution
         cameraFeed.texture = webCamTexture;
         cameraFeed.material.mainTexture = webCamTexture;
-        webCamTexture.Play();
-        
+
+        // Start the camera feed
+        if (webCamTexture != null)
+        {
+            webCamTexture.Play();
+
+            // Debugging: Check if the WebCamTexture is playing
+            if (webCamTexture.isPlaying)
+            {
+                Debug.Log("WebCamTexture is playing.");
+            }
+            else
+            {
+                Debug.LogError("WebCamTexture failed to start playing.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Failed to initialize WebCamTexture.");
+        }
+
         captureButton.onClick.AddListener(CapturePhoto);
         retakeButton.onClick.AddListener(RetakePhoto);
     }
@@ -60,8 +84,12 @@ public class CameraDisplay : MonoBehaviour
     void CapturePhoto()
     {
         if (webCamTexture == null || !webCamTexture.isPlaying)
+        {
+            Debug.LogWarning("WebCamTexture is not playing or initialized.");
             return;
+        }
 
+        // Create a photo from the WebCamTexture
         photo = new Texture2D(webCamTexture.width, webCamTexture.height);
         photo.SetPixels(webCamTexture.GetPixels());
         photo.Apply();
