@@ -94,6 +94,7 @@ public class PetForSaleScript : MonoBehaviour
 	    buyWindow.SetActive(false);
 	    
 	    GameObject.FindWithTag("PanelHolder").GetComponent<MainScreenNavigation>().setDollarsText();
+	    PlayerPrefs.Save();
     }
 
     private void setCurrentPetBought()

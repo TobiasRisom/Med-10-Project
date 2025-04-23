@@ -210,7 +210,7 @@ public class FirestoreHandler : MonoBehaviour
 		return userNames;
 	}
 	
-    public void GetTasksAndCount(string user, System.Action<int, List<Task>> callback)
+    public void GetTasksAndCount(string user, System.Action<int, List<Task>, List<DocumentSnapshot>> callback)
     {
         var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks").OrderBy(FieldPath.DocumentId);
 
@@ -242,12 +242,12 @@ public class FirestoreHandler : MonoBehaviour
                 }
 
                 // Pass both the task count and the task list to the callback
-                callback(snapshot.Documents.Count(), taskList);
+                callback(snapshot.Documents.Count(), taskList, snapshot.Documents.ToList());
             }
             else
             {
                 Debug.LogError("Error fetching tasks: " + task.Exception);
-                callback(0, new List<Task>()); // Return 0 and an empty list on error
+                callback(0, new List<Task>(), new List<DocumentSnapshot>()); // Return 0 and an empty list on error
             }
         });
     }
@@ -261,15 +261,32 @@ public class FirestoreHandler : MonoBehaviour
         GameObject content = GameObject.FindWithTag("content");
         ContentHandler ch = content.GetComponent<ContentHandler>();
 
-        // Get both task count and task data in a single call
-        GetTasksAndCount(user, (taskAmount, taskList) =>
+        GetTasksAndCount(user, (taskAmount, taskList, documentSnapshots) =>
         {
-            Debug.Log("Task amount: " + taskAmount);
+	        Debug.Log("Task amount: " + taskAmount);
+	        TaskData = taskList;
 
-            // Store the tasks in TaskData
-            TaskData = taskList;
+	        for (int i = 0; i < TaskData.Count; i++)
+	        {
+		        // Reward logic
+		        if (TaskData[i].Status == 2)
+		        {
+			        int currentDollars = PlayerPrefs.GetInt("Dollars", 0);
+			        PlayerPrefs.SetInt("Dollars", currentDollars + 100);
+			        PlayerPrefs.Save();
 
-            // Instantiate a GameObject for each task and add it to the screen
+			        TaskData[i].Status = 3;
+
+			        // Update status in Firestore using the correct document ID
+			        firestore.Collection("Users")
+			                 .Document(user)
+			                 .Collection("Tasks")
+			                 .Document(documentSnapshots[i].Id)
+			                 .UpdateAsync("Status", 3);
+		        }
+	        }
+
+	        // Instantiate a GameObject for each task and add it to the screen
             for (int i = 0; i < TaskData.Count; i++)
             {
                 // Instantiate the task GameObject

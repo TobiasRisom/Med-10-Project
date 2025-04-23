@@ -46,7 +46,6 @@ public class MainScreenNavigation : MonoBehaviour
 	    }
 
 	    petName.text = PlayerPrefs.GetString("PetName");
-	    PlayerPrefs.SetInt("Dollars", 1500);
 	    setDollarsText();
     }
 

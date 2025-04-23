@@ -27,7 +27,7 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 
     public void ShowUserInfo(string userName)
     {
-	    fish.GetTasksAndCount(userName, (taskCount, taskList) =>
+	    fish.GetTasksAndCount(userName, (taskCount, taskList, document) =>
 	    {
 		    foreach (var task in taskList)
 		    {
