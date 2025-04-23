@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class PetAnimation : MonoBehaviour
 {
-	public List<AnimatorController> animCon = new List<AnimatorController>();
+	public List<Animator> animCon = new List<Animator>();
 	
     void Start()
     {
 	    GetComponent<Animator>()
-		    .runtimeAnimatorController = animCon[PlayerPrefs.GetInt("Pet")];
+		    .runtimeAnimatorController = animCon[PlayerPrefs.GetInt("Pet")].runtimeAnimatorController;
     }
 
     // Update is called once per frame

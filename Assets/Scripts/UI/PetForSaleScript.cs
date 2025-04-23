@@ -34,12 +34,12 @@ public class PetForSaleScript : MonoBehaviour
 	    buyWindow.transform.GetChild(4)
 	             .GetComponent<Animator>()
 	             .runtimeAnimatorController = currentPet.GetComponent<PetAnimation>()
-	                                                    .animCon[PlayerPrefs.GetInt("Pet")];
+	                                                    .animCon[PlayerPrefs.GetInt("Pet")].runtimeAnimatorController;
 
 	    buyWindow.transform.GetChild(5)
 	             .GetComponent<Animator>()
 	             .runtimeAnimatorController = currentPet.GetComponent<PetAnimation>()
-	                                                    .animCon[PetIndex];
+	                                                    .animCon[PetIndex].runtimeAnimatorController;
 	    if (PlayerPrefs.GetInt("Dollars") > PetCost)
 	    {
 		    buyWindow.transform.GetChild(6)
@@ -82,7 +82,7 @@ public class PetForSaleScript : MonoBehaviour
 	    PlayerPrefs.SetInt("Dollars", purchase - PetCost);
 	    
 	    currentPet.GetComponent<Animator>()
-	              .runtimeAnimatorController = currentPet.GetComponent<PetAnimation>().animCon[PlayerPrefs.GetInt("Pet")];
+	              .runtimeAnimatorController = currentPet.GetComponent<PetAnimation>().animCon[PlayerPrefs.GetInt("Pet")].runtimeAnimatorController;
 	    
 	    transform.GetChild(0).gameObject.SetActive(false);
 	    transform.GetChild(1).gameObject.SetActive(false);
