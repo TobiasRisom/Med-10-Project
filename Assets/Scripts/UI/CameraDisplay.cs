@@ -61,6 +61,23 @@ public class CameraDisplay : MonoBehaviour
         if (webCamTexture != null)
         {
             webCamTexture.Play();
+            
+#if !UNITY_EDITOR // Rotate camera feed
+        int rotation = webCamTexture.videoRotationAngle;
+        bool isMirrored = webCamTexture.videoVerticallyMirrored;
+
+        // Apply rotation to the feed (camera preview)
+        cameraFeed.rectTransform.localEulerAngles = new Vector3(0, 0, -rotation);
+
+        if (isMirrored)
+        {
+            cameraFeed.rectTransform.localScale = new Vector3(1, -1, 1);
+        }
+        else
+        {
+            cameraFeed.rectTransform.localScale = Vector3.one;
+        }
+#endif
 
             // Debugging: Check if the WebCamTexture is playing
             if (webCamTexture.isPlaying)
@@ -93,6 +110,35 @@ public class CameraDisplay : MonoBehaviour
         photo = new Texture2D(webCamTexture.width, webCamTexture.height);
         photo.SetPixels(webCamTexture.GetPixels());
         photo.Apply();
+        
+#if !UNITY_EDITOR
+    // Handle the final image rotation based on the webCamTexture's videoRotationAngle
+    int rotation = webCamTexture.videoRotationAngle;
+
+    // Apply rotation based on the camera feed angle
+    switch (rotation)
+    {
+        case 0:
+            // No rotation needed, already upright
+            break;
+
+        case 90:
+            // 90 degrees counterclockwise, so we rotate 90 degrees clockwise
+            photo = RotateTexture(photo, clockwise: false);
+            break;
+
+        case 180:
+            // 180 degrees (upside down), so we rotate 180 degrees
+            photo = RotateTexture(photo, clockwise: true);
+            photo = RotateTexture(photo, clockwise: true);  // Apply 180-degree rotation
+            break;
+
+        case 270:
+            // 270 degrees counterclockwise (equivalent to 90 degrees clockwise), so rotate 90 degrees counterclockwise
+            photo = RotateTexture(photo, clockwise: true);
+            break;
+    }
+#endif
 
         capturedImage.texture = photo;
         capturedImage.gameObject.SetActive(true);
@@ -111,4 +157,31 @@ public class CameraDisplay : MonoBehaviour
         confirmButton.gameObject.SetActive(false);
         retakeButton.gameObject.SetActive(false);
     }
+    
+    Texture2D RotateTexture(Texture2D original, bool clockwise = true)
+    {
+	    int width = original.width;
+	    int height = original.height;
+
+	    Texture2D rotated = new Texture2D(height, width);
+	    Color32[] originalPixels = original.GetPixels32();
+	    Color32[] rotatedPixels = new Color32[originalPixels.Length];
+
+	    int x, y;
+	    for (int i = 0; i < originalPixels.Length; ++i)
+	    {
+		    x = i % width;
+		    y = i / width;
+
+		    int newX = clockwise ? height - y - 1 : y;
+		    int newY = clockwise ? x : width - x - 1;
+
+		    rotatedPixels[newY * height + newX] = originalPixels[i];
+	    }
+
+	    rotated.SetPixels32(rotatedPixels);
+	    rotated.Apply();
+	    return rotated;
+    }
+
 }

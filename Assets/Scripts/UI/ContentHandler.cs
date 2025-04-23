@@ -34,24 +34,27 @@ public class ContentHandler : MonoBehaviour
 
 	void LayoutItems()
 	{
-		float h = GetComponent<RectTransform>()
-		                   .rect.height;
-		float yOffset = -(h / 2) + 125;
+		float yOffset = 140f;
+		float contentHeight = 0f;
 
 		for (int i = 0; i < elements.Count; i++)
 		{
 			RectTransform rt = elements[i];
-			rt.DOKill(); // Stop ongoing tweens
+			rt.DOKill();
 
-			// Animate top to bottom using delay
-			float delay = i * 0.03f; // tweak this for faster/slower cascade
+			float delay = i * 0.03f;
 
-			Vector2 targetPos = new Vector2(rt.anchoredPosition.x, -yOffset);
-			rt.DOAnchorPos(targetPos, animationDuration)
+			Vector3 targetLocalPos = new Vector3(0f, -yOffset, 0f);
+			rt.DOLocalMove(targetLocalPos, animationDuration)
 			  .SetEase(Ease.OutCubic)
 			  .SetDelay(delay);
 
 			yOffset += rt.sizeDelta.y + spacing;
+			contentHeight += rt.sizeDelta.y + spacing;
 		}
+
+		// Resize content area
+		RectTransform contentRT = GetComponent<RectTransform>();
+		contentRT.sizeDelta = new Vector2(contentRT.sizeDelta.x, contentHeight);
 	}
 }

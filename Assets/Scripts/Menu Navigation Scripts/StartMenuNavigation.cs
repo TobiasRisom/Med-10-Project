@@ -58,12 +58,22 @@ public class StartMenuNavigation : MonoBehaviour
 		    transform.DOLocalMoveX(targetX, tweenSpeed).SetEase(tweenEase);
 	    }
 
-        public void setName(string n)
+        public void setName(bool beboer)
         {
+	        string n = "";
+	        if (beboer)
+	        {
+		        n = beboerInput.text;
+	        }
+	        else
+	        {
+		        n = ansatInput.text;
+	        }
+	        
 			PlayerPrefs.SetString("Name", n);
 
-	        nameDisplay1.name = n;
-	        nameDisplay2.name = n;
+			nameDisplay1.text = n + "!";
+			nameDisplay2.text = n + "!";
         }
 
         public void checkCode()
