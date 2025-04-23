@@ -158,7 +158,8 @@ public class FirestoreHandler : MonoBehaviour
 					     // Data for new user
 					     var data = new Dictionary<string, object>
 					     {
-						     {"Name", newUserName}
+						     {"Name", newUserName},
+						     {"Points", 0}
 					     };
 					     
 					     // Add the new user data 
@@ -471,6 +472,21 @@ public class FirestoreHandler : MonoBehaviour
 		};
 	    
 		await newRef.UpdateAsync(updates);
+		
+		if (status == 2)
+		{
+			DocumentReference userRef = firestore.Collection("Users").Document(user);
+			DocumentSnapshot userSnapshot = await userRef.GetSnapshotAsync();
+
+			if (userSnapshot.Exists && userSnapshot.TryGetValue("Points", out int currentPoints))
+			{
+				int newPoints = currentPoints + 100;
+				await userRef.UpdateAsync(new Dictionary<string, object>
+				{
+					{ "Points", newPoints }
+				});
+			}
+		}
 
 		for (int i = 0; i < V_TaskData.Count(); i++)
 		{
