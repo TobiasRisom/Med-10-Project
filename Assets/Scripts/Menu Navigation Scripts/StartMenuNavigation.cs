@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -27,6 +28,8 @@ public class StartMenuNavigation : MonoBehaviour
     private Ease tweenEase = Ease.OutQuad;
 
     private string userName;
+    
+    public List<Toggle> toggles;
 
     void Start()
     {
@@ -34,7 +37,7 @@ public class StartMenuNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 	    
 	    
-		//PlayerPrefs.SetString("Name", "NoN");
+		PlayerPrefs.SetString("Name", "NoN");
 	    userName = PlayerPrefs.GetString("Name", "NoN");
 
 	    if (userName == "NoN")
@@ -49,6 +52,11 @@ public class StartMenuNavigation : MonoBehaviour
 		    startNoUser.SetActive(false);
 		    startUserExists.SetActive(true);
 		    welcomeWithName.text = "Velkommen tilbage" + "\n" + userName + "!";
+	    }
+	    
+	    foreach (var toggle in toggles)
+	    {
+		    toggle.onValueChanged.AddListener((isOn) => OnToggleChanged(toggle, isOn));
 	    }
     }
     
@@ -83,11 +91,11 @@ public class StartMenuNavigation : MonoBehaviour
 
 	        if (userCode == code)
 	        {
-		        changeWindow(5);
+		        changeWindow(6);
 	        }
 	        else
 	        {
-		        changeWindow(6);
+		        changeWindow(7);
 		        codeInput.text = "";
 	        }
         }
@@ -105,7 +113,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
 	        
 	        
-	        fish.AddNewUser("Leif");
+	        fish.AddNewUser(PlayerPrefs.GetString("Name"));
 	        SceneManager.LoadScene("MainScreen");
         }
 
@@ -125,6 +133,21 @@ public class StartMenuNavigation : MonoBehaviour
 	        else
 	        {
 		        SceneManager.LoadScene("ANSAT_MainScreen");
+	        }
+        }
+        
+        void OnToggleChanged(Toggle changedToggle, bool isOn)
+        {
+	        if (!isOn)
+		        return; 
+
+	        // Turn off all others
+	        foreach (var toggle in toggles)
+	        {
+		        if (toggle != changedToggle)
+		        {
+			        toggle.isOn = false;
+		        }
 	        }
         }
 }
