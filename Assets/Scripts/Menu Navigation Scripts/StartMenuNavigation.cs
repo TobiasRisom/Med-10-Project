@@ -31,6 +31,8 @@ public class StartMenuNavigation : MonoBehaviour
     
     public List<Toggle> toggles;
 
+    public TMP_InputField petName;
+
     void Start()
     {
 	    fish = GameObject.FindWithTag("dataManager")
@@ -54,7 +56,7 @@ public class StartMenuNavigation : MonoBehaviour
 		    welcomeWithName.text = "Velkommen tilbage" + "\n" + userName + "!";
 	    }
 	    
-	    foreach (var toggle in toggles)
+	    foreach (Toggle toggle in toggles)
 	    {
 		    toggle.onValueChanged.AddListener((isOn) => OnToggleChanged(toggle, isOn));
 	    }
@@ -82,6 +84,20 @@ public class StartMenuNavigation : MonoBehaviour
 
 			nameDisplay1.text = n + "!";
 			nameDisplay2.text = n + "!";
+        }
+
+        public void setPet()
+        {
+	        PlayerPrefs.SetString("PetName", petName.text);
+	        for (int i = 0; i < toggles.Count; i++)
+	        {
+		        if (toggles[i].isOn)
+		        {
+			        PlayerPrefs.SetInt("Pet", i);
+			        return;
+		        }
+	        }
+	        PlayerPrefs.SetInt("Pet", 0);
         }
 
         public void checkCode()

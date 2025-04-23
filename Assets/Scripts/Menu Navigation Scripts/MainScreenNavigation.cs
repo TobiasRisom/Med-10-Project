@@ -15,6 +15,10 @@ public class MainScreenNavigation : MonoBehaviour
 
 	private float tweenSpeed = 0.5f;
 	private Ease tweenEase = Ease.OutQuad;
+
+	public Image pet;
+
+	public TextMeshProUGUI petName;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,6 +33,8 @@ public class MainScreenNavigation : MonoBehaviour
 	    {
 		    UpdateTasks();
 	    }
+
+	    petName.text = PlayerPrefs.GetString("PetName");
     }
     
     public void changeWindow(int windowIndex)
