@@ -127,6 +127,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        DateTime tomorrow = DateTime.Now.Date.AddDays(1);
 	        DateTime nextUpdate = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 3, 0, 0);
 	        PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
+	        PlayerPrefs.SetInt("Dollars", 0);
 	        
 	        
 	        fish.AddNewUser(PlayerPrefs.GetString("Name"));

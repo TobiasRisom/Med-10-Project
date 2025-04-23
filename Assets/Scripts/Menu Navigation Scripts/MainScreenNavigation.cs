@@ -25,6 +25,12 @@ public class MainScreenNavigation : MonoBehaviour
 	private Color darkStripe;
 	[SerializeField]
 	private Color lightStripe;
+
+	[SerializeField]
+	private TextMeshProUGUI ØGDollarText1;
+
+	[SerializeField]
+	private TextMeshProUGUI ØGDollarText2;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -40,6 +46,14 @@ public class MainScreenNavigation : MonoBehaviour
 	    }
 
 	    petName.text = PlayerPrefs.GetString("PetName");
+	    PlayerPrefs.SetInt("Dollars", 1500);
+	    setDollarsText();
+    }
+
+    public void setDollarsText()
+    {
+	    ØGDollarText1.text = "Du har:\n" + PlayerPrefs.GetInt("Dollars") + " ØG Dollars";
+	    ØGDollarText2.text = "Du har:\n" + PlayerPrefs.GetInt("Dollars") + " ØG Dollars";
     }
     
     public void changeWindow(int windowIndex)

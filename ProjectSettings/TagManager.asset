@@ -19,6 +19,10 @@ TagManager:
   - UserToggles
   - ScreenContentHolder
   - ZoomInPanel
+  - PetShopPanel
+  - Pet
+  - PetForSale
+  - PanelHolder
   layers:
   - Default
   - TransparentFX
