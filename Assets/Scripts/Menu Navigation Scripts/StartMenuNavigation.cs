@@ -94,10 +94,10 @@ public class StartMenuNavigation : MonoBehaviour
 		        if (toggles[i].isOn)
 		        {
 			        PlayerPrefs.SetInt("Pet", i);
+			        changeWindow(4);
 			        return;
 		        }
 	        }
-	        PlayerPrefs.SetInt("Pet", 0);
         }
 
         public void checkCode()
