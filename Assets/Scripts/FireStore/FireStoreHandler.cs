@@ -58,6 +58,9 @@ public class FirestoreHandler : MonoBehaviour
 				           // Get the instance of Firebase associated with this project
 				           FirebaseApp app = FirebaseApp.DefaultInstance;
 				           firestore = FirebaseFirestore.GetInstance(app);
+                           
+                           	Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
+                           	Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
 				           
 				           // Successful initialization
 				           Debug.Log("FireStore Initialized!");
@@ -68,9 +71,6 @@ public class FirestoreHandler : MonoBehaviour
 				           Debug.LogError("Firebase was not successfully initialized.");
 			           }
 		           });
-		
-		Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
-		Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
 	}
 	
 	public void OnTokenReceived(object sender, Firebase.Messaging.TokenReceivedEventArgs token) {
