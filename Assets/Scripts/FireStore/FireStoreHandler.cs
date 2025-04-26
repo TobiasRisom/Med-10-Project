@@ -13,7 +13,6 @@ using UnityEngine.UI;
 public class FirestoreHandler : MonoBehaviour
 {
 	private FirebaseFirestore firestore;
-	public string username = "Leif";
 	
 	public int currentTask;
 	public string currentUserInfo;

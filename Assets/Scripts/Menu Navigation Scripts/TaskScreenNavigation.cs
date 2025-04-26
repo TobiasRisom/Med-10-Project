@@ -88,7 +88,7 @@ public class TaskScreenNavigation : MonoBehaviour
 
     public void writtenAnswerConfirmed()
     {
-		fish.submitTask(fish.username, finalUserAnswer.text);
+		fish.submitTask(PlayerPrefs.GetString("Name"), finalUserAnswer.text);
 		SceneManager.LoadScene("MainScreen");
     }
     
@@ -101,7 +101,7 @@ public class TaskScreenNavigation : MonoBehaviour
 		    int fileSizeBytes = base64Image.Length;
 		    float fileSizeKB = fileSizeBytes / 1024f;
 		    
-		    fish.submitTask(fish.username, base64Image);
+		    fish.submitTask(PlayerPrefs.GetString("Name"), base64Image);
 		    SceneManager.LoadScene("MainScreen");
 	    }
     }

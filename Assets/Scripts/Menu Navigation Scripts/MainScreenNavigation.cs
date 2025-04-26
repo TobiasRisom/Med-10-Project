@@ -38,7 +38,7 @@ public class MainScreenNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 	    
 	    fish.ScheduleManager();
-	    fish.spawnTasks(fish.username);
+	    fish.spawnTasks(PlayerPrefs.GetString("Name"));
 	    
 	    if (isItUpdateTime())
 	    {

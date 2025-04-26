@@ -1605,7 +1605,7 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_GlobalFontAsset: {fileID: 11400000, guid: 4222bdb8a96e91f4ab8ae775a44bae01, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
   m_KeepTextSelectionVisible: 0
@@ -2020,8 +2020,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Skriv dit navn...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 894c8e8496687b04faee0c5c42614fb1, type: 2}
-  m_sharedMaterial: {fileID: -7417706368346789892, guid: 894c8e8496687b04faee0c5c42614fb1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4222bdb8a96e91f4ab8ae775a44bae01, type: 2}
+  m_sharedMaterial: {fileID: 5308252105258802385, guid: 4222bdb8a96e91f4ab8ae775a44bae01, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6967,7 +6967,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65357461a69250a4db6958b331bfae07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  username: Leif
   currentTask: 0
   currentUserInfo: 
   tasks: []
