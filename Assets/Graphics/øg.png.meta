@@ -124,6 +124,32 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -136,7 +162,7 @@ TextureImporter:
         width: 114
         height: 114
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -145,116 +171,6 @@ TextureImporter:
       bones: []
       spriteID: 1b3ee32f739854d50800000000000000
       internalID: 6720928892300747697
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "\xF8g_1"
-      rect:
-        serializedVersion: 2
-        x: 102
-        y: 46
-        width: 12
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bdebe1f8a34606990800000000000000
-      internalID: -7394800385470316837
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "\xF8g_2"
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 4
-        width: 11
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b50d343b28880e410800000000000000
-      internalID: 1504352370476437595
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "\xF8g_3"
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 0
-        width: 12
-        height: 10
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 43d4ee703bf1720f0800000000000000
-      internalID: -1141909126722466508
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "\xF8g_4"
-      rect:
-        serializedVersion: 2
-        x: 55
-        y: 0
-        width: 13
-        height: 11
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f239e2b88a866f9d0800000000000000
-      internalID: -2740888250109488337
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: "\xF8g_5"
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 6
-        width: 12
-        height: 12
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 39b0058ceb49fc720800000000000000
-      internalID: 2868675034783681427
       vertices: []
       indices: 
       edges: []
@@ -274,11 +190,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       "\xF8g_0": 6720928892300747697
-      "\xF8g_1": -7394800385470316837
-      "\xF8g_2": 1504352370476437595
-      "\xF8g_3": -1141909126722466508
-      "\xF8g_4": -2740888250109488337
-      "\xF8g_5": 2868675034783681427
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

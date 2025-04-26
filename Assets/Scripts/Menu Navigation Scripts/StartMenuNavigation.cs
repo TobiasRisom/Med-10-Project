@@ -30,6 +30,7 @@ public class StartMenuNavigation : MonoBehaviour
     private string userName;
     
     public List<Toggle> toggles;
+    public List<GameObject> hearts;
 
     public TMP_InputField petName;
 
@@ -161,10 +162,21 @@ public class StartMenuNavigation : MonoBehaviour
 	        // Turn off all others
 	        foreach (var toggle in toggles)
 	        {
+		        var i = 0;
 		        if (toggle != changedToggle)
 		        {
 			        toggle.isOn = false;
 		        }
+
+		        if (toggle.isOn)
+		        {
+			        hearts[i].SetActive(true);
+		        }
+		        else
+		        {
+			        hearts[i].SetActive(false);
+		        }
+		        i++;
 	        }
         }
 }
