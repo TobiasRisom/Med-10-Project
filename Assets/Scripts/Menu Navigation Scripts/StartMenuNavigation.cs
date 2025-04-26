@@ -162,21 +162,10 @@ public class StartMenuNavigation : MonoBehaviour
 	        // Turn off all others
 	        foreach (var toggle in toggles)
 	        {
-		        var i = 0;
 		        if (toggle != changedToggle)
 		        {
 			        toggle.isOn = false;
 		        }
-
-		        if (toggle.isOn)
-		        {
-			        hearts[i].SetActive(true);
-		        }
-		        else
-		        {
-			        hearts[i].SetActive(false);
-		        }
-		        i++;
 	        }
         }
 }
