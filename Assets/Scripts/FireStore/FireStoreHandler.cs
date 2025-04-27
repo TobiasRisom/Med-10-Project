@@ -273,43 +273,34 @@ public class FirestoreHandler : MonoBehaviour
 
         GetTasksAndCount(user, (taskAmount, taskList, documentSnapshots) =>
         {
-	        Debug.Log("Task amount: " + taskAmount);
 	        TaskData = taskList;
 	        
 	        TaskData.Sort((a, b) => {
 		        Dictionary<int, int> order = new Dictionary<int, int> {
 			        { 2, 0 },
 			        { 0, 1 },
-			        { 1, 2 }
+			        { 1, 2 },
+			        { 3, 3 }
 		        };
 		        return order[a.Status].CompareTo(order[b.Status]);
 	        });
 
-	        for (int i = 0; i < TaskData.Count; i++)
-	        {
-		        // Reward logic
-		        if (TaskData[i].Status == 2)
-		        {
-			        int currentDollars = PlayerPrefs.GetInt("Dollars", 0);
-			        PlayerPrefs.SetInt("Dollars", currentDollars + 100);
-			        PlayerPrefs.Save();
-
-			        TaskData[i].Status = 3;
-
-			        // Update status in Firestore using the correct document ID
-			        firestore.Collection("Users")
-			                 .Document(user)
-			                 .Collection("Tasks")
-			                 .Document(documentSnapshots[i].Id)
-			                 .UpdateAsync("Status", 3);
-		        }
-	        }
-
 	        // Instantiate a GameObject for each task and add it to the screen
             for (int i = 0; i < TaskData.Count; i++)
             {
+	            if (TaskData[i].Status == 2)
+	            {
+		            TaskData[i].Description = "Du har klaret opgaven!\nTryk for at tjene ØG Dollars!";
+	            }
+	            
+	            if (TaskData[i].Status == 3)
+		            continue; 
+	            
                 // Instantiate the task GameObject
                 GameObject newTask = Instantiate(taskTemplate, content.transform, false);
+                
+                Button taskButton = newTask.GetComponent<Button>();
+
                 
                 newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = TaskData[i].Titel;
                 newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = TaskData[i].Emoji;
@@ -332,30 +323,85 @@ public class FirestoreHandler : MonoBehaviour
 		                newTask.transform.GetChild(6).gameObject.SetActive(true);
 		                newTask.transform.GetChild(4).gameObject.SetActive(false);
 		                newTask.transform.GetChild(5).gameObject.SetActive(false);
+
+		                taskButton.GetComponent<Image>()
+		                          .color = new Color(1, 0.95f, 0.44f);
+
+		                newTask.transform.GetChild(3)
+		                       .GetComponent<TextMeshProUGUI>()
+		                       .text = "\ud83d\udcb8";
+		                
+		                // 🎯 Attach claim button logic
+		                Button claimButton = newTask.GetComponent<Button>();
+		                int taskIndex = i;
+		                taskButton.onClick.AddListener(() => {
+			                ClaimTaskReward(user, taskIndex, documentSnapshots[taskIndex]);
+		                });
 		                break;
                 }
 
                 // Add the newly created task object to the tasks list
                 tasks.Add(newTask);
-            }
-            
-            
-            
-            for (int i = 0; i < tasks.Count; i++)
-            {
-	            Button btn = tasks[i]
-		            .GetComponent<Button>();
+                
+                if (TaskData[i].Status != 2)
+                {
+	                Button btn = tasks[i]
+		                .GetComponent<Button>();
 
-	            int index = i; // looks stupid but necessary due to scope
-	            btn.onClick.AddListener(delegate { goToTask(index); });
-	            
-	            ch.AddItem(tasks[i]);
+	                int index = i; // looks stupid but necessary due to scope
+	                btn.onClick.AddListener(delegate { goToTask(index); });
+                }
+                ch.AddItem(tasks[i]);
             }
 
             Debug.Log("Tasks spawned");
         });
     }
+    
+    private void ClaimTaskReward(string user, int taskIndex, DocumentSnapshot documentSnapshot)
+    {
+	    // 🎁 Give the dollars
+	    int currentDollars = PlayerPrefs.GetInt("Dollars", 0);
+	    PlayerPrefs.SetInt("Dollars", currentDollars + 100);
+	    PlayerPrefs.Save();
 
+	    // 🧠 Check Repeat field
+	    if (TaskData[taskIndex].Repeat == 0)
+	    {
+		    // 🗑️ Delete task if no repeats
+		    firestore.Collection("Users")
+		             .Document(user)
+		             .Collection("Tasks")
+		             .Document(documentSnapshot.Id)
+		             .DeleteAsync()
+		             .ContinueWithOnMainThread(task =>
+		             {
+			             if (task.IsCompletedSuccessfully)
+				             Debug.Log("Task deleted successfully.");
+			             else
+				             Debug.LogError("Error deleting task: " + task.Exception);
+		             });
+	    }
+	    else
+	    {
+		    // ♻️ Otherwise, set status to 3 (hidden)
+		    firestore.Collection("Users")
+		             .Document(user)
+		             .Collection("Tasks")
+		             .Document(documentSnapshot.Id)
+		             .UpdateAsync(new Dictionary<string, object> {
+			             { "Status", 3 }
+		             });
+	    }
+	    
+	    tasks.RemoveAt(taskIndex);
+	    TaskData.RemoveAt(taskIndex);
+	    GameObject.FindWithTag("content").GetComponent<ContentHandler>().RemoveItem(taskIndex);
+
+	    // Optionally refresh UI (destroy or reload)
+	    Debug.Log("Reward claimed for task index: " + taskIndex);
+    }
+    
 	public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback)
 {
 	V_Users.Clear();
@@ -673,9 +719,9 @@ public class FirestoreHandler : MonoBehaviour
 
                                               foreach (DocumentSnapshot taskDoc in taskSnapshot.Documents)
                                               {
-                                                  if (taskDoc.TryGetValue("Status", out int status))
+                                                  if (taskDoc.TryGetValue("Repeat", out int repetition))
                                                   {
-                                                      if (status == 2 || status == today)
+                                                      if (repetition == 1 || repetition == today)
                                                       {
                                                           // Update status to 0
                                                           Dictionary<string, object> updates = new Dictionary<string, object>
