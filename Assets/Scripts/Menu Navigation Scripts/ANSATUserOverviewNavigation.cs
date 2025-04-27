@@ -62,7 +62,7 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 					    break;
 			    }
 			    
-			    userTaskInfo.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = task.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
+			    userTaskInfo.transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = task.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
 			    
 			    ch.AddItem(userTaskInfo);
 		    }

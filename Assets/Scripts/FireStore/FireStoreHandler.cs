@@ -275,6 +275,15 @@ public class FirestoreHandler : MonoBehaviour
         {
 	        Debug.Log("Task amount: " + taskAmount);
 	        TaskData = taskList;
+	        
+	        TaskData.Sort((a, b) => {
+		        Dictionary<int, int> order = new Dictionary<int, int> {
+			        { 2, 0 },
+			        { 0, 1 },
+			        { 1, 2 }
+		        };
+		        return order[a.Status].CompareTo(order[b.Status]);
+	        });
 
 	        for (int i = 0; i < TaskData.Count; i++)
 	        {
@@ -329,6 +338,8 @@ public class FirestoreHandler : MonoBehaviour
                 // Add the newly created task object to the tasks list
                 tasks.Add(newTask);
             }
+            
+            
             
             for (int i = 0; i < tasks.Count; i++)
             {
