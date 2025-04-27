@@ -305,8 +305,26 @@ public class FirestoreHandler : MonoBehaviour
                 newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = TaskData[i].Titel;
                 newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = TaskData[i].Emoji;
                 newTask.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = TaskData[i].Description;
-                newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = TaskData[i].ImageFormat ? "P" : "W";
-                newTask.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = TaskData[i].Status.ToString();
+                newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = TaskData[i].ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
+
+                switch (TaskData[i].Status)
+                {
+	                case 0:
+		                newTask.transform.GetChild(4).gameObject.SetActive(true);
+		                newTask.transform.GetChild(5).gameObject.SetActive(false);
+		                newTask.transform.GetChild(6).gameObject.SetActive(false);
+		                break;
+	                case 1:
+		                newTask.transform.GetChild(5).gameObject.SetActive(true);
+		                newTask.transform.GetChild(4).gameObject.SetActive(false);
+		                newTask.transform.GetChild(6).gameObject.SetActive(false);
+		                break;
+	                case 2:
+		                newTask.transform.GetChild(6).gameObject.SetActive(true);
+		                newTask.transform.GetChild(4).gameObject.SetActive(false);
+		                newTask.transform.GetChild(5).gameObject.SetActive(false);
+		                break;
+                }
 
                 // Add the newly created task object to the tasks list
                 tasks.Add(newTask);
