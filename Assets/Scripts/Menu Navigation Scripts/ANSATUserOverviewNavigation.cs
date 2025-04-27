@@ -7,7 +7,7 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 {
 
 	private FirestoreHandler fish;
-	public VerticalLayoutGroup VLG;
+	public GameObject content;
 	public GameObject taskStatusPrefab;
 
 	public TextMeshProUGUI usersName;
@@ -31,7 +31,8 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 	    {
 		    foreach (var task in taskList)
 		    {
-			    GameObject userTaskInfo = Instantiate(taskStatusPrefab, VLG.transform);
+			    ContentHandler ch = content.GetComponent<ContentHandler>();
+			    GameObject userTaskInfo = Instantiate(taskStatusPrefab, content.transform, false);
 			    userTaskInfo.transform.GetChild(1)
 			                .GetComponent<TextMeshProUGUI>()
 			                .text = task.Titel;
@@ -41,9 +42,29 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 			    userTaskInfo.transform.GetChild(3)
 			                .GetComponent<TextMeshProUGUI>()
 			                .text = task.Description;
-			    userTaskInfo.transform.GetChild(4)
-			                .GetComponent<TextMeshProUGUI>()
-			                .text = task.Status.ToString();
+			    
+			    switch (task.Status)
+			    {
+				    case 0:
+					    userTaskInfo.transform.GetChild(4).gameObject.SetActive(true);
+					    userTaskInfo.transform.GetChild(5).gameObject.SetActive(false);
+					    userTaskInfo.transform.GetChild(6).gameObject.SetActive(false);
+					    break;
+				    case 1:
+					    userTaskInfo.transform.GetChild(5).gameObject.SetActive(true);
+					    userTaskInfo.transform.GetChild(4).gameObject.SetActive(false);
+					    userTaskInfo.transform.GetChild(6).gameObject.SetActive(false);
+					    break;
+				    case 2:
+					    userTaskInfo.transform.GetChild(6).gameObject.SetActive(true);
+					    userTaskInfo.transform.GetChild(4).gameObject.SetActive(false);
+					    userTaskInfo.transform.GetChild(5).gameObject.SetActive(false);
+					    break;
+			    }
+			    
+			    userTaskInfo.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = task.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
+			    
+			    ch.AddItem(userTaskInfo);
 		    }
 	    });
     }

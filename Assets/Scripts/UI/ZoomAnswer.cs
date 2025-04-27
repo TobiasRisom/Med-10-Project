@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +22,7 @@ public class ZoomAnswer : MonoBehaviour
     void Start()
     {
 	    panel = GameObject.FindWithTag("ScreenContentHolder")
-	                      .transform.GetChild(2)
+	                      .transform.GetChild(3)
 	                      .gameObject;
 	    
 	    taskTitle = gameObject.transform.GetChild(0)

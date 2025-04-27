@@ -6,7 +6,7 @@ public class ContentHandler : MonoBehaviour
 {
 	public float spacing = 30f;
 	public float animationDuration = 0.3f;
-	private List<RectTransform> elements = new List<RectTransform>();
+	public List<RectTransform> elements = new List<RectTransform>();
 
 	public void AddItem(GameObject item)
 	{

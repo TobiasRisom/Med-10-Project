@@ -62,6 +62,12 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 
     public void UpdateEverything()
     {
+	    foreach(Transform child in content.transform)
+	    {
+		    Destroy(child.gameObject);
+	    }
+	    
+	    content.GetComponent<ContentHandler>().elements.Clear();
 	    fish.ScheduleManager();
 	    setUpUserButtons();
 	    fish.spawnVerifiedTasks();

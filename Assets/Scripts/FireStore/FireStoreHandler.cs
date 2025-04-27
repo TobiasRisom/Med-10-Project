@@ -440,6 +440,7 @@ public class FirestoreHandler : MonoBehaviour
 					newTask.transform.GetChild(2).gameObject.SetActive(true);
 					newTask.transform.GetChild(3).gameObject.SetActive(false);
 					newTask.transform.GetChild(4).gameObject.SetActive(false);
+					newTask.transform.GetChild(8).GetComponent<TextMeshProUGUI>().text = "\ud83d\udcf8";
 					
 					// Convert base64 to byte array
 					byte[] imageBytes = Convert.FromBase64String(V_TaskData[i].Answer);
@@ -468,6 +469,7 @@ public class FirestoreHandler : MonoBehaviour
 					newTask.transform.GetChild(2).gameObject.SetActive(false);
 					newTask.transform.GetChild(3).gameObject.SetActive(true);
 					newTask.transform.GetChild(4).gameObject.SetActive(true);
+					newTask.transform.GetChild(8).GetComponent<TextMeshProUGUI>().text = "\ud83d\udcdd";
 					
 					TextMeshProUGUI answer = newTask.transform.GetChild(4).gameObject.GetComponent<TextMeshProUGUI>();
 					answer.text = V_TaskData[i].Answer;
