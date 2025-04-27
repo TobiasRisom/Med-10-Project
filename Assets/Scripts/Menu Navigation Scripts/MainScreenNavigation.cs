@@ -20,6 +20,10 @@ public class MainScreenNavigation : MonoBehaviour
 	public List<Image> weekStripes;
 
 	public TextMeshProUGUI petName;
+	public TMP_InputField inputPetName;
+	public Button petEditName;
+	public Button petNameAccept;
+	public Button petNameReject;
 
 	[SerializeField]
 	private Color darkStripe;
@@ -79,7 +83,7 @@ public class MainScreenNavigation : MonoBehaviour
     
     private void UpdateTasks()
     {
-	    fish.UpdateDailyAndWeeklyTasks((((int)DateTime.Now.DayOfWeek + 6) % 7) + 2); // Monday = 2, Tuesday = 3, Wednesday = 4...
+	    fish.UpdateDailyAndWeeklyTasks((((int)DateTime.Now.DayOfWeek + 6) % 7) + 2); // Monday = 2, Tuesday = 3, Wednesday = 4, Thursday = 5, Friday = 6, Saturday = 7, Sunday = 8
 	        
 	    // Change next update date to tomorrow
 	    DateTime tomorrow = DateTime.Now.Date.AddDays(1);
@@ -107,5 +111,33 @@ public class MainScreenNavigation : MonoBehaviour
 			    weekStripes[i].color = lightStripe;
 		    }
 	    }
+    }
+
+    public void editPetName()
+    {
+	    inputPetName.gameObject.SetActive(true);
+	    petEditName.gameObject.SetActive(false);
+	    petNameAccept.gameObject.SetActive(true);
+	    petNameReject.gameObject.SetActive(true);
+	    inputPetName.text = PlayerPrefs.GetString("PetName");
+    }
+
+    public void acceptPetName()
+    {
+	    PlayerPrefs.SetString("PetName", inputPetName.text);
+	    petName.text = inputPetName.text;
+	    
+	    inputPetName.gameObject.SetActive(false);
+	    petEditName.gameObject.SetActive(true);
+	    petNameAccept.gameObject.SetActive(false);
+	    petNameReject.gameObject.SetActive(false);
+    }
+
+    public void rejectPetName()
+    {
+	    inputPetName.gameObject.SetActive(false);
+	    petEditName.gameObject.SetActive(true);
+	    petNameAccept.gameObject.SetActive(false);
+	    petNameReject.gameObject.SetActive(false);
     }
 }

@@ -690,6 +690,16 @@ public class FirestoreHandler : MonoBehaviour
  {
 	 V_Users.Clear();
 
+	 int yesterday;
+	 if (today == 2)
+	 {
+		 yesterday = 8;
+	 }
+	 else
+	 {
+		 yesterday = today - 1;
+	 }
+
     firestore.Collection("Users")
              .GetSnapshotAsync()
              .ContinueWithOnMainThread(usersTask =>
@@ -723,28 +733,32 @@ public class FirestoreHandler : MonoBehaviour
                                                   {
                                                       if (repetition == 1 || repetition == today)
                                                       {
-                                                          // Update status to 0
+                                                          // Make daily and weekly tasks accessible
                                                           Dictionary<string, object> updates = new Dictionary<string, object>
                                                           {
                                                               { "Status", 0 }
                                                           };
-
+                                                          
                                                           firestore.Collection("Users")
                                                                    .Document(userId)
                                                                    .Collection("Tasks")
                                                                    .Document(taskDoc.Id)
-                                                                   .UpdateAsync(updates)
-                                                                   .ContinueWithOnMainThread(updateTask =>
-                                                                   {
-                                                                       if (updateTask.IsCompletedSuccessfully)
-                                                                       {
-                                                                           Debug.Log($"Task {taskDoc.Id} for user {userId} updated to Status 0.");
-                                                                       }
-                                                                       else
-                                                                       {
-                                                                           Debug.LogError($"Failed to update task {taskDoc.Id} for user {userId}: {updateTask.Exception}");
-                                                                       }
-                                                                   });
+                                                                   .UpdateAsync(updates);
+                                                      }
+
+                                                      if (repetition == yesterday)
+                                                      {
+	                                                      // Make weekly tasks not done inaccessible
+	                                                      Dictionary<string, object> updates = new Dictionary<string, object>
+	                                                      {
+		                                                      { "Status", 3 }
+	                                                      };
+	                                                      
+	                                                      firestore.Collection("Users")
+	                                                               .Document(userId)
+	                                                               .Collection("Tasks")
+	                                                               .Document(taskDoc.Id)
+	                                                               .UpdateAsync(updates);
                                                       }
                                                   }
                                                   else
