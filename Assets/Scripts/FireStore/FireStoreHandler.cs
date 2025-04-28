@@ -169,7 +169,9 @@ public class FirestoreHandler : MonoBehaviour
 					     var data = new Dictionary<string, object>
 					     {
 						     {"Name", newUserName},
-						     {"Points", 0}
+						     {"Points", 0},
+						     {"TasksNotDone", 0},
+						     {"DaysWithAllTasksCleared", 0}
 					     };
 					     
 					     // Add the new user data 
@@ -219,8 +221,28 @@ public class FirestoreHandler : MonoBehaviour
 
 		return userNames;
 	}
-	
-    public void GetTasksAndCount(string user, System.Action<int, List<Task>, List<DocumentSnapshot>> callback)
+
+	public async void GetUserStats(string user)
+	{
+		DocumentReference userRef = firestore.Collection("Users")
+		                                     .Document(user);
+		DocumentSnapshot snapshot = await userRef.GetSnapshotAsync();
+
+		if (snapshot.Exists)
+		{
+			int points = snapshot.GetValue<int>("Points");
+			int tasksNotDone = snapshot.GetValue<int>("TasksNotDone");
+			int daysCleared = snapshot.GetValue<int>("DaysWithAllTasksCleared");
+
+			GameObject stats = GameObject.FindWithTag("Stats");
+
+			stats.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Opgaver klaret i alt: " + (points / 100);
+			stats.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Opgaver ikke klaret: " + tasksNotDone;
+			stats.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Dage hvor alle opgaver blev gjort: " + daysCleared;
+		}
+	}
+
+	public void GetTasksAndCount(string user, System.Action<int, List<Task>, List<DocumentSnapshot>> callback)
     {
         var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks").OrderBy(FieldPath.DocumentId);
 
@@ -727,8 +749,25 @@ public class FirestoreHandler : MonoBehaviour
                                           {
                                               QuerySnapshot taskSnapshot = tasksTask.Result;
 
+                                              bool allTasksCompleted = true;
+                                              
                                               foreach (DocumentSnapshot taskDoc in taskSnapshot.Documents)
                                               {
+	                                              if (taskDoc.TryGetValue("Status", out int status))
+	                                              {
+		                                              if (status == 0)
+		                                              {
+			                                              allTasksCompleted = false;
+			                                              Dictionary<string, object> updates = new Dictionary<string, object>
+			                                              {
+				                                              { "TasksNotDone", FieldValue.Increment(1) }
+			                                              };
+                                                          
+			                                              firestore.Collection("Users")
+			                                                       .Document(userId).UpdateAsync(updates);
+		                                              }
+	                                              }
+	                                              
                                                   if (taskDoc.TryGetValue("Repeat", out int repetition))
                                                   {
                                                       if (repetition == 1 || repetition == today)
@@ -751,7 +790,7 @@ public class FirestoreHandler : MonoBehaviour
 	                                                      // Make weekly tasks not done inaccessible
 	                                                      Dictionary<string, object> updates = new Dictionary<string, object>
 	                                                      {
-		                                                      { "Status", 3 }
+		                                                      { "Status", 3 },
 	                                                      };
 	                                                      
 	                                                      firestore.Collection("Users")
@@ -765,6 +804,17 @@ public class FirestoreHandler : MonoBehaviour
                                                   {
                                                       Debug.LogWarning($"Task {taskDoc.Id} for user {userId} has no 'Status' field.");
                                                   }
+                                              }
+
+                                              if (allTasksCompleted)
+                                              {
+	                                              Dictionary<string, object> updates = new Dictionary<string, object>
+	                                              {
+		                                              { "DaysWithAllTasksCleared", FieldValue.Increment(1) }
+	                                              };
+                                                          
+	                                              firestore.Collection("Users")
+	                                                       .Document(userId).UpdateAsync(updates);
                                               }
                                           }
                                           else

@@ -112,7 +112,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        }
 	        else
 	        {
-		        changeWindow(7);
+		        changeWindow(8);
 		        codeInput.text = "";
 	        }
         }

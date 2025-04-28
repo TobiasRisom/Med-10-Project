@@ -18,6 +18,7 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 	    ShowUserInfo(fish.currentUserInfo);
 	    usersName.text = fish.currentUserInfo;
+	    fish.GetUserStats(fish.currentUserInfo);
     }
 
     public void BackToMain()
@@ -56,6 +57,11 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 					    userTaskInfo.transform.GetChild(6).gameObject.SetActive(false);
 					    break;
 				    case 2:
+					    userTaskInfo.transform.GetChild(6).gameObject.SetActive(true);
+					    userTaskInfo.transform.GetChild(4).gameObject.SetActive(false);
+					    userTaskInfo.transform.GetChild(5).gameObject.SetActive(false);
+					    break;
+				    case 3:
 					    userTaskInfo.transform.GetChild(6).gameObject.SetActive(true);
 					    userTaskInfo.transform.GetChild(4).gameObject.SetActive(false);
 					    userTaskInfo.transform.GetChild(5).gameObject.SetActive(false);

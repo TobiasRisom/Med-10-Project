@@ -23,6 +23,7 @@ TagManager:
   - Pet
   - PetForSale
   - PanelHolder
+  - Stats
   layers:
   - Default
   - TransparentFX
