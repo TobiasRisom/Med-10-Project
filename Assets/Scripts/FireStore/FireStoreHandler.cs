@@ -171,7 +171,10 @@ public class FirestoreHandler : MonoBehaviour
 						     {"Name", newUserName},
 						     {"Points", 0},
 						     {"TasksNotDone", 0},
-						     {"DaysWithAllTasksCleared", 0}
+						     {"DaysWithAllTasksCleared", 0},
+						     {"ScheduleAccessedAmount", 0},
+						     {"PetsBought", 0},
+						     {"MoneySpentOnPets", 0}
 					     };
 					     
 					     // Add the new user data 
@@ -296,16 +299,6 @@ public class FirestoreHandler : MonoBehaviour
         GetTasksAndCount(user, (taskAmount, taskList, documentSnapshots) =>
         {
 	        TaskData = taskList;
-	        
-	        TaskData.Sort((a, b) => {
-		        Dictionary<int, int> order = new Dictionary<int, int> {
-			        { 2, 0 },
-			        { 0, 1 },
-			        { 1, 2 },
-			        { 3, 3 }
-		        };
-		        return order[a.Status].CompareTo(order[b.Status]);
-	        });
 
 	        // Instantiate a GameObject for each task and add it to the screen
             for (int i = 0; i < TaskData.Count; i++)
@@ -851,10 +844,37 @@ public class FirestoreHandler : MonoBehaviour
 	                   });
 	    return leaderboard;
     }
+    
+    public void UpdateStats(string userName, string statToUpdate, int amountToIncrease)
+    {
+	    DocumentReference docRef = firestore.Collection("Users")
+	                      .Document(userName);
+	    docRef.GetSnapshotAsync().ContinueWithOnMainThread(task => {
+		      
+		                   if (!task.IsCompletedSuccessfully)
+		                   {
+			                   Debug.LogError("Failed to get users");
+			                   return;
+		                   }
+
+		                   DocumentSnapshot snapshot = task.Result;
+
+		                   if (snapshot.Exists)
+		                   {
+			                   Dictionary<string, object> updates = new Dictionary<string, object>
+			                   {
+				                   {statToUpdate, FieldValue.Increment(amountToIncrease)} // Example: add a timestamp for last login
+			                   };
+			                   
+			                   docRef.UpdateAsync(updates);
+		                   }
+	    });
+    }
 
     public void SetUserToggles()
     {
-	    GameObject layout = GameObject.FindWithTag("UserToggles");
+	    GameObject content = GameObject.FindWithTag("content");
+	    ContentHandler ch = content.GetComponent<ContentHandler>();
 	    firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(task =>
 	    {
 		    if (task.IsFaulted || task.IsCanceled)
@@ -867,7 +887,7 @@ public class FirestoreHandler : MonoBehaviour
 		    foreach (DocumentSnapshot document in snapshot.Documents)
 		    {
 			    string userId = document.Id;
-			    GameObject toggleObj = Instantiate(userToggle, layout.transform);
+			    GameObject toggleObj = Instantiate(userToggle, content.transform, false);
 			    TextMeshProUGUI label = toggleObj.GetComponentInChildren<TextMeshProUGUI>();
 
 			    if (label != null)
@@ -878,6 +898,7 @@ public class FirestoreHandler : MonoBehaviour
 			    {
 				    Debug.LogWarning("Toggle prefab missing Text component in children.");
 			    }
+			    ch.AddItem(toggleObj);
 		    }
 	    });
     }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections; // <- Added for Coroutine
 
 public class CameraDisplay : MonoBehaviour
 {
@@ -38,7 +39,6 @@ public class CameraDisplay : MonoBehaviour
         string selectedCam = devices[0].name;
 
 #if !UNITY_EDITOR
-        // Try selecting the back-facing camera on Android
         foreach (var device in devices)
         {
             if (!device.isFrontFacing)  // Prefer back camera
@@ -49,52 +49,58 @@ public class CameraDisplay : MonoBehaviour
         }
 #endif
 
-        // Debugging: log the selected camera
         Debug.Log("Selected camera: " + selectedCam);
 
-        // Create a new WebCamTexture with a reasonable resolution for mobile
-        webCamTexture = new WebCamTexture(selectedCam, 640, 480); // 640x480 resolution
-        cameraFeed.texture = webCamTexture; // Directly assign the WebCamTexture to RawImage
+        // Set a larger WebCamTexture resolution (e.g., 1600x1200 or higher)
+        webCamTexture = new WebCamTexture(selectedCam, 1600, 1200);  // Larger resolution
+        cameraFeed.texture = webCamTexture;
 
-        // Start the camera feed
         if (webCamTexture != null)
         {
             webCamTexture.Play();
+            StartCoroutine(AdjustAspectAfterStart()); // <-- Adjust aspect to fit the mask
 
-#if !UNITY_EDITOR // Rotate camera feed
-            int rotation = webCamTexture.videoRotationAngle;
-            bool isMirrored = webCamTexture.videoVerticallyMirrored;
-
-            // Apply rotation to the feed (camera preview)
-            cameraFeed.rectTransform.localEulerAngles = new Vector3(0, 0, -rotation);
-
-            if (isMirrored)
-            {
-                cameraFeed.rectTransform.localScale = new Vector3(1, -1, 1);
-            }
-            else
-            {
-                cameraFeed.rectTransform.localScale = Vector3.one;
-            }
-#endif
-
-            // Debugging: Check if the WebCamTexture is playing
-            if (webCamTexture.isPlaying)
-            {
-                Debug.Log("WebCamTexture is playing.");
-            }
-            else
-            {
-                Debug.LogError("WebCamTexture failed to start playing.");
-            }
+            captureButton.onClick.AddListener(CapturePhoto);
+            retakeButton.onClick.AddListener(RetakePhoto);
         }
         else
         {
             Debug.LogError("Failed to initialize WebCamTexture.");
         }
+    }
 
-        captureButton.onClick.AddListener(CapturePhoto);
-        retakeButton.onClick.AddListener(RetakePhoto);
+    private IEnumerator AdjustAspectAfterStart()
+    {
+        // Wait for the camera to initialize
+        while (webCamTexture.width < 100)
+        {
+            yield return null;
+        }
+
+        // Calculate the aspect ratio of the webcam feed
+        float camAspect = (float)webCamTexture.width / webCamTexture.height;
+
+        // Adjust the RectTransform of the camera feed to fit the 800x1200 visible area within the mask
+        RectTransform rt = cameraFeed.rectTransform;
+
+        // Set the camera feed's width and height to match the aspect ratio, and center it
+        float targetHeight = rt.sizeDelta.y;  // Fixed height of 1200 (set by your mask)
+        rt.sizeDelta = new Vector2(targetHeight * camAspect, targetHeight);  // Width adjusted to match aspect
+
+        // Now center the image in the mask
+        rt.localPosition = new Vector3(0, 0, 0);  // Ensure it is centered
+
+#if !UNITY_EDITOR
+        // Handle device rotation and mirroring
+        int rotation = webCamTexture.videoRotationAngle;
+        bool isMirrored = webCamTexture.videoVerticallyMirrored;
+        rt.localEulerAngles = new Vector3(0, 0, -rotation);
+
+        if (isMirrored)
+            rt.localScale = new Vector3(1, -1, 1);
+        else
+            rt.localScale = Vector3.one;
+#endif
     }
 
     void CapturePhoto()
@@ -105,45 +111,39 @@ public class CameraDisplay : MonoBehaviour
             return;
         }
 
-        // Create a photo from the WebCamTexture
-        photo = new Texture2D(webCamTexture.width, webCamTexture.height);
-        photo.SetPixels(webCamTexture.GetPixels());
-        photo.Apply();
+        // Capture raw webcam data
+        Texture2D rawPhoto = new Texture2D(webCamTexture.width, webCamTexture.height);
+        rawPhoto.SetPixels(webCamTexture.GetPixels());
+        rawPhoto.Apply();
 
 #if !UNITY_EDITOR
-        // Handle the final image rotation based on the webCamTexture's videoRotationAngle
         int rotation = webCamTexture.videoRotationAngle;
 
-        // Apply rotation based on the camera feed angle
         switch (rotation)
         {
             case 0:
-                // No rotation needed, already upright
                 break;
-
             case 90:
-                // 90 degrees counterclockwise, so we rotate 90 degrees clockwise
-                photo = RotateTexture(photo, clockwise: false);
+                rawPhoto = RotateTexture(rawPhoto, clockwise: false);
                 break;
-
             case 180:
-                // 180 degrees (upside down), so we rotate 180 degrees
-                photo = RotateTexture(photo, clockwise: true);
-                photo = RotateTexture(photo, clockwise: true);  // Apply 180-degree rotation
+                rawPhoto = RotateTexture(rawPhoto, clockwise: true);
+                rawPhoto = RotateTexture(rawPhoto, clockwise: true);
                 break;
-
             case 270:
-                // 270 degrees counterclockwise (equivalent to 90 degrees clockwise), so rotate 90 degrees counterclockwise
-                photo = RotateTexture(photo, clockwise: true);
+                rawPhoto = RotateTexture(rawPhoto, clockwise: true);
                 break;
         }
 #endif
 
-        // Now assign the captured photo to the capturedImage RawImage
+        // Crop to exactly 800x1200 from the center
+        photo = CenterCropTexture(rawPhoto, 800, 1200);
+
+        // Display the cropped image (800x1200)
         capturedImage.texture = photo;
         capturedImage.gameObject.SetActive(true);
 
-        // Hide the live camera feed and show the captured photo
+        // Hide camera feed and show captured image
         cameraFeed.gameObject.SetActive(false);
         captureButton.gameObject.SetActive(false);
         confirmButton.gameObject.SetActive(true);
@@ -152,7 +152,6 @@ public class CameraDisplay : MonoBehaviour
 
     void RetakePhoto()
     {
-        // Hide the captured photo and re-enable the camera feed
         capturedImage.gameObject.SetActive(false);
         cameraFeed.gameObject.SetActive(true);
         captureButton.gameObject.SetActive(true);
@@ -184,5 +183,24 @@ public class CameraDisplay : MonoBehaviour
         rotated.SetPixels32(rotatedPixels);
         rotated.Apply();
         return rotated;
+    }
+
+    Texture2D CenterCropTexture(Texture2D source, int targetWidth, int targetHeight)
+    {
+        // Calculate the starting coordinates for cropping the image
+        int startX = Mathf.Max(0, (source.width - targetWidth) / 2);
+        int startY = Mathf.Max(0, (source.height - targetHeight) / 2);
+
+        int cropWidth = Mathf.Min(targetWidth, source.width);
+        int cropHeight = Mathf.Min(targetHeight, source.height);
+
+        // Get the pixels from the cropped region
+        Color[] pixels = source.GetPixels(startX, startY, cropWidth, cropHeight);
+
+        // Create a new texture for the cropped image
+        Texture2D result = new Texture2D(cropWidth, cropHeight, source.format, false);
+        result.SetPixels(pixels);
+        result.Apply();
+        return result;
     }
 }

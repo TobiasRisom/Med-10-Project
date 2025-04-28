@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class MainScreenNavigation : MonoBehaviour
 {
@@ -79,6 +77,11 @@ public class MainScreenNavigation : MonoBehaviour
 		    }
 	    }
 	    return false;
+    }
+
+    public void AccessedSchedule()
+    {
+	    fish.UpdateStats(PlayerPrefs.GetString("Name"),"ScheduleAccessedAmount", 1);
     }
     
     private void UpdateTasks()

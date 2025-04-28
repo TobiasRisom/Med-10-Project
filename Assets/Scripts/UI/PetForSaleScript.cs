@@ -12,8 +12,12 @@ public class PetForSaleScript : MonoBehaviour
     [SerializeField]
     private GameObject buyWindow;
 
+    private FirestoreHandler fish;
+
     void Start()
     {
+	    fish = GameObject.FindWithTag("dataManager")
+	                     .GetComponent<FirestoreHandler>();
         buyWindow = GameObject.FindWithTag("PetShopPanel")
                               .transform.GetChild(12).gameObject;
 
@@ -87,6 +91,9 @@ public class PetForSaleScript : MonoBehaviour
 
         int purchase = PlayerPrefs.GetInt("Dollars");
         PlayerPrefs.SetInt("Dollars", purchase - PetCost);
+        
+        fish.UpdateStats(PlayerPrefs.GetString("Name"),"PetsBought", 1);
+        fish.UpdateStats(PlayerPrefs.GetString("Name"),"MoneySpentOnPets", PetCost);
 
         // Instead of changing the AnimatorController, directly play the new animation state
         PetAnimation petAnim = currentPet.GetComponent<PetAnimation>();

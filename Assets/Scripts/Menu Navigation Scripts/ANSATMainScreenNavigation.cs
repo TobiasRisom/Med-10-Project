@@ -66,6 +66,11 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 		    Destroy(child.gameObject);
 	    }
 	    
+	    foreach(Transform users in userHolder)
+	    {
+		    Destroy(users.gameObject);
+	    }
+	    
 	    content.GetComponent<ContentHandler>().elements.Clear();
 	    fish.ScheduleManager();
 	    setUpUserButtons();

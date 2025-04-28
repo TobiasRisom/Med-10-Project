@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -90,16 +91,14 @@ public class TaskScreenNavigation : MonoBehaviour
 		SceneManager.LoadScene("MainScreen");
     }
     
-    public void imageAnswerConfirmed()
+    public async void imageAnswerConfirmed()
     {
 	    if (cd.photo != null)
 	    {
 		    byte[] imageBytes = cd.photo.EncodeToJPG(); 
 		    string base64Image = System.Convert.ToBase64String(imageBytes);
-		    int fileSizeBytes = base64Image.Length;
-		    float fileSizeKB = fileSizeBytes / 1024f;
 		    
-		    fish.submitTask(PlayerPrefs.GetString("Name"), base64Image);
+		    await Task.Run(() => fish.submitTask(PlayerPrefs.GetString("Name"), base64Image));
 		    SceneManager.LoadScene("MainScreen");
 	    }
     }

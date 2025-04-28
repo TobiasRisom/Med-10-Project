@@ -121,8 +121,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	    confirmTitle.text = inputTitle.text;
 	    confirmEmoji.text = inputEmoji.text;
 	    confirmDescription.text = inputDescription.text;
-	    answerFormat.text = inputText.isOn ? "T" : "P";
-	    status.text = "0";
+	    answerFormat.text = inputText.isOn ? "\ud83d\udcdd" : "\ud83d\udcf8";
 
 	    usersToGetTask.text = users.Count + " beboere";
 
