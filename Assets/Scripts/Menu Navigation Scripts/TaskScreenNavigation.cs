@@ -42,6 +42,11 @@ public class TaskScreenNavigation : MonoBehaviour
 	    taskEmoji.text = fish.TaskData[taskIndex].Emoji;
 	    taskDescription.text = fish.TaskData[taskIndex].Description;
 
+	    if (fish.TaskData[taskIndex].Status == 1 && fish.TaskData[taskIndex].ImageFormat == false)
+	    {
+		    userAnswer.text = fish.TaskData[taskIndex].Answer;
+	    }
+
 	    if (fish.TaskData[taskIndex].ImageFormat)
 	    {
 		    transform.localPosition = new Vector3(0, transform.localPosition.y, transform.localPosition.z);
