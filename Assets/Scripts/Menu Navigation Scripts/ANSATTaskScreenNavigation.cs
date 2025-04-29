@@ -24,6 +24,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	public TMP_InputField inputDescription;
 	public Toggle inputText;
 	public Toggle inputImage;
+	public TMP_Dropdown dropdown;
 
 	public Button continueToConfirmTask;
 	
@@ -68,9 +69,33 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 		continueToConfirmTask.gameObject.SetActive(setContinueButtonActive());
 	}
 	
+	public void ActivateDropdown(bool chooseDate)
+	{
+		if (chooseDate)
+		{
+			dropdown.gameObject.SetActive(true);
+		}
+		else
+		{
+			dropdown.gameObject.SetActive(false);
+		}
+	}
+	
 	private bool setContinueButtonActive()
 	{
-		if (inputTitle.text.Length > 0 && inputEmoji.text.Length > 0 && inputDescription.text.Length > 0)
+		if (howOften == Repetition.Weekly)
+		{
+			if (inputTitle.text.Length > 0 && inputEmoji.text.Length > 0 && inputDescription.text.Length > 0 && dropdown.value != 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		else if (inputTitle.text.Length > 0 && inputEmoji.text.Length > 0 && inputDescription.text.Length > 0)
 		{
 			return true;
 		}
@@ -190,7 +215,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 			    break;
 		    
 		    case Repetition.Weekly:
-			    newTask.Repeat = (((int)DateTime.Now.DayOfWeek + 6) % 7) + 2; // 2 = Monday, 3 = Tuesday, etc...
+			    newTask.Repeat = ((dropdown.value) + 6) % 7 + 2; // 2 = Monday, 3 = Tuesday, etc...
 			    break;
 	    }
 	    

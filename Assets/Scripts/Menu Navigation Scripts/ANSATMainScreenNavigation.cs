@@ -163,7 +163,7 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	    foreach (string user in userList)
 	    {
 		    GameObject userButton = Instantiate(userButtonPrefab, glg.transform);
-		    userButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = user;
+		    userButton.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = user;
 
 		    Button btn = userButton.GetComponentInChildren<Button>();
 		    
