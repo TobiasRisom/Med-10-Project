@@ -30,9 +30,6 @@ public class MainScreenNavigation : MonoBehaviour
 
 	[SerializeField]
 	private TextMeshProUGUI ØGDollarText1;
-
-	[SerializeField]
-	private TextMeshProUGUI ØGDollarText2;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -53,8 +50,7 @@ public class MainScreenNavigation : MonoBehaviour
 
     public void setDollarsText()
     {
-	    ØGDollarText1.text = "Du har:\n" + PlayerPrefs.GetInt("Dollars") + " ØG Dollars";
-	    ØGDollarText2.text = "Du har:\n" + PlayerPrefs.GetInt("Dollars") + " ØG Dollars";
+	    ØGDollarText1.text = PlayerPrefs.GetInt("Dollars") + " \ud83d\udcb5";
     }
     
     public void changeWindow(int windowIndex)
@@ -142,5 +138,12 @@ public class MainScreenNavigation : MonoBehaviour
 	    petEditName.gameObject.SetActive(true);
 	    petNameAccept.gameObject.SetActive(false);
 	    petNameReject.gameObject.SetActive(false);
+    }
+
+    public void closeShop()
+    {
+	    GameObject shopPanel = GameObject.FindWithTag("BuyWindow");
+	    
+	    shopPanel.SetActive(false);
     }
 }

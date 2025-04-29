@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 7758686}
   - component: {fileID: 7758685}
   - component: {fileID: 7758684}
+  - component: {fileID: 7758687}
   m_Layer: 5
   m_Name: Torsdag
   m_TagString: Untagged
@@ -349,6 +350,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7758682}
   m_CullTransparentMesh: 1
+--- !u!114 &7758687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7758682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &9985171
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,6 +377,7 @@ GameObject:
   - component: {fileID: 9985175}
   - component: {fileID: 9985174}
   - component: {fileID: 9985173}
+  - component: {fileID: 9985176}
   m_Layer: 5
   m_Name: "L\xF8rdag"
   m_TagString: Untagged
@@ -527,6 +544,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9985171}
   m_CullTransparentMesh: 1
+--- !u!114 &9985176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9985171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &19394007
 GameObject:
   m_ObjectHideFlags: 0
@@ -2336,6 +2368,7 @@ GameObject:
   - component: {fileID: 261869541}
   - component: {fileID: 261869540}
   - component: {fileID: 261869539}
+  - component: {fileID: 261869542}
   m_Layer: 5
   m_Name: "S\xF8ndag"
   m_TagString: Untagged
@@ -2502,6 +2535,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 261869537}
   m_CullTransparentMesh: 1
+--- !u!114 &261869542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261869537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &276479670
 GameObject:
   m_ObjectHideFlags: 0
@@ -2691,7 +2739,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1080, y: 2400}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 1
+  m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -3812,6 +3860,7 @@ GameObject:
   - component: {fileID: 638074865}
   - component: {fileID: 638074864}
   - component: {fileID: 638074863}
+  - component: {fileID: 638074866}
   m_Layer: 5
   m_Name: Fredag
   m_TagString: Untagged
@@ -3978,6 +4027,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 638074861}
   m_CullTransparentMesh: 1
+--- !u!114 &638074866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638074861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &688857110
 GameObject:
   m_ObjectHideFlags: 0
@@ -5088,6 +5152,7 @@ GameObject:
   - component: {fileID: 861957361}
   - component: {fileID: 861957360}
   - component: {fileID: 861957359}
+  - component: {fileID: 861957362}
   m_Layer: 5
   m_Name: Onsdag
   m_TagString: Untagged
@@ -5254,6 +5319,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 861957357}
   m_CullTransparentMesh: 1
+--- !u!114 &861957362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861957357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &875382658
 GameObject:
   m_ObjectHideFlags: 0
@@ -6380,6 +6460,7 @@ GameObject:
   - component: {fileID: 1063544047}
   - component: {fileID: 1063544046}
   - component: {fileID: 1063544045}
+  - component: {fileID: 1063544048}
   m_Layer: 5
   m_Name: Mandag
   m_TagString: Untagged
@@ -6546,6 +6627,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1063544043}
   m_CullTransparentMesh: 1
+--- !u!114 &1063544048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063544043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &1080741337
 GameObject:
   m_ObjectHideFlags: 0
@@ -7330,7 +7426,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1942280169}
   m_HandleRect: {fileID: 1942280168}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7658,6 +7754,7 @@ GameObject:
   - component: {fileID: 1284600514}
   - component: {fileID: 1284600513}
   - component: {fileID: 1284600512}
+  - component: {fileID: 1284600515}
   m_Layer: 5
   m_Name: Tirsdag
   m_TagString: Untagged
@@ -7824,6 +7921,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1284600510}
   m_CullTransparentMesh: 1
+--- !u!114 &1284600515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284600510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &1290557550
 GameObject:
   m_ObjectHideFlags: 0

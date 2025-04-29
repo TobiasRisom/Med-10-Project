@@ -1487,6 +1487,7 @@ GameObject:
   - component: {fileID: 281818953}
   - component: {fileID: 281818952}
   - component: {fileID: 281818955}
+  - component: {fileID: 281818956}
   m_Layer: 5
   m_Name: Input
   m_TagString: beboerName
@@ -1668,6 +1669,21 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 6, y: -6}
   m_UseGraphicAlpha: 1
+--- !u!114 &281818956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281818950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &322828567
 GameObject:
   m_ObjectHideFlags: 0
@@ -1861,7 +1877,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Velkommer til \n\xD8G App"
+  m_text: "Velkommen til \n\xD8G App"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6eaefb00ca368d74f8025ce7a72b5581, type: 2}
   m_sharedMaterial: {fileID: 7797558465906407175, guid: 6eaefb00ca368d74f8025ce7a72b5581, type: 2}
@@ -4533,6 +4549,7 @@ GameObject:
   - component: {fileID: 857130610}
   - component: {fileID: 857130608}
   - component: {fileID: 857130611}
+  - component: {fileID: 857130613}
   m_Layer: 5
   m_Name: Input
   m_TagString: beboerName
@@ -4714,6 +4731,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 857130607}
   m_CullTransparentMesh: 1
+--- !u!114 &857130613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857130607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &904594756
 GameObject:
   m_ObjectHideFlags: 0
@@ -5116,6 +5148,7 @@ GameObject:
   - component: {fileID: 1008349983}
   - component: {fileID: 1008349982}
   - component: {fileID: 1008349985}
+  - component: {fileID: 1008349986}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -5297,6 +5330,21 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &1008349986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008349980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &1021215268
 GameObject:
   m_ObjectHideFlags: 0
@@ -11528,6 +11576,7 @@ GameObject:
   - component: {fileID: 2054109635}
   - component: {fileID: 2054109634}
   - component: {fileID: 2054109633}
+  - component: {fileID: 2054109636}
   m_Layer: 5
   m_Name: Input
   m_TagString: codeInput
@@ -11694,6 +11743,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2054109631}
   m_CullTransparentMesh: 1
+--- !u!114 &2054109636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2054109631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  returnButtonType: 0
+  showClearButton: 1
+  switchBetweenNativeAndUnity: 0
 --- !u!1 &2066693006
 GameObject:
   m_ObjectHideFlags: 0
@@ -12116,7 +12180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Velkommer til\n\xD8G App"
+  m_text: "Velkommen til\n\xD8G App"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6eaefb00ca368d74f8025ce7a72b5581, type: 2}
   m_sharedMaterial: {fileID: 7797558465906407175, guid: 6eaefb00ca368d74f8025ce7a72b5581, type: 2}
