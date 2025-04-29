@@ -40,7 +40,7 @@ public class WeekDisplay : MonoBehaviour
 		currentDayOfWeek = Char.ToUpper(currentDayOfWeek[0]) + currentDayOfWeek.Substring(1);
 
 		// Update the TextMeshProUGUI with the week info and current day
-		weekText.text = $"{currentDayOfWeek}, Uge {currentWeekNumber}\n{startDate} - {endDate}";
+		weekText.text = $"\ud83d\udcc5 {currentDayOfWeek}, Uge {currentWeekNumber}\n{startDate} - {endDate}";
 	}
 
 	int GetWeekNumber(DateTime date)
