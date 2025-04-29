@@ -2750,10 +2750,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Tilbage\u27A1\uFE0F"
+  m_text: "Tilbage \U0001F3E0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 40cf878160ac0774e97967303919d8a9, type: 2}
-  m_sharedMaterial: {fileID: -7961865964600129762, guid: 40cf878160ac0774e97967303919d8a9, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
+  m_sharedMaterial: {fileID: 2941351083751065506, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4355,10 +4355,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Tilbage\u27A1\uFE0F"
+  m_text: "Tilbage \U0001F3E0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 40cf878160ac0774e97967303919d8a9, type: 2}
-  m_sharedMaterial: {fileID: -7961865964600129762, guid: 40cf878160ac0774e97967303919d8a9, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
+  m_sharedMaterial: {fileID: 2941351083751065506, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

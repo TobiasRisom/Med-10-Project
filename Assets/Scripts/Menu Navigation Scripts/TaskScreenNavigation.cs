@@ -23,6 +23,8 @@ public class TaskScreenNavigation : MonoBehaviour
 
 	private FirestoreHandler fish;
 	private CameraDisplay cd;
+
+	private string answerHolder;
     void Start()
     {
 	    fish = GameObject.FindWithTag("dataManager")
@@ -73,6 +75,7 @@ public class TaskScreenNavigation : MonoBehaviour
 	    finalBack.gameObject.SetActive(true);
 	    
 	    finalUserAnswer.text = userAnswer.text;
+	    answerHolder = finalUserAnswer.text;
 	    userAnswer.text = "";
 	    userAnswer.gameObject.SetActive(false);
 	    finalUserAnswer.gameObject.SetActive(true);
@@ -111,5 +114,7 @@ public class TaskScreenNavigation : MonoBehaviour
 	    
 	    userAnswer.gameObject.SetActive(true);
 	    finalUserAnswer.gameObject.SetActive(false);
+
+	    userAnswer.text = answerHolder;
     }
 }
