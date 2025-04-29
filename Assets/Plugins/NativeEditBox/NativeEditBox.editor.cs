@@ -59,8 +59,8 @@ public partial class NativeEditBox
 
 	void OnEndEdit(string text)
 	{
-		if (Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Return))
-			OnSubmit?.Invoke(inputField.text);
+		//if (Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Return))
+			//OnSubmit?.Invoke(inputField.text);
 
 		OnDidEnd?.Invoke();
 		OnTapOutside?.Invoke();

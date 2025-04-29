@@ -24,6 +24,9 @@ public class MainScreenNavigation : MonoBehaviour
 	public Button petNameAccept;
 	public Button petNameReject;
 
+	public GameObject noTasksText;
+	private bool buffer;
+
 	[SerializeField]
 	private Color darkStripe;
 	[SerializeField]
@@ -47,6 +50,27 @@ public class MainScreenNavigation : MonoBehaviour
 
 	    petName.text = PlayerPrefs.GetString("PetName");
 	    setDollarsText();
+	    
+	    Invoke(nameof(StartCheckingForNoTasks), 0.5f);
+    }
+
+    void Update()
+    {
+	    ContentHandler ch = GameObject.FindWithTag("content")
+	                                  .GetComponent<ContentHandler>();
+	    if (ch.elements.Count == 0 && buffer)
+	    {
+		    noTasksText.SetActive(true);
+	    }
+	    else
+	    {
+		    noTasksText.SetActive(false);
+	    }
+    }
+
+    void StartCheckingForNoTasks()
+    {
+	    buffer = true;
     }
 
     public void setDollarsText()
@@ -156,7 +180,10 @@ public class MainScreenNavigation : MonoBehaviour
     public void closeShop()
     {
 	    GameObject shopPanel = GameObject.FindWithTag("BuyWindow");
-	    
-	    shopPanel.SetActive(false);
+
+	    if (shopPanel != null)
+	    {
+		    shopPanel.SetActive(false);   
+	    }
     }
 }

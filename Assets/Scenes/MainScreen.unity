@@ -1920,7 +1920,6 @@ GameObject:
   - component: {fileID: 224184482}
   - component: {fileID: 224184485}
   - component: {fileID: 224184484}
-  - component: {fileID: 224184483}
   m_Layer: 5
   m_Name: IkkeFlereOpgaver
   m_TagString: Untagged
@@ -1947,19 +1946,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 70}
   m_SizeDelta: {x: 850, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &224184483
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 224184481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e13203002547d4438c08127ee85b091, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  taskContent: {fileID: 1131773459}
 --- !u!114 &224184484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5606,7 +5592,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1600257604}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9999915
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6570,7 +6556,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00046655908}
+  m_AnchoredPosition: {x: 0, y: 0.0004578801}
   m_SizeDelta: {x: 0, y: 1250}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1131773461
@@ -8249,6 +8235,7 @@ MonoBehaviour:
   petEditName: {fileID: 139265949}
   petNameAccept: {fileID: 852552385}
   petNameReject: {fileID: 685465043}
+  noTasksText: {fileID: 224184481}
   darkStripe: {r: 0.5294118, g: 0.34901962, b: 0.24313726, a: 1}
   lightStripe: {r: 0.81960785, g: 0.5529412, b: 0.4, a: 1}
   "\xD8GDollarText1": {fileID: 2129260479}
@@ -11196,7 +11183,6 @@ GameObject:
   - component: {fileID: 2129260482}
   - component: {fileID: 2129260481}
   - component: {fileID: 2129260479}
-  - component: {fileID: 2129260480}
   m_Layer: 5
   m_Name: Text - Dollars!
   m_TagString: Untagged
@@ -11295,18 +11281,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &2129260480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2129260478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 426bf4ae83d2901488c84a11a9700c3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &2129260481
 CanvasRenderer:
   m_ObjectHideFlags: 0

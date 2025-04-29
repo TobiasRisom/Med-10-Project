@@ -347,7 +347,6 @@ public class FirestoreHandler : MonoBehaviour
 		                       .text = "\ud83d\udcb8";
 		                
 		                // 🎯 Attach claim button logic
-		                Button claimButton = newTask.GetComponent<Button>();
 		                int taskIndex = i;
 		                taskButton.onClick.AddListener(() => {
 			                ClaimTaskReward(user, taskIndex, documentSnapshots[taskIndex]);
@@ -628,7 +627,7 @@ public class FirestoreHandler : MonoBehaviour
 	    SceneManager.LoadScene("TaskScreen");
     }
 
-    public async void submitTask(string user, string answer)
+    public async System.Threading.Tasks.Task submitTask(string user, string answer)
     {
 	    DocumentReference docRef = firestore.Collection("Users").Document(user);
 

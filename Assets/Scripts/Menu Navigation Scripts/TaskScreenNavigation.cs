@@ -18,6 +18,9 @@ public class TaskScreenNavigation : MonoBehaviour
 	public Button finalConfirm;
 	public Button finalBack;
 
+	public GameObject inputBackground;
+	public GameObject answerBackground;
+
 	public Button confirmWriting;
 	public Button confirmPicture;
 
@@ -73,6 +76,8 @@ public class TaskScreenNavigation : MonoBehaviour
 	    sendThisAnswer.gameObject.SetActive(true);
 	    finalConfirm.gameObject.SetActive(true);
 	    finalBack.gameObject.SetActive(true);
+	    inputBackground.SetActive(false);
+	    answerBackground.SetActive(true);
 	    
 	    finalUserAnswer.text = userAnswer.text;
 	    answerHolder = finalUserAnswer.text;
@@ -88,9 +93,9 @@ public class TaskScreenNavigation : MonoBehaviour
 	    SceneManager.LoadScene("MainScreen");
     }
 
-    public void writtenAnswerConfirmed()
+    public async void writtenAnswerConfirmed()
     {
-		fish.submitTask(PlayerPrefs.GetString("Name"), finalUserAnswer.text);
+	    await  fish.submitTask(PlayerPrefs.GetString("Name"), finalUserAnswer.text);
 		SceneManager.LoadScene("MainScreen");
     }
     
@@ -101,7 +106,7 @@ public class TaskScreenNavigation : MonoBehaviour
 		    byte[] imageBytes = cd.photo.EncodeToJPG(); 
 		    string base64Image = System.Convert.ToBase64String(imageBytes);
 		    
-		    await Task.Run(() => fish.submitTask(PlayerPrefs.GetString("Name"), base64Image));
+		    await fish.submitTask(PlayerPrefs.GetString("Name"), base64Image);
 		    SceneManager.LoadScene("MainScreen");
 	    }
     }
@@ -111,6 +116,9 @@ public class TaskScreenNavigation : MonoBehaviour
 	    sendThisAnswer.gameObject.SetActive(false);
 	    finalConfirm.gameObject.SetActive(false);
 	    finalBack.gameObject.SetActive(false);
+	    
+	    inputBackground.SetActive(true);
+	    answerBackground.SetActive(false);
 	    
 	    userAnswer.gameObject.SetActive(true);
 	    finalUserAnswer.gameObject.SetActive(false);

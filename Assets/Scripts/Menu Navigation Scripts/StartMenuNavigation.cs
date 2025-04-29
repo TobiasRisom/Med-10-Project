@@ -40,7 +40,7 @@ public class StartMenuNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 	    
 	    
-		PlayerPrefs.SetString("Name", "Marcus");
+		PlayerPrefs.SetString("Name", "NoN");
 		userName = PlayerPrefs.GetString("Name", "NoN");
 
 	    if (userName == "NoN")
