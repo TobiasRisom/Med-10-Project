@@ -19,7 +19,7 @@ public class PetForSaleScript : MonoBehaviour
 	    fish = GameObject.FindWithTag("dataManager")
 	                     .GetComponent<FirestoreHandler>();
         buyWindow = GameObject.FindWithTag("PetShopPanel")
-                              .transform.GetChild(12).gameObject;
+                              .transform.GetChild(11).gameObject;
 
         currentPet = GameObject.FindWithTag("Pet");
     }

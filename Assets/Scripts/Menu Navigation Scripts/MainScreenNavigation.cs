@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -89,28 +90,40 @@ public class MainScreenNavigation : MonoBehaviour
 	    DateTime nextUpdate = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 3, 0, 0);
 	    PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
     }
+    
 
     public void highlightUserInSchedule()
     {
+	    string userName = PlayerPrefs.GetString("Name");
+	    string pattern = $@"\b{Regex.Escape(userName)}\b";
+
 	    for (int i = 0; i < 7; i++)
 	    {
-		    if (weekNames[i]
-		        .text.Contains(PlayerPrefs.GetString("Name")))
+		    TextMeshProUGUI weekText = weekNames[i]; // Or TextMeshProUGUI
+		    string originalText = weekText.text;
+
+		    if (Regex.IsMatch(originalText, pattern))
 		    {
-			    weekStripes[i].color = new Color(1f, 0.447f, 0.125f, 1f);
-			    continue;
-		    }
-		    
-		    if (i % 2 == 1)
-		    {
-			    weekStripes[i].color = darkStripe;
+			    // Bold only the exact word match
+			    string boldedText = Regex.Replace(
+				    originalText,
+				    pattern,
+				    $"<b><u>{userName}</u></b>"
+			    );
+
+			    weekText.text = boldedText;
+
+			    // Highlight background
+			    //weekStripes[i].color = new Color(1f, 0.447f, 0.125f, 1f);
 		    }
 		    else
 		    {
-			    weekStripes[i].color = lightStripe;
+			    // Reset background stripe
+			    //weekStripes[i].color = (i % 2 == 1) ? darkStripe : lightStripe;
 		    }
 	    }
     }
+
 
     public void editPetName()
     {
