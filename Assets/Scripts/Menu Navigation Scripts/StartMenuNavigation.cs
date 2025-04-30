@@ -74,11 +74,11 @@ public class StartMenuNavigation : MonoBehaviour
 	        string n = "";
 	        if (beboer)
 	        {
-		        n = beboerInput.text;
+		        n = beboerInput.text.Trim();
 	        }
 	        else
 	        {
-		        n = ansatInput.text;
+		        n = ansatInput.text.Trim();
 	        }
 	        
 			PlayerPrefs.SetString("Name", n);
@@ -89,7 +89,7 @@ public class StartMenuNavigation : MonoBehaviour
 
         public void setPet()
         {
-	        PlayerPrefs.SetString("PetName", petName.text);
+	        PlayerPrefs.SetString("PetName", petName.text.Trim());
 	        for (int i = 0; i < toggles.Count; i++)
 	        {
 		        if (toggles[i].isOn)
