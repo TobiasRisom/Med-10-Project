@@ -31,6 +31,24 @@ public class ContentHandler : MonoBehaviour
 		Debug.LogWarning($"RemoveItem: Index {index} is out of range.");
 	}
 }
+	
+public void RemoveItem(GameObject taskObject)
+{
+	// Find the RectTransform of the task GameObject within elements
+	RectTransform rt = taskObject.GetComponent<RectTransform>();
+
+	// If it's found in the list, remove it
+	if (elements.Contains(rt))
+	{
+		elements.Remove(rt); // Remove from the list of elements
+		Destroy(taskObject); // Destroy the GameObject itself
+		LayoutItems(); // Re-layout the remaining items
+	}
+	else
+	{
+		Debug.LogWarning($"RemoveItem: GameObject {taskObject.name} is not found in elements.");
+	}
+}
 
 	void LayoutItems()
 	{

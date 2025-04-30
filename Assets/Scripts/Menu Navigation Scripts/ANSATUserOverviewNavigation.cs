@@ -28,10 +28,11 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 
     public void ShowUserInfo(string userName)
     {
-	    fish.GetTasksAndCount(userName, (taskCount, taskList, document) =>
+	    fish.GetTasksAndCount(userName, true, (taskCount, taskList) =>
 	    {
-		    foreach (var task in taskList)
+		    foreach (var t in taskList)
 		    {
+			    FirestoreHandler.Task task = t.TaskData;
 			    ContentHandler ch = content.GetComponent<ContentHandler>();
 			    GameObject userTaskInfo = Instantiate(taskStatusPrefab, content.transform, false);
 			    userTaskInfo.transform.GetChild(1)

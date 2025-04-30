@@ -247,181 +247,196 @@ public class FirestoreHandler : MonoBehaviour
 			stats.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Dage hvor alle opgaver blev gjort: " + daysCleared;
 		}
 	}
+	
+	public class TaskWithSnapshot
+	{
+		public Task TaskData { get; set; }
+		public DocumentSnapshot Snapshot { get; set; }
+	}
 
-	public void GetTasksAndCount(string user, System.Action<int, List<Task>, List<DocumentSnapshot>> callback)
+	public void GetTasksAndCount(string user, bool includeStatus3Tasks, System.Action<int, List<TaskWithSnapshot>> callback)
+	{
+		var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks").OrderBy(FieldPath.DocumentId);
+
+		tasksReference.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+		{
+			if (task.IsCompletedSuccessfully)
+			{
+				QuerySnapshot snapshot = task.Result;
+
+				List<TaskWithSnapshot> visibleTasks = new List<TaskWithSnapshot>();
+
+				foreach (DocumentSnapshot document in snapshot.Documents)
+				{
+					int status = document.GetValue<int>("Status");
+
+					Task newTask = new Task
+					{
+						Titel = document.GetValue<string>("Titel"),
+						Emoji = document.GetValue<string>("Emoji"),
+						Description = document.GetValue<string>("Description"),
+						ImageFormat = document.GetValue<bool>("ImageFormat"),
+						Status = status,
+						Repeat = document.GetValue<int>("Repeat"),
+						Answer = document.GetValue<string>("Answer")
+					};
+
+					if (!includeStatus3Tasks)
+					{
+						if (status != 3)
+						{
+							visibleTasks.Add(new TaskWithSnapshot { TaskData = newTask, Snapshot = document });
+						}
+					}
+					else
+					{
+						visibleTasks.Add(new TaskWithSnapshot { TaskData = newTask, Snapshot = document });
+					}
+				}
+
+				callback(visibleTasks.Count, visibleTasks);
+			}
+			else
+			{
+				Debug.LogError("Error fetching tasks: " + task.Exception);
+				callback(0, new List<TaskWithSnapshot>());
+			}
+		});
+	}
+
+private List<TaskWithSnapshot> taskWithSnapshots = new List<TaskWithSnapshot>();
+
+public void spawnTasks(string user)
+{
+    Debug.Log("Running SpawnTasks");
+    tasks.Clear(); // Reset list so we don't spawn missing objects
+    GameObject mainScreen = GameObject.FindWithTag("mainScreen");
+    GameObject content = GameObject.FindWithTag("content");
+    ContentHandler ch = content.GetComponent<ContentHandler>();
+
+    GetTasksAndCount(user, false, (taskAmount, taskWithSnapshots) =>
     {
-        var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks").OrderBy(FieldPath.DocumentId);
+        TaskData = taskWithSnapshots.Select(entry => entry.TaskData).ToList(); // Update TaskData list to only include TaskData
 
-        tasksReference.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        // Iterate through the task entries (TaskWithSnapshot)
+        for (int i = 0; i < TaskData.Count; i++)
         {
-            if (task.IsCompletedSuccessfully)
+            var taskEntry = taskWithSnapshots[i]; // Capture TaskWithSnapshot entry
+            Task currentTask = taskEntry.TaskData;
+
+            if (currentTask.Status == 2)
             {
-                QuerySnapshot snapshot = task.Result;
-
-                // Create a list to store the tasks
-                List<Task> taskList = new List<Task>();
-
-                // Iterate through each document in the snapshot and create Task objects
-                foreach (DocumentSnapshot document in snapshot.Documents)
-                {
-                    Task newTask = new Task
-                    {
-                        Titel = document.GetValue<string>("Titel"),
-                        Emoji = document.GetValue<string>("Emoji"),
-                        Description = document.GetValue<string>("Description"),
-                        ImageFormat = document.GetValue<bool>("ImageFormat"),
-                        Status = document.GetValue<int>("Status"),
-                        Repeat = document.GetValue<int>("Repeat"),
-                        Answer = document.GetValue<string>("Answer")
-                    };
-
-                    // Add the task object to the list
-                    taskList.Add(newTask);
-                }
-
-                // Pass both the task count and the task list to the callback
-                callback(snapshot.Documents.Count(), taskList, snapshot.Documents.ToList());
+                currentTask.Description = "Du har klaret opgaven!\nTryk for at tjene ØG Dollars!";
             }
-            else
+
+            // Skip tasks with status 3
+            if (currentTask.Status == 3)
+                continue;
+
+            // Instantiate the task GameObject
+            GameObject newTask = Instantiate(taskTemplate, content.transform, false);
+            Button taskButton = newTask.GetComponent<Button>();
+
+            newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentTask.Titel;
+            newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentTask.Emoji;
+            newTask.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = currentTask.Description;
+            newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = currentTask.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
+
+            switch (currentTask.Status)
             {
-                Debug.LogError("Error fetching tasks: " + task.Exception);
-                callback(0, new List<Task>(), new List<DocumentSnapshot>()); // Return 0 and an empty list on error
+                case 0:
+                    newTask.transform.GetChild(4).gameObject.SetActive(true);
+                    newTask.transform.GetChild(5).gameObject.SetActive(false);
+                    newTask.transform.GetChild(6).gameObject.SetActive(false);
+                    taskButton.onClick.AddListener(() => {
+                        ClaimTaskReward(user, taskEntry, newTask, ch);  // Pass `ch` for removal
+                    });
+                    break;
+                case 1:
+                    newTask.transform.GetChild(5).gameObject.SetActive(true);
+                    newTask.transform.GetChild(4).gameObject.SetActive(false);
+                    newTask.transform.GetChild(6).gameObject.SetActive(false);
+                    taskButton.GetComponent<Image>().color = new Color(0.70f, 0.94f, 1f);
+                    taskButton.onClick.AddListener(() => {
+                        ClaimTaskReward(user, taskEntry, newTask, ch);  // Pass `ch` for removal
+                    });
+                    break;
+                case 2:
+                    newTask.transform.GetChild(6).gameObject.SetActive(true);
+                    newTask.transform.GetChild(4).gameObject.SetActive(false);
+                    newTask.transform.GetChild(5).gameObject.SetActive(false);
+                    taskButton.GetComponent<Image>().color = new Color(0.47f, 0.78f, 0.49f);
+                    newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = "\ud83d\udcb8"; // 💸 Emoji
+                    taskButton.onClick.AddListener(() => {
+                        ClaimTaskReward(user, taskEntry, newTask, ch);  // Pass `ch` for removal
+                    });
+                    break;
             }
-        });
-    }
+
+            // Add the newly created task GameObject to the list
+            tasks.Add(newTask);
+            ch.AddItem(newTask);  // Add to ContentHandler
+        }
+
+        Debug.Log("Tasks spawned");
+    });
+}
+
+
+
     
-    public void spawnTasks(string user)
-    {
-	    Debug.Log("Running SpawnTasks");
-        tasks.Clear(); // Reset list so we don't spawn missing objects
-        GameObject mainScreen = GameObject.FindWithTag("mainScreen");
-        
-        GameObject content = GameObject.FindWithTag("content");
-        ContentHandler ch = content.GetComponent<ContentHandler>();
+private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject button, ContentHandler ch)
+{
+	GameObject instance = Instantiate(moneyGraphic);
+	instance.GetComponent<MoneyAnimation>().Play(button.transform.position, GameObject.FindWithTag("MainCanvas").transform);
 
-        GetTasksAndCount(user, (taskAmount, taskList, documentSnapshots) =>
-        {
-	        TaskData = taskList;
+	// 🎁 Give the dollars
+	int currentDollars = PlayerPrefs.GetInt("Dollars", 0);
+	PlayerPrefs.SetInt("Dollars", currentDollars + 100);
+	PlayerPrefs.Save();
+	GameObject.FindWithTag("PanelHolder").GetComponent<MainScreenNavigation>().setDollarsText();
 
-	        // Instantiate a GameObject for each task and add it to the screen
-            for (int i = 0; i < TaskData.Count; i++)
-            {
-	            if (TaskData[i].Status == 2)
-	            {
-		            TaskData[i].Description = "Du har klaret opgaven!\nTryk for at tjene ØG Dollars!";
-	            }
-	            
-	            if (TaskData[i].Status == 3)
-		            continue; 
-	            
-                // Instantiate the task GameObject
-                GameObject newTask = Instantiate(taskTemplate, content.transform, false);
-                
-                Button taskButton = newTask.GetComponent<Button>();
-                int taskIndex = i;
-                
-                newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = TaskData[i].Titel;
-                newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = TaskData[i].Emoji;
-                newTask.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = TaskData[i].Description;
-                newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = TaskData[i].ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
+	// 🧠 Check Repeat field
+	if (taskEntry.TaskData.Repeat == 0)
+	{
+		// 🗑️ Delete task if no repeats
+		firestore.Collection("Users")
+		         .Document(user)
+		         .Collection("Tasks")
+		         .Document(taskEntry.Snapshot.Id)
+		         .DeleteAsync()
+		         .ContinueWithOnMainThread(task =>
+		         {
+			         if (task.IsCompletedSuccessfully)
+				         Debug.Log("Task deleted successfully.");
+			         else
+				         Debug.LogError("Error deleting task: " + task.Exception);
+		         });
+	}
+	else
+	{
+		// ♻️ Otherwise, set status to 3 (hidden)
+		firestore.Collection("Users")
+		         .Document(user)
+		         .Collection("Tasks")
+		         .Document(taskEntry.Snapshot.Id)
+		         .UpdateAsync(new Dictionary<string, object> {
+			         { "Status", 3 }
+		         });
+	}
 
-                switch (TaskData[i].Status)
-                {
-	                case 0:
-		                newTask.transform.GetChild(4).gameObject.SetActive(true);
-		                newTask.transform.GetChild(5).gameObject.SetActive(false);
-		                newTask.transform.GetChild(6).gameObject.SetActive(false);
-		                
-		                taskButton.onClick.AddListener(delegate { goToTask(taskIndex); });
-		                break;
-	                case 1:
-		                newTask.transform.GetChild(5).gameObject.SetActive(true);
-		                newTask.transform.GetChild(4).gameObject.SetActive(false);
-		                newTask.transform.GetChild(6).gameObject.SetActive(false);
-		                
-		                taskButton.GetComponent<Image>()
-		                          .color = new Color(0.70f, 0.94f, 1f);
-		                
-		                taskButton.onClick.AddListener(delegate { goToTask(taskIndex); });
-		                break;
-	                case 2:
-		                newTask.transform.GetChild(6).gameObject.SetActive(true);
-		                newTask.transform.GetChild(4).gameObject.SetActive(false);
-		                newTask.transform.GetChild(5).gameObject.SetActive(false);
+	// Remove the task from the ContentHandler
+	ch.RemoveItem(button); // Remove from ContentHandler's list
 
-		                taskButton.GetComponent<Image>()
-		                          .color = new Color(0.47f, 0.78f, 0.49f);
+	// ❌ Destroy the button (task UI element)
+	Destroy(button);
 
-		                newTask.transform.GetChild(3)
-		                       .GetComponent<TextMeshProUGUI>()
-		                       .text = "\ud83d\udcb8";
-		                
-		                taskButton.onClick.AddListener(() => {
-			                ClaimTaskReward(user, taskIndex, documentSnapshots[taskIndex], taskButton.gameObject);
-		                });
-		                break;
-                }
+	// ✅ OPTIONAL: Remove the task entry from your tracking list (if needed)
+	taskWithSnapshots.Remove(taskEntry); // Only if you're keeping this list somewhere globally
+}
 
-                // Add the newly created task object to the tasks list
-                tasks.Add(newTask);
-                ch.AddItem(tasks[i]);   
-            }
 
-            Debug.Log("Tasks spawned");
-        });
-    }
-    
-    private void ClaimTaskReward(string user, int taskIndex, DocumentSnapshot documentSnapshot, GameObject button)
-    {
-	    
-	    GameObject instance = Instantiate(moneyGraphic);
-	    instance.GetComponent<MoneyAnimation>().Play(button.transform.position, GameObject.FindWithTag("MainCanvas").transform);
-	    
-	    // 🎁 Give the dollars
-	    int currentDollars = PlayerPrefs.GetInt("Dollars", 0);
-	    PlayerPrefs.SetInt("Dollars", currentDollars + 100);
-	    PlayerPrefs.Save();
-	    GameObject.FindWithTag("PanelHolder").GetComponent<MainScreenNavigation>().setDollarsText();
 
-	    // 🧠 Check Repeat field
-	    if (TaskData[taskIndex].Repeat == 0)
-	    {
-		    // 🗑️ Delete task if no repeats
-		    firestore.Collection("Users")
-		             .Document(user)
-		             .Collection("Tasks")
-		             .Document(documentSnapshot.Id)
-		             .DeleteAsync()
-		             .ContinueWithOnMainThread(task =>
-		             {
-			             if (task.IsCompletedSuccessfully)
-				             Debug.Log("Task deleted successfully.");
-			             else
-				             Debug.LogError("Error deleting task: " + task.Exception);
-		             });
-	    }
-	    else
-	    {
-		    // ♻️ Otherwise, set status to 3 (hidden)
-		    firestore.Collection("Users")
-		             .Document(user)
-		             .Collection("Tasks")
-		             .Document(documentSnapshot.Id)
-		             .UpdateAsync(new Dictionary<string, object> {
-			             { "Status", 3 }
-		             });
-	    }
-	    
-	    tasks.RemoveAt(taskIndex);
-	    TaskData.RemoveAt(taskIndex);
-	    GameObject.FindWithTag("content").GetComponent<ContentHandler>().RemoveItem(taskIndex);
-	    
-	    foreach (GameObject task in tasks)
-	    {
-		    Button btn = task.GetComponent<Button>();
-		    btn.interactable = true;
-	    }
-    }
     
 	public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback)
 {
@@ -738,7 +753,7 @@ public class FirestoreHandler : MonoBehaviour
                      Debug.Log($"Querying tasks for user: {userId}");
 
                      // Fetch all tasks for this user
-                     var t = firestore.Collection("Users")
+	                 firestore.Collection("Users")
                                       .Document(userId)
                                       .Collection("Tasks")
                                       .GetSnapshotAsync()
