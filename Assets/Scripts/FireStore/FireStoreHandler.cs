@@ -256,7 +256,10 @@ public class FirestoreHandler : MonoBehaviour
 
 	public void GetTasksAndCount(string user, bool includeStatus3Tasks, System.Action<int, List<TaskWithSnapshot>> callback)
 	{
-		var tasksReference = firestore.Collection("Users").Document(user).Collection("Tasks").OrderBy(FieldPath.DocumentId);
+		var tasksReference = firestore.Collection("Users")
+		                              .Document(user)
+		                              .Collection("Tasks")
+		                              .OrderBy(FieldPath.DocumentId);
 
 		tasksReference.GetSnapshotAsync().ContinueWithOnMainThread(task =>
 		{
