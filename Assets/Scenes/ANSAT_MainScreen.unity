@@ -1174,7 +1174,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1043}
+  m_AnchoredPosition: {x: -250, y: -1043}
   m_SizeDelta: {x: 320, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &106514841
@@ -4079,7 +4079,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1043}
+  m_AnchoredPosition: {x: 250, y: -1043}
   m_SizeDelta: {x: 320, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &697237481
@@ -9530,6 +9530,7 @@ MonoBehaviour:
   leaderboardText: {fileID: 467648111}
   noMoreTasks: {fileID: 1403830790}
   ZoomInPanel: {fileID: 1416580023}
+  updateEverythingButton: {fileID: 1878640845}
 --- !u!1 &1492525317
 GameObject:
   m_ObjectHideFlags: 0
@@ -11915,7 +11916,7 @@ GameObject:
   - component: {fileID: 1878640845}
   - component: {fileID: 1878640844}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: UpdateButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

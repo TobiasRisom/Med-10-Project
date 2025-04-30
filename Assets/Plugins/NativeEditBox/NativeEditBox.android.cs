@@ -238,7 +238,7 @@ public partial class NativeEditBox : IPointerClickHandler
 
 		UpdatePlacementNow();
 
-		editBox.Call("SetFontSize", Mathf.RoundToInt(text.fontSize * text.pixelsPerUnit));
+		editBox.Call("SetFontSize", Mathf.RoundToInt(text.fontSize));
 		editBox.Call("SetFontColor", text.color.r, text.color.g, text.color.b, text.color.a);
 		editBox.Call("SetPlaceholder", placeholder.text, placeholder.color.r, placeholder.color.g, placeholder.color.b, placeholder.color.a);
 		editBox.Call("SetTextAlignment", (int)alignment);

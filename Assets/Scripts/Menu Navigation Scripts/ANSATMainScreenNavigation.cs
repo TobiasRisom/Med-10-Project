@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -36,6 +37,8 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 
 	public GameObject ZoomInPanel;
 
+	public Button updateEverythingButton;
+
     void Start()
     {
 	    fish = GameObject.FindWithTag("dataManager")
@@ -72,6 +75,8 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 
     public void UpdateEverything()
     {
+	    StartCoroutine(PreventUpdateSpamming());
+		    
 	    foreach(Transform child in content.transform)
 	    {
 		    Destroy(child.gameObject);
@@ -87,6 +92,20 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	    setUpUserButtons();
 	    fish.spawnVerifiedTasks();
 	    SetUpLeaderboard();
+    }
+    
+    IEnumerator PreventUpdateSpamming()
+    {
+	    updateEverythingButton.interactable = false;
+	    Image buttonImage = updateEverythingButton.GetComponent<Image>();
+	    Color buttonColor = buttonImage.color;
+	    
+	    buttonImage.color = buttonColor * 0.7f;
+
+	    yield return new WaitForSeconds(2f);
+	    
+	    buttonImage.color = buttonColor;
+	    updateEverythingButton.interactable = true;
     }
 
     public void ScheduleEditMode()

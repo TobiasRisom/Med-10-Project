@@ -59,8 +59,12 @@ public partial class NativeEditBox
 
 	void OnEndEdit(string text)
 	{
-		//if (Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Return))
-			//OnSubmit?.Invoke(inputField.text);
+		if (UnityEngine.InputSystem.Keyboard.current != null &&
+        (UnityEngine.InputSystem.Keyboard.current.enterKey.wasPressedThisFrame ||
+         UnityEngine.InputSystem.Keyboard.current.numpadEnterKey.wasPressedThisFrame))
+    {
+        OnSubmit?.Invoke(inputField.text);
+    }
 
 		OnDidEnd?.Invoke();
 		OnTapOutside?.Invoke();

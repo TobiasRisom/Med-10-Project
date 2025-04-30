@@ -4260,7 +4260,7 @@ MonoBehaviour:
   m_fontSize: 60
   m_fontSizeBase: 60
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 60
   m_fontStyle: 0
@@ -4407,7 +4407,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 60
-  m_CharacterLimit: 0
+  m_CharacterLimit: 325
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []

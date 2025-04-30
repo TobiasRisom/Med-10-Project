@@ -226,7 +226,7 @@ public partial class NativeEditBox : IPointerClickHandler
 
 		UpdatePlacementNow();
 
-		_CNativeEditBox_SetFontSize(editBox, Mathf.RoundToInt(text.fontSize * text.pixelsPerUnit));
+		_CNativeEditBox_SetFontSize(editBox, Mathf.RoundToInt(text.fontSize));
 		_CNativeEditBox_SetFontColor(editBox, text.color.r, text.color.g, text.color.b, text.color.a);
 		_CNativeEditBox_SetPlaceholder(editBox, placeholder.text, placeholder.color.r, placeholder.color.g, placeholder.color.b, placeholder.color.a);
 		_CNativeEditBox_SetTextAlignment(editBox, (int)alignment);
