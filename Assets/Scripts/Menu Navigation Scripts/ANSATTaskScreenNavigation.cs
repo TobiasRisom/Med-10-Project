@@ -83,19 +83,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	
 	private bool setContinueButtonActive()
 	{
-		if (howOften == Repetition.Weekly)
-		{
-			if (inputTitle.text.Length > 0 && inputEmoji.text.Length > 0 && inputDescription.text.Length > 0 && dropdown.value != 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		
-		else if (inputTitle.text.Length > 0 && inputEmoji.text.Length > 0 && inputDescription.text.Length > 0)
+		if (inputTitle.text.Length > 0 && inputEmoji.text.Length > 0 && inputDescription.text.Length > 0)
 		{
 			return true;
 		}
@@ -215,7 +203,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 			    break;
 		    
 		    case Repetition.Weekly:
-			    newTask.Repeat = ((dropdown.value) + 6) % 7 + 2; // 2 = Monday, 3 = Tuesday, etc...
+			    newTask.Repeat = dropdown.value + 2; // 2 = Monday, 3 = Tuesday, etc...
 			    break;
 	    }
 	    

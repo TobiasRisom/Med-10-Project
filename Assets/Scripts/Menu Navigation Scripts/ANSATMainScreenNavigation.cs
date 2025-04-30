@@ -42,6 +42,12 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 
 	    content = GameObject.FindWithTag("content");
+
+	    if (fish.onUserScreen)
+	    {
+		    transform.position += new Vector3(-1080, 0, 0);
+		    fish.onUserScreen = false;
+	    }
 	    
 	    fish.ScheduleManager();
 	    setUpUserButtons();
@@ -52,6 +58,11 @@ public class ANSATMainScreenNavigation : MonoBehaviour
     void Update()
     {
 	    checkForNoMoreTasks();
+    }
+    
+    public void rememberGoingToUserScreen()
+    {
+	    fish.onUserScreen = true;
     }
 
     public void ZoomOut()
@@ -168,6 +179,7 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 		    Button btn = userButton.GetComponentInChildren<Button>();
 		    
 		    btn.onClick.AddListener(delegate { OnButtonClick(user); });
+		    btn.onClick.AddListener(delegate { rememberGoingToUserScreen(); });
 	    }
     }
 

@@ -38,6 +38,8 @@ public class FirestoreHandler : MonoBehaviour
 	public List<String> V_Users = new List<String>();
 
 	public GameObject userToggle;
+
+	public bool onUserScreen = false;
 	
 	
 	private void Awake()
