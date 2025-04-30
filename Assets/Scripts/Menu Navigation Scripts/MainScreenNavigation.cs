@@ -51,7 +51,7 @@ public class MainScreenNavigation : MonoBehaviour
 	    petName.text = PlayerPrefs.GetString("PetName");
 	    setDollarsText();
 	    
-	    Invoke(nameof(StartCheckingForNoTasks), 1f);
+	    Invoke(nameof(StartCheckingForNoTasks), 1.5f);
     }
 
     void Update()

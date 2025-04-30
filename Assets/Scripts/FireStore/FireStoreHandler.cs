@@ -318,7 +318,7 @@ public class FirestoreHandler : MonoBehaviour
                 GameObject newTask = Instantiate(taskTemplate, content.transform, false);
                 
                 Button taskButton = newTask.GetComponent<Button>();
-
+                int taskIndex = i;
                 
                 newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = TaskData[i].Titel;
                 newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = TaskData[i].Emoji;
@@ -331,6 +331,8 @@ public class FirestoreHandler : MonoBehaviour
 		                newTask.transform.GetChild(4).gameObject.SetActive(true);
 		                newTask.transform.GetChild(5).gameObject.SetActive(false);
 		                newTask.transform.GetChild(6).gameObject.SetActive(false);
+		                
+		                taskButton.onClick.AddListener(delegate { goToTask(taskIndex); });
 		                break;
 	                case 1:
 		                newTask.transform.GetChild(5).gameObject.SetActive(true);
@@ -339,6 +341,8 @@ public class FirestoreHandler : MonoBehaviour
 		                
 		                taskButton.GetComponent<Image>()
 		                          .color = new Color(0.70f, 0.94f, 1f);
+		                
+		                taskButton.onClick.AddListener(delegate { goToTask(taskIndex); });
 		                break;
 	                case 2:
 		                newTask.transform.GetChild(6).gameObject.SetActive(true);
@@ -352,8 +356,6 @@ public class FirestoreHandler : MonoBehaviour
 		                       .GetComponent<TextMeshProUGUI>()
 		                       .text = "\ud83d\udcb8";
 		                
-		                // 🎯 Attach claim button logic
-		                int taskIndex = i;
 		                taskButton.onClick.AddListener(() => {
 			                ClaimTaskReward(user, taskIndex, documentSnapshots[taskIndex], taskButton.gameObject);
 		                });
@@ -362,16 +364,7 @@ public class FirestoreHandler : MonoBehaviour
 
                 // Add the newly created task object to the tasks list
                 tasks.Add(newTask);
-                
-                if (TaskData[i].Status != 2)
-                {
-	                Button btn = tasks[i]
-		                .GetComponent<Button>();
-
-	                int index = i; // looks stupid but necessary due to scope
-	                btn.onClick.AddListener(delegate { goToTask(index); });
-                }
-                ch.AddItem(tasks[i]);
+                ch.AddItem(tasks[i]);   
             }
 
             Debug.Log("Tasks spawned");
@@ -388,6 +381,7 @@ public class FirestoreHandler : MonoBehaviour
 	    int currentDollars = PlayerPrefs.GetInt("Dollars", 0);
 	    PlayerPrefs.SetInt("Dollars", currentDollars + 100);
 	    PlayerPrefs.Save();
+	    GameObject.FindWithTag("PanelHolder").GetComponent<MainScreenNavigation>().setDollarsText();
 
 	    // 🧠 Check Repeat field
 	    if (TaskData[taskIndex].Repeat == 0)
@@ -421,9 +415,12 @@ public class FirestoreHandler : MonoBehaviour
 	    tasks.RemoveAt(taskIndex);
 	    TaskData.RemoveAt(taskIndex);
 	    GameObject.FindWithTag("content").GetComponent<ContentHandler>().RemoveItem(taskIndex);
-
-	    // Optionally refresh UI (destroy or reload)
-	    Debug.Log("Reward claimed for task index: " + taskIndex);
+	    
+	    foreach (GameObject task in tasks)
+	    {
+		    Button btn = task.GetComponent<Button>();
+		    btn.interactable = true;
+	    }
     }
     
 	public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback)

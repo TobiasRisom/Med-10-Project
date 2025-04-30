@@ -11621,7 +11621,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "100 \U0001F4B5"
+  m_text: "1000 \U0001F4B5"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5f4f75b92367c884d9906db3ccf8edbf, type: 2}
   m_sharedMaterial: {fileID: 8908769792728337583, guid: 5f4f75b92367c884d9906db3ccf8edbf, type: 2}
@@ -11717,7 +11717,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 220, y: 73.2}
+  m_SizeDelta: {x: 300, y: 73.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
