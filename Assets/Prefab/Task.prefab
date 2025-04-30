@@ -276,7 +276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9150943, g: 0.9150943, b: 0.9150943, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -553,7 +553,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "G\xF8r noget meget sejt ellers s\xE5 vanker der! "
+  m_text: "St\xF8vsug det gulv!!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 58a394b122442dc468f2b4f4a3d157b2, type: 2}
   m_sharedMaterial: {fileID: 7713000818527962494, guid: 58a394b122442dc468f2b4f4a3d157b2, type: 2}

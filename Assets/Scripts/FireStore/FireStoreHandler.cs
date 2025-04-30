@@ -38,6 +38,7 @@ public class FirestoreHandler : MonoBehaviour
 	public List<String> V_Users = new List<String>();
 
 	public GameObject userToggle;
+	public GameObject moneyGraphic;
 
 	public bool onUserScreen = false;
 	
@@ -335,6 +336,9 @@ public class FirestoreHandler : MonoBehaviour
 		                newTask.transform.GetChild(5).gameObject.SetActive(true);
 		                newTask.transform.GetChild(4).gameObject.SetActive(false);
 		                newTask.transform.GetChild(6).gameObject.SetActive(false);
+		                
+		                taskButton.GetComponent<Image>()
+		                          .color = new Color(0.70f, 0.94f, 1f);
 		                break;
 	                case 2:
 		                newTask.transform.GetChild(6).gameObject.SetActive(true);
@@ -342,7 +346,7 @@ public class FirestoreHandler : MonoBehaviour
 		                newTask.transform.GetChild(5).gameObject.SetActive(false);
 
 		                taskButton.GetComponent<Image>()
-		                          .color = new Color(1, 0.95f, 0.44f);
+		                          .color = new Color(0.47f, 0.78f, 0.49f);
 
 		                newTask.transform.GetChild(3)
 		                       .GetComponent<TextMeshProUGUI>()
@@ -351,7 +355,7 @@ public class FirestoreHandler : MonoBehaviour
 		                // 🎯 Attach claim button logic
 		                int taskIndex = i;
 		                taskButton.onClick.AddListener(() => {
-			                ClaimTaskReward(user, taskIndex, documentSnapshots[taskIndex]);
+			                ClaimTaskReward(user, taskIndex, documentSnapshots[taskIndex], taskButton.gameObject);
 		                });
 		                break;
                 }
@@ -374,8 +378,12 @@ public class FirestoreHandler : MonoBehaviour
         });
     }
     
-    private void ClaimTaskReward(string user, int taskIndex, DocumentSnapshot documentSnapshot)
+    private void ClaimTaskReward(string user, int taskIndex, DocumentSnapshot documentSnapshot, GameObject button)
     {
+	    
+	    GameObject instance = Instantiate(moneyGraphic);
+	    instance.GetComponent<MoneyAnimation>().Play(button.transform.position, GameObject.FindWithTag("MainCanvas").transform);
+	    
 	    // 🎁 Give the dollars
 	    int currentDollars = PlayerPrefs.GetInt("Dollars", 0);
 	    PlayerPrefs.SetInt("Dollars", currentDollars + 100);

@@ -25,6 +25,7 @@ TagManager:
   - PanelHolder
   - Stats
   - BuyWindow
+  - MainCanvas
   layers:
   - Default
   - TransparentFX

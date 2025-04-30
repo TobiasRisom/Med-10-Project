@@ -7023,6 +7023,7 @@ MonoBehaviour:
   v_taskTemplate: {fileID: 1567914936858765090, guid: 766481f48f5bce04d9c51dd581a9dc4d, type: 3}
   V_Users: []
   userToggle: {fileID: 6364906696491458808, guid: d9ad8c09bc88c974e8a28ad1014987d3, type: 3}
+  moneyGraphic: {fileID: 4606319087865454955, guid: e425329daf1cd834b9b9122f272b256e, type: 3}
   onUserScreen: 0
 --- !u!1 &1291404704
 GameObject:
