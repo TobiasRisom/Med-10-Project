@@ -10,10 +10,10 @@ public class ScrollView : MonoBehaviour
 	private const int maxHeight = 2412;
 
 	// UI properties corresponding to those bounds
-	private const float minY = -225f;
-	private const float maxY = -352f;
-	private const float minHeightValue = 950f;
-	private const float maxHeightValue = 1150f;
+	public float minY;
+	public float maxY;
+	public float minHeightValue;
+	public float maxHeightValue;
 
 	void Start()
 	{

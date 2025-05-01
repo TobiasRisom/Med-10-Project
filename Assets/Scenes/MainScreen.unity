@@ -5729,7 +5729,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1600257605}
   m_HandleRect: {fileID: 1600257604}
   m_Direction: 2
-  m_Value: 1.0000012
+  m_Value: 1
   m_Size: 0.92
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -8505,6 +8505,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollView: {fileID: 186623334}
+  minY: -225
+  maxY: -352
+  minHeightValue: 950
+  maxHeightValue: 1150
 --- !u!1 &1492525317
 GameObject:
   m_ObjectHideFlags: 0
