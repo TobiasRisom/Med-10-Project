@@ -1683,7 +1683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 732b739024d3c944da136bb6a51c13da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  returnButtonType: 0
+  returnButtonType: 5
   showClearButton: 1
   switchBetweenNativeAndUnity: 0
 --- !u!1 &322828567

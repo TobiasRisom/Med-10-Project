@@ -76,6 +76,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 		{
 			dropdown.gameObject.SetActive(true);
 			dropdownText.gameObject.SetActive(true);
+			dropdown.value = ((int)DateTime.Now.DayOfWeek + 6) % 7;
 		}
 		else
 		{

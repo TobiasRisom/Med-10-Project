@@ -57,6 +57,14 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 	    fish.spawnVerifiedTasks();
 	    SetUpLeaderboard();
     }
+    
+    void OnApplicationPause(bool isPaused)
+    {
+	    if (!isPaused)
+	    {
+		    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	    }
+    }
 
     void Update()
     {
