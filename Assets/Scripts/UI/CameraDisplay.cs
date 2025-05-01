@@ -204,4 +204,13 @@ public class CameraDisplay : MonoBehaviour
         result.Apply();
         return result;
     }
+    
+    public void StopCamera()
+    {
+	    if (webCamTexture != null && webCamTexture.isPlaying)
+	    {
+		    webCamTexture.Stop();  // Stop the webcam texture and the capture
+		    Debug.Log("Camera stopped.");
+	    }
+    }
 }

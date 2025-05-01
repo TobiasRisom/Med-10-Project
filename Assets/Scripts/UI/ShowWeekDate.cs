@@ -7,6 +7,7 @@ public class WeekDisplay : MonoBehaviour
 {
 	// Reference to the TextMeshProUGUI component
 	private TextMeshProUGUI weekText;
+	public bool includeEmoji;
 
 	void Start()
 	{
@@ -40,7 +41,14 @@ public class WeekDisplay : MonoBehaviour
 		currentDayOfWeek = Char.ToUpper(currentDayOfWeek[0]) + currentDayOfWeek.Substring(1);
 
 		// Update the TextMeshProUGUI with the week info and current day
-		weekText.text = $"\ud83d\udcc5 {currentDayOfWeek}, Uge {currentWeekNumber}\n{startDate} - {endDate}";
+		if (includeEmoji)
+		{
+			weekText.text = $"\ud83d\udcc5 {currentDayOfWeek}, Uge {currentWeekNumber}\n{startDate} - {endDate}";
+		}
+		else
+		{
+			weekText.text = $"{currentDayOfWeek}, Uge {currentWeekNumber}\n{startDate} - {endDate}";
+		}
 	}
 
 	int GetWeekNumber(DateTime date)
