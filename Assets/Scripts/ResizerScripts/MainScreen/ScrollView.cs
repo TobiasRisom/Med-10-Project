@@ -26,7 +26,7 @@ public class ScrollView : MonoBehaviour
 		float newY = Mathf.Lerp(minY, maxY, t);
 		float newHeight = Mathf.Lerp(minHeightValue, maxHeightValue, t);
 
-		scrollView.anchoredPosition = new Vector2(0, newY);
+		scrollView.anchoredPosition = new Vector2(scrollView.anchoredPosition.x, newY);
 		Vector2 size = scrollView.sizeDelta;
 		size.y = newHeight;
 		scrollView.sizeDelta = size;

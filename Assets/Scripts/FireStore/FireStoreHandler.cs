@@ -8,13 +8,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class FirestoreHandler : MonoBehaviour
 {
 	private FirebaseFirestore firestore;
 	
-	public int currentTask;
+	[FormerlySerializedAs("currentTask")]
+	public DocumentSnapshot currentSnapshot;
 	public string currentUserInfo;
 	
 	public class Task
@@ -27,6 +29,8 @@ public class FirestoreHandler : MonoBehaviour
 		public int Repeat { get; set; }
 		public string Answer { get; set; }
 	}
+
+	public Task currentTask;
 	public List<Task> TaskData = new List<Task>(); // Stores data locally so we don't need to keep reading the database
 	public List<GameObject> tasks; // Stores the tasks game objects that are spawned in the Unity scene
 	public GameObject taskTemplate; // Template for all tasks shown on the main screen
@@ -325,44 +329,42 @@ public void spawnTasks(string user)
         for (int i = 0; i < TaskData.Count; i++)
         {
             var taskEntry = taskWithSnapshots[i]; // Capture TaskWithSnapshot entry
-            Task currentTask = taskEntry.TaskData;
+            Task thisTask = taskEntry.TaskData;
 
-            if (currentTask.Status == 2)
+            if (thisTask.Status == 2)
             {
-                currentTask.Description = "Du har klaret opgaven!\nTryk for at tjene ØG Dollars!";
+	            thisTask.Description = "Du har klaret opgaven!\nTryk for at tjene ØG Dollars!";
             }
 
             // Skip tasks with status 3
-            if (currentTask.Status == 3)
+            if (thisTask.Status == 3)
                 continue;
 
             // Instantiate the task GameObject
             GameObject newTask = Instantiate(taskTemplate, content.transform, false);
+            Task taskCopy = thisTask;
+            DocumentSnapshot snapshotCopy = taskEntry.Snapshot;
             Button taskButton = newTask.GetComponent<Button>();
+            
+            newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = thisTask.Titel;
+            newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = thisTask.Emoji;
+            newTask.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = thisTask.Description;
+            newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = thisTask.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
 
-            newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentTask.Titel;
-            newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentTask.Emoji;
-            newTask.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = currentTask.Description;
-            newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = currentTask.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
-
-            switch (currentTask.Status)
+            switch (thisTask.Status)
             {
                 case 0:
                     newTask.transform.GetChild(4).gameObject.SetActive(true);
                     newTask.transform.GetChild(5).gameObject.SetActive(false);
-                    newTask.transform.GetChild(6).gameObject.SetActive(false);
-                    taskButton.onClick.AddListener(() => {
-                        ClaimTaskReward(user, taskEntry, newTask, ch);  // Pass `ch` for removal
-                    });
+                    newTask.transform.GetChild(6).gameObject.SetActive(false); // capture correctly for delegate
+                    taskButton.onClick.AddListener(() => goToTask(taskCopy, snapshotCopy));
                     break;
                 case 1:
                     newTask.transform.GetChild(5).gameObject.SetActive(true);
                     newTask.transform.GetChild(4).gameObject.SetActive(false);
                     newTask.transform.GetChild(6).gameObject.SetActive(false);
                     taskButton.GetComponent<Image>().color = new Color(0.70f, 0.94f, 1f);
-                    taskButton.onClick.AddListener(() => {
-                        ClaimTaskReward(user, taskEntry, newTask, ch);  // Pass `ch` for removal
-                    });
+                    taskButton.onClick.AddListener(() => goToTask(taskCopy, snapshotCopy));
                     break;
                 case 2:
                     newTask.transform.GetChild(6).gameObject.SetActive(true);
@@ -383,6 +385,13 @@ public void spawnTasks(string user)
 
         Debug.Log("Tasks spawned");
     });
+}
+
+public void goToTask(Task task, DocumentSnapshot snapshot)
+{
+	currentTask = task;
+	currentSnapshot = snapshot; // store the snapshot too
+	SceneManager.LoadScene("TaskScreen");
 }
 
 
@@ -645,35 +654,20 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		Debug.Log("Task updated successfully!");
 	}
 
-    
-    public void goToTask(int taskIndex)
-    {
-	    currentTask = taskIndex;
-	    SceneManager.LoadScene("TaskScreen");
-    }
+	public async System.Threading.Tasks.Task submitTask(string user, string answer)
+	{
+		DocumentReference newRef = currentSnapshot.Reference;
 
-    public async System.Threading.Tasks.Task submitTask(string user, string answer)
-    {
-	    DocumentReference docRef = firestore.Collection("Users").Document(user);
+		Dictionary<string, object> updates = new Dictionary<string, object>
+		{
+			{ "Answer", answer },
+			{ "Status", 1 }
+		};
 
-	    Query query = docRef.Collection("Tasks")
-	                        .OrderBy(FieldPath.DocumentId);
+		await newRef.UpdateAsync(updates);
+		Debug.Log("Task updated successfully!");
+	}
 
-	    QuerySnapshot snapshot = await query.GetSnapshotAsync();
-
-	    var docs = snapshot.Documents.ToList();
-		Debug.Log("Current task: "+currentTask);
-	    DocumentReference newRef = docs[currentTask].Reference;
-	    
-	    Dictionary<string, object> updates = new Dictionary<string, object>
-	    {
-		    { "Answer", answer },
-		    { "Status", 1 } 
-	    };
-	    
-	    await newRef.UpdateAsync(updates);
-	    Debug.Log("Task updated successfully!");
-    }
 
     public void addTaskToUsers(Task newTask, List<string> users)
     {

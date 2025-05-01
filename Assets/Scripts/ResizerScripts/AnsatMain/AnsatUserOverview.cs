@@ -21,6 +21,6 @@ public class AnsatUserOverview : MonoBehaviour
 
 		float t = Mathf.InverseLerp(minHeight, maxHeight, screenHeight);
 		float newY = Mathf.Lerp(minY, maxY, t);
-		scrollView.anchoredPosition = new Vector2(0, newY);
+		scrollView.anchoredPosition = new Vector2(scrollView.anchoredPosition.x, newY);
 	}
 }

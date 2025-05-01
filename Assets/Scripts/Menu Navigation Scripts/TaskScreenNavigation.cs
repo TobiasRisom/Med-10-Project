@@ -36,26 +36,27 @@ public class TaskScreenNavigation : MonoBehaviour
 	    cd = GameObject.FindWithTag("CameraDisplay")
 	                   .GetComponent<CameraDisplay>();
 
-	    int taskIndex = fish.currentTask;
+	    FirestoreHandler.Task currentTask = fish.currentTask;
 
-	    taskTitle.text = fish.TaskData[taskIndex].Titel;
-	    taskEmoji.text = fish.TaskData[taskIndex].Emoji;
-	    taskDescription.text = fish.TaskData[taskIndex].Description;
+	    taskTitle.text = currentTask.Titel;
+	    taskEmoji.text = currentTask.Emoji;
+	    taskDescription.text = currentTask.Description;
 
-	    if (fish.TaskData[taskIndex].Status == 1 && fish.TaskData[taskIndex].ImageFormat == false)
+	    if (currentTask.Status == 1 && !currentTask.ImageFormat)
 	    {
-		    userAnswer.text = fish.TaskData[taskIndex].Answer;
+		    userAnswer.text = currentTask.Answer;
 	    }
 
-	    if (fish.TaskData[taskIndex].ImageFormat)
+	    if (currentTask.ImageFormat)
 	    {
 		    transform.localPosition = new Vector3(0, transform.localPosition.y, transform.localPosition.z);
-		    //cd.SetupCamera();
+		    // cd.SetupCamera();
 	    }
 	    else
 	    {
 		    transform.localPosition = new Vector3(1080, transform.localPosition.y, transform.localPosition.z);
 	    }
+
     }
 
     // Update is called once per frame

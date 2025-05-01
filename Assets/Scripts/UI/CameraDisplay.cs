@@ -17,13 +17,14 @@ public class CameraDisplay : MonoBehaviour
 
     void Start()
     {
-        fish = GameObject.FindWithTag("dataManager")
-                         .GetComponent<FirestoreHandler>();
+	    fish = GameObject.FindWithTag("dataManager")
+	                     .GetComponent<FirestoreHandler>();
 
-        if (fish.TaskData[fish.currentTask].ImageFormat)
-        {
-            SetupCamera();
-        }
+	    // Use currentTask directly
+	    if (fish.currentTask.ImageFormat)
+	    {
+		    SetupCamera();
+	    }
     }
 
     void SetupCamera()

@@ -17,15 +17,15 @@ public class TaskScreenResize : MonoBehaviour
 	    {
 		    foreach (RectTransform rt in photoObject)
 		    {
-			    rt.anchoredPosition = new Vector2(0, -675);
+			    rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, -675);
 		    }
 
 		    foreach (RectTransform rt in allButtons)
 		    {
-			    rt.anchoredPosition = new Vector2(0, 330);
+			    rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, 330);
 		    }
 
-		    texts.anchoredPosition = new Vector2(0, -552);
+		    texts.anchoredPosition = new Vector2(texts.anchoredPosition.x, -552);
 		    texts.transform.GetChild(2)
 		         .GetComponent<TextMeshProUGUI>()
 		         .color = new Color(1, 1, 1, 0);
