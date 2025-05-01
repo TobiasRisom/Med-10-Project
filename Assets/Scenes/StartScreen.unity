@@ -6880,7 +6880,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65357461a69250a4db6958b331bfae07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTask: 0
   currentUserInfo: 
   tasks: []
   taskTemplate: {fileID: 1602897116379397259, guid: 2d5f9ff80c76a7a4cac6cde3abd20d10, type: 3}

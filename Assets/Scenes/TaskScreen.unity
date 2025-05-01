@@ -510,7 +510,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -258.00012, y: 400}
+  m_AnchoredPosition: {x: -258.00012, y: 335}
   m_SizeDelta: {x: 450, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &104186647
@@ -1754,10 +1754,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd2756eedb7f04c8d74cb365793393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  photoObject:
-  - {fileID: 196696058}
-  - {fileID: 1498169352}
-  - {fileID: 1543811978}
+  buttonMinY: 335
+  buttonMaxY: 400
+  textMinYPhoto: -564
+  textMinYWrite: -550
+  textMaxY: -404.3
   allButtons:
   - {fileID: 1469832149}
   - {fileID: 1186677496}
@@ -1766,6 +1767,7 @@ MonoBehaviour:
   - {fileID: 1012060639}
   - {fileID: 536942404}
   texts: {fileID: 1405082994}
+  answerCheck: []
 --- !u!1 &488194758
 GameObject:
   m_ObjectHideFlags: 0
@@ -1839,7 +1841,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -269, y: 400}
+  m_AnchoredPosition: {x: -269, y: 335}
   m_SizeDelta: {x: 450, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &536942405
@@ -2109,7 +2111,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -12.599976, y: -91.15259}
+  m_AnchoredPosition: {x: -12.599976, y: -120.3}
   m_SizeDelta: {x: 800, y: 235.1897}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &858019595
@@ -2133,8 +2135,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Husk at g\xF8re bordene rene efter du har spist aftensmad eller andre
-    m\xE5ltider i l\xF8bet af dagen Husk at g\xF8re bordene rene efter du har spist
-    aftensmad eller andre m\xE5ltider i l\xF8bet af dagen"
+    m\xE5ltider i l\xF8bet af dagen Husk at g\xF8re bordene rene efter dre m\xE5ltider
+    i l\xF8be"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 58a394b122442dc468f2b4f4a3d157b2, type: 2}
   m_sharedMaterial: {fileID: 7713000818527962494, guid: 58a394b122442dc468f2b4f4a3d157b2, type: 2}
@@ -2161,11 +2163,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38
+  m_fontSize: 45
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 38
+  m_fontSizeMin: 45
   m_fontSizeMax: 60
   m_fontStyle: 0
   m_HorizontalAlignment: 2
@@ -2322,7 +2324,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 269, y: 400}
+  m_AnchoredPosition: {x: 269, y: 335}
   m_SizeDelta: {x: 360, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012060640
@@ -2777,7 +2779,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 280, y: 400}
+  m_AnchoredPosition: {x: 280, y: 335}
   m_SizeDelta: {x: 360, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1186677497
@@ -3139,7 +3141,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 12.600006, y: -402.6}
+  m_AnchoredPosition: {x: 12.600006, y: -419}
   m_SizeDelta: {x: 887.2, y: 417.49493}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1419850945
@@ -3315,7 +3317,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 400}
+  m_AnchoredPosition: {x: 0, y: 335}
   m_SizeDelta: {x: 300, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1469832150
@@ -4705,7 +4707,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 400}
+  m_AnchoredPosition: {x: 0, y: 335}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2083686939

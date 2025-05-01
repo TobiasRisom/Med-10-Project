@@ -25,6 +25,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	public Toggle inputText;
 	public Toggle inputImage;
 	public TMP_Dropdown dropdown;
+	public TextMeshProUGUI dropdownText;
 
 	public Button continueToConfirmTask;
 	
@@ -74,10 +75,12 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 		if (chooseDate)
 		{
 			dropdown.gameObject.SetActive(true);
+			dropdownText.gameObject.SetActive(true);
 		}
 		else
 		{
 			dropdown.gameObject.SetActive(false);
+			dropdownText.gameObject.SetActive(false);
 		}
 	}
 	

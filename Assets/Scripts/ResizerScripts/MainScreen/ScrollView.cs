@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class ScrollView : MonoBehaviour
 {
 	public RectTransform scrollView;
+	public List<RectTransform> headlines;
 
 	// Screen height bounds
 	private const int minHeight = 1920;
@@ -15,6 +17,9 @@ public class ScrollView : MonoBehaviour
 	public float minHeightValue;
 	public float maxHeightValue;
 
+	public float headlineMin;
+	public float headlineMax;
+
 	void Start()
 	{
 		float screenHeight = GameObject.FindWithTag("MainCanvas")
@@ -23,6 +28,7 @@ public class ScrollView : MonoBehaviour
 
 		float t = Mathf.InverseLerp(minHeight, maxHeight, screenHeight);
 
+		// SCROLL VIEW
 		float newY = Mathf.Lerp(minY, maxY, t);
 		float newHeight = Mathf.Lerp(minHeightValue, maxHeightValue, t);
 
@@ -30,5 +36,13 @@ public class ScrollView : MonoBehaviour
 		Vector2 size = scrollView.sizeDelta;
 		size.y = newHeight;
 		scrollView.sizeDelta = size;
+		
+		// HEADLINES
+		float headlinesY = Mathf.Lerp(headlineMin, headlineMax, t);
+
+		foreach (RectTransform headline in headlines)
+		{
+			headline.anchoredPosition = new Vector2(headline.anchoredPosition.x, headlinesY);
+		}
 	}
 }
