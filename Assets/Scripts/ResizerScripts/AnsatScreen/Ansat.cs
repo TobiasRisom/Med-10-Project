@@ -8,9 +8,11 @@ public class Ansat : MonoBehaviour
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
 	{
-		int sh = Screen.height;
+		float screenHeight = GameObject.FindWithTag("MainCanvas")
+		                               .GetComponent<RectTransform>()
+		                               .rect.height;
 		
-		if (sh < 2200)
+		if (screenHeight < 2200)
 		{
 			viewport.anchoredPosition = new Vector2(0, 150);
 			Vector2 size = viewport.sizeDelta;

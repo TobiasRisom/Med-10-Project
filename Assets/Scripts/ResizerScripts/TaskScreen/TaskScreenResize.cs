@@ -9,9 +9,11 @@ public class TaskScreenResize : MonoBehaviour
 	public RectTransform texts;
     void Start()
     {
-	    int sh = Screen.height;
+	    float screenHeight = GameObject.FindWithTag("MainCanvas")
+	                                   .GetComponent<RectTransform>()
+	                                   .rect.height;
 
-	    if (sh < 2250)
+	    if (screenHeight < 2250)
 	    {
 		    foreach (RectTransform rt in photoObject)
 		    {

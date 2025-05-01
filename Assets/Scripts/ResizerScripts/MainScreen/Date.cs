@@ -8,14 +8,15 @@ public class Date : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-	    int sh = Screen.height;
-
-        if (sh < 2100)
+	    float screenHeight = GameObject.FindWithTag("MainCanvas")
+	                                        .GetComponent<RectTransform>()
+	                                        .rect.height;
+        if (screenHeight < 2100)
         {
 	        bigDate.gameObject.SetActive(false);
 	        smallDate.gameObject.SetActive(true);
         }
-        else if (sh < 2250)
+        else if (screenHeight < 2250)
         {
 	        bigDate.gameObject.SetActive(true);
 	        smallDate.gameObject.SetActive(false);
