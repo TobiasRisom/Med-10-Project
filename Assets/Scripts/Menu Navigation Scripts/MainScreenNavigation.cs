@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainScreenNavigation : MonoBehaviour
@@ -45,6 +46,7 @@ public class MainScreenNavigation : MonoBehaviour
 	    
 	    if (isItUpdateTime())
 	    {
+		    PlayerPrefs.SetInt("DaysActive", PlayerPrefs.GetInt("DaysActive") + 1);
 		    UpdateTasks();
 	    }
 
@@ -52,6 +54,14 @@ public class MainScreenNavigation : MonoBehaviour
 	    setDollarsText();
 	    
 	    Invoke(nameof(StartCheckingForNoTasks), 1.5f);
+    }
+    
+    void OnApplicationPause(bool isPaused)
+    {
+	    if (!isPaused)
+	    {
+		    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	    }
     }
 
     void Update()
@@ -113,6 +123,11 @@ public class MainScreenNavigation : MonoBehaviour
 	    DateTime tomorrow = DateTime.Now.Date.AddDays(1);
 	    DateTime nextUpdate = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 3, 0, 0);
 	    PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
+    }
+
+    public void UpdateTest()
+    {
+	    fish.UpdateDailyAndWeeklyTasks((((int)DateTime.Now.DayOfWeek + 6) % 7) + 2); // Monday = 2, Tuesday = 3, Wednesday = 4, Thursday = 5, Friday = 6, Saturday = 7, Sunday = 8
     }
     
 

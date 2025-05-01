@@ -40,7 +40,7 @@ public class StartMenuNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 	    
 	    
-		PlayerPrefs.SetString("Name", "NoN");
+		//PlayerPrefs.SetString("Name", "NoN");
 		userName = PlayerPrefs.GetString("Name", "NoN");
 
 	    if (userName == "NoN")
@@ -67,6 +67,12 @@ public class StartMenuNavigation : MonoBehaviour
 	    {
 		    float targetX = pos * windowIndex;
 		    transform.DOLocalMoveX(targetX, tweenSpeed).SetEase(tweenEase);
+	    }
+	    
+	    public void changeWindowNoAnimation(int windowIndex)
+	    {
+		    float targetX = pos * windowIndex;
+		    transform.position = new Vector3(targetX + 540, transform.position.y, transform.position.z);
 	    }
 
         public void setName(bool beboer)
@@ -112,7 +118,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        }
 	        else
 	        {
-		        changeWindow(8);
+		        changeWindowNoAnimation(8);
 		        codeInput.text = "";
 	        }
         }
@@ -129,6 +135,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        DateTime nextUpdate = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 3, 0, 0);
 	        PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
 	        PlayerPrefs.SetInt("Dollars", 0);
+	        PlayerPrefs.SetInt("DaysActive", 1);
 	        
 	        
 	        fish.AddNewUser(PlayerPrefs.GetString("Name"));

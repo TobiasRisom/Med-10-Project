@@ -8,6 +8,8 @@ public class ZoomAnswer : MonoBehaviour
 
     private string taskTitle;
     private string userName;
+    private string desc;
+    private string emoji;
     
     private string writtenAnswer;
     private Sprite imageAnswer;
@@ -21,7 +23,7 @@ public class ZoomAnswer : MonoBehaviour
     private bool answerType = true; // True = Image, False = Writing
     void Start()
     {
-	    panel = GameObject.FindWithTag("ScreenContentHolder")
+	    panel = GameObject.FindWithTag("MainCanvas")
 	                      .transform.GetChild(3)
 	                      .gameObject;
 	    
@@ -38,6 +40,14 @@ public class ZoomAnswer : MonoBehaviour
 
 	    TaskWrittenAnswer = gameObject.transform.GetChild(4)
 	                                  .gameObject;
+	    
+	    desc = gameObject.transform.GetChild(9)
+	                          .GetComponent<TextMeshProUGUI>()
+	                          .text;
+	    
+	    emoji = gameObject.transform.GetChild(10)
+	                         .GetComponent<TextMeshProUGUI>()
+	                         .text;
 
 	    if (TaskImageAnswer.activeSelf)
 	    {
@@ -68,18 +78,29 @@ public class ZoomAnswer : MonoBehaviour
 
 	    GameObject title = panel.transform.GetChild(1)
 	                            .gameObject;
-	    GameObject username = panel.transform.GetChild(2)
+	    GameObject usernameObject = panel.transform.GetChild(2)
 	                               .gameObject;
 	    GameObject image = panel.transform.GetChild(3)
 	                            .gameObject;
 	    GameObject writing = panel.transform.GetChild(4)
 	                              .gameObject;
+	    GameObject descObject = panel.transform.GetChild(6)
+	                              .gameObject;
+
+	    GameObject emojiObject = panel.transform.GetChild(7)
+	                              .gameObject;
+
 
 	    title.GetComponent<TextMeshProUGUI>()
 	         .text = taskTitle;
 
-	    username.GetComponent<TextMeshProUGUI>()
+	    usernameObject.GetComponent<TextMeshProUGUI>()
 	            .text = userName;
+
+	    descObject.GetComponent<TextMeshProUGUI>()
+	              .text = desc;
+	    emojiObject.GetComponent<TextMeshProUGUI>()
+	               .text = emoji;
 
 	    if (answerType)
 	    {

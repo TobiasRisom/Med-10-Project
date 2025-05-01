@@ -181,7 +181,8 @@ public class FirestoreHandler : MonoBehaviour
 						     {"DaysWithAllTasksCleared", 0},
 						     {"ScheduleAccessedAmount", 0},
 						     {"PetsBought", 0},
-						     {"MoneySpentOnPets", 0}
+						     {"MoneySpentOnPets", 0},
+						     {"DaysActive", 1}
 					     };
 					     
 					     // Add the new user data 
@@ -539,6 +540,9 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 				
 				newTask.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = V_TaskData[i].Titel;
 				newTask.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = V_Users[i];
+				
+				newTask.transform.GetChild(9).GetComponent<TextMeshProUGUI>().text = V_TaskData[i].Description;
+				newTask.transform.GetChild(10).GetComponent<TextMeshProUGUI>().text = V_TaskData[i].Emoji;
 
 				if (V_TaskData[i].ImageFormat)
 				{
@@ -719,19 +723,10 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 	    });
     }
 
- public void UpdateDailyAndWeeklyTasks(int today)
- {
-	 V_Users.Clear();
+public void UpdateDailyAndWeeklyTasks(int today)
+{
 
-	 int yesterday;
-	 if (today == 2)
-	 {
-		 yesterday = 8;
-	 }
-	 else
-	 {
-		 yesterday = today - 1;
-	 }
+    int yesterday = (today == 2) ? 8 : today - 1;
 
     firestore.Collection("Users")
              .GetSnapshotAsync()
@@ -747,95 +742,110 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
                  foreach (DocumentSnapshot userDoc in usersSnapshot.Documents)
                  {
                      string userId = userDoc.Id;
-                     Debug.Log($"Querying tasks for user: {userId}");
+                     Debug.Log($"Processing user: {userId}");
 
-                     // Fetch all tasks for this user
-	                 firestore.Collection("Users")
-                                      .Document(userId)
-                                      .Collection("Tasks")
-                                      .GetSnapshotAsync()
-                                      .ContinueWithOnMainThread(tasksTask =>
+                     // Set DaysActive and reset TasksNotDone to 0
+                     Dictionary<string, object> initialUserUpdates = new Dictionary<string, object>
+                     {
+                         { "DaysActive", PlayerPrefs.GetInt("DaysActive") }
+                     };
+
+                     firestore.Collection("Users")
+                              .Document(userId)
+                              .UpdateAsync(initialUserUpdates);
+
+                     // Fetch all tasks for the user
+                     firestore.Collection("Users")
+                              .Document(userId)
+                              .Collection("Tasks")
+                              .GetSnapshotAsync()
+                              .ContinueWithOnMainThread(tasksTask =>
+                              {
+                                  if (!tasksTask.IsCompletedSuccessfully)
+                                  {
+                                      Debug.LogError($"Error getting tasks for user {userId}: " + tasksTask.Exception);
+                                      return;
+                                  }
+
+                                  QuerySnapshot taskSnapshot = tasksTask.Result;
+                                  bool allTasksCompleted = true;
+                                  List<System.Threading.Tasks.Task> taskUpdates = new List<System.Threading.Tasks.Task>();
+                                  int tasksNotDone = 0;
+
+                                  foreach (DocumentSnapshot taskDoc in taskSnapshot.Documents)
+                                  {
+                                      Dictionary<string, object> updates = new Dictionary<string, object>();
+                                      string taskId = taskDoc.Id;
+
+                                      int status = taskDoc.ContainsField("Status") ? taskDoc.GetValue<int>("Status") : -1;
+                                      int repeat = taskDoc.ContainsField("Repeat") ? taskDoc.GetValue<int>("Repeat") : -1;
+
+                                      // Count tasks not done
+                                      if (status == 0)
                                       {
-                                          if (tasksTask.IsCompletedSuccessfully)
-                                          {
-                                              QuerySnapshot taskSnapshot = tasksTask.Result;
+                                          allTasksCompleted = false;
+                                          tasksNotDone++;
+                                      }
 
-                                              bool allTasksCompleted = true;
-                                              
-                                              foreach (DocumentSnapshot taskDoc in taskSnapshot.Documents)
-                                              {
-	                                              if (taskDoc.TryGetValue("Status", out int status))
-	                                              {
-		                                              if (status == 0)
-		                                              {
-			                                              allTasksCompleted = false;
-			                                              Dictionary<string, object> updates = new Dictionary<string, object>
-			                                              {
-				                                              { "TasksNotDone", FieldValue.Increment(1) }
-			                                              };
-                                                          
-			                                              firestore.Collection("Users")
-			                                                       .Document(userId).UpdateAsync(updates);
-		                                              }
-	                                              }
-	                                              
-                                                  if (taskDoc.TryGetValue("Repeat", out int repetition))
-                                                  {
-                                                      if (repetition == 1 || repetition == today)
-                                                      {
-                                                          // Make daily and weekly tasks accessible
-                                                          Dictionary<string, object> updates = new Dictionary<string, object>
-                                                          {
-                                                              { "Status", 0 }
-                                                          };
-                                                          
-                                                          firestore.Collection("Users")
-                                                                   .Document(userId)
-                                                                   .Collection("Tasks")
-                                                                   .Document(taskDoc.Id)
-                                                                   .UpdateAsync(updates);
-                                                      }
+                                      // Reset daily/weekly tasks for today
+                                      if (repeat == 1 || repeat == today)
+                                      {
+                                          updates["Status"] = 0;
+                                      }
 
-                                                      if (repetition == yesterday)
-                                                      {
-	                                                      // Make weekly tasks not done inaccessible
-	                                                      Dictionary<string, object> updates = new Dictionary<string, object>
-	                                                      {
-		                                                      { "Status", 3 },
-	                                                      };
-	                                                      
-	                                                      firestore.Collection("Users")
-	                                                               .Document(userId)
-	                                                               .Collection("Tasks")
-	                                                               .Document(taskDoc.Id)
-	                                                               .UpdateAsync(updates);
-                                                      }
-                                                  }
-                                                  else
-                                                  {
-                                                      Debug.LogWarning($"Task {taskDoc.Id} for user {userId} has no 'Status' field.");
-                                                  }
-                                              }
+                                      // Lock weekly tasks from yesterday
+                                      if (repeat == yesterday)
+                                      {
+                                          updates["Status"] = 3;
+                                      }
 
-                                              if (allTasksCompleted)
-                                              {
-	                                              Dictionary<string, object> updates = new Dictionary<string, object>
-	                                              {
-		                                              { "DaysWithAllTasksCleared", FieldValue.Increment(1) }
-	                                              };
-                                                          
-	                                              firestore.Collection("Users")
-	                                                       .Document(userId).UpdateAsync(updates);
-                                              }
-                                          }
-                                          else
-                                          {
-                                              Debug.LogError($"Error getting tasks for user {userId}: " + tasksTask.Exception);
-                                          }
-                                      });
+                                      if (updates.Count > 0)
+                                      {
+                                          taskUpdates.Add(
+                                              firestore.Collection("Users")
+                                                       .Document(userId)
+                                                       .Collection("Tasks")
+                                                       .Document(taskId)
+                                                       .UpdateAsync(updates)
+                                          );
+                                      }
+                                  }
+
+                                  // Apply TasksNotDone update (overwrite with correct count)
+                                  Dictionary<string, object> postTaskUserUpdates = new Dictionary<string, object>
+                                  {
+                                      { "TasksNotDone", FieldValue.Increment(tasksNotDone) }
+                                  };
+
+                                  // Update DaysWithAllTasksCleared if needed
+                                  if (allTasksCompleted)
+                                  {
+                                      postTaskUserUpdates["DaysWithAllTasksCleared"] = FieldValue.Increment(1);
+                                  }
+
+                                  System.Threading.Tasks.Task userUpdateTask = firestore.Collection("Users")
+                                                                 .Document(userId)
+                                                                 .UpdateAsync(postTaskUserUpdates);
+
+                                  taskUpdates.Add(userUpdateTask);
+
+                                  // Wait for all updates
+                                  System.Threading.Tasks.Task.WhenAll(taskUpdates).ContinueWithOnMainThread(finalTask =>
+                                  {
+                                      if (finalTask.IsCompletedSuccessfully)
+                                      {
+                                          Debug.Log($"Successfully updated tasks for user: {userId}");
+                                      }
+                                      else
+                                      {
+                                          Debug.LogError($"Error updating tasks for user {userId}: {finalTask.Exception}");
+                                      }
+                                  });
+                              });
                  }
              });
 }
+
     
     public async Task<Dictionary<string, string>> GetLeaderboard()
     {
