@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -42,17 +43,22 @@ public class MainScreenNavigation : MonoBehaviour
 	                     .GetComponent<FirestoreHandler>();
 	    
 	    fish.ScheduleManager();
-	    fish.spawnTasks(PlayerPrefs.GetString("Name"));
 	    
+	    UpdateAndSpawnTasksAsync();
+    }
+    
+    private async void UpdateAndSpawnTasksAsync()
+    {
 	    if (isItUpdateTime())
 	    {
 		    PlayerPrefs.SetInt("DaysActive", PlayerPrefs.GetInt("DaysActive") + 1);
-		    UpdateTasks();
+		    await UpdateTasks();
 	    }
-
+	    
+	    fish.spawnTasks(PlayerPrefs.GetString("Name"));
+	    
 	    petName.text = PlayerPrefs.GetString("PetName");
 	    setDollarsText();
-	    
 	    Invoke(nameof(StartCheckingForNoTasks), 1.5f);
     }
     
@@ -115,19 +121,14 @@ public class MainScreenNavigation : MonoBehaviour
 	    fish.UpdateStats(PlayerPrefs.GetString("Name"),"ScheduleAccessedAmount", 1);
     }
     
-    private void UpdateTasks()
+    private async Task UpdateTasks()
     {
-	    fish.UpdateDailyAndWeeklyTasks((((int)DateTime.Now.DayOfWeek + 6) % 7) + 2); // Monday = 2, Tuesday = 3, Wednesday = 4, Thursday = 5, Friday = 6, Saturday = 7, Sunday = 8
+	    await fish.UpdateDailyAndWeeklyTasks((((int)DateTime.Now.DayOfWeek + 6) % 7) + 2); // Monday = 2, Tuesday = 3, Wednesday = 4, Thursday = 5, Friday = 6, Saturday = 7, Sunday = 8
 	        
 	    // Change next update date to tomorrow
 	    DateTime tomorrow = DateTime.Now.Date.AddDays(1);
 	    DateTime nextUpdate = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 3, 0, 0);
 	    PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
-    }
-
-    public void UpdateTest()
-    {
-	    fish.UpdateDailyAndWeeklyTasks((((int)DateTime.Now.DayOfWeek + 6) % 7) + 2); // Monday = 2, Tuesday = 3, Wednesday = 4, Thursday = 5, Friday = 6, Saturday = 7, Sunday = 8
     }
     
 
