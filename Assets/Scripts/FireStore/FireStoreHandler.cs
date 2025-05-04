@@ -322,6 +322,9 @@ public void spawnTasks(string user)
     GameObject content = GameObject.FindWithTag("content");
     ContentHandler ch = content.GetComponent<ContentHandler>();
 
+    GameObject loadingText = GameObject.FindWithTag("loadingText");
+    loadingText.SetActive(false);
+
     GetTasksAndCount(user, false, (taskAmount, taskWithSnapshots) =>
     {
         TaskData = taskWithSnapshots.Select(entry => entry.TaskData).ToList(); // Update TaskData list to only include TaskData

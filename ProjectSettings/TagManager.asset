@@ -26,6 +26,7 @@ TagManager:
   - Stats
   - BuyWindow
   - MainCanvas
+  - loadingText
   layers:
   - Default
   - TransparentFX
