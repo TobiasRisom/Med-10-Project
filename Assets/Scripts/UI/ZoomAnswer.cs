@@ -10,6 +10,7 @@ public class ZoomAnswer : MonoBehaviour
     private string userName;
     private string desc;
     private string emoji;
+    private string timeStamp;
     
     private string writtenAnswer;
     private Sprite imageAnswer;
@@ -48,6 +49,10 @@ public class ZoomAnswer : MonoBehaviour
 	    emoji = gameObject.transform.GetChild(10)
 	                         .GetComponent<TextMeshProUGUI>()
 	                         .text;
+	    timeStamp = gameObject.transform.GetChild(11)
+	                          .GetComponent<TextMeshProUGUI>()
+	                          .text;
+	    
 
 	    if (TaskImageAnswer.activeSelf)
 	    {
@@ -89,6 +94,9 @@ public class ZoomAnswer : MonoBehaviour
 
 	    GameObject emojiObject = panel.transform.GetChild(7)
 	                              .gameObject;
+	    
+	    GameObject timeStampObject = panel.transform.GetChild(8)
+	                                      .gameObject;
 
 
 	    title.GetComponent<TextMeshProUGUI>()
@@ -101,6 +109,8 @@ public class ZoomAnswer : MonoBehaviour
 	              .text = desc;
 	    emojiObject.GetComponent<TextMeshProUGUI>()
 	               .text = emoji;
+	    timeStampObject.GetComponent<TextMeshProUGUI>()
+	                   .text = timeStamp;
 
 	    if (answerType)
 	    {

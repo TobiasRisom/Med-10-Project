@@ -28,6 +28,7 @@ public class FirestoreHandler : MonoBehaviour
 		public int Status { get; set; }
 		public int Repeat { get; set; }
 		public string Answer { get; set; }
+		public string TimeStamp { get; set; }
 	}
 
 	public Task currentTask;
@@ -286,7 +287,8 @@ public class FirestoreHandler : MonoBehaviour
 						ImageFormat = document.GetValue<bool>("ImageFormat"),
 						Status = status,
 						Repeat = document.GetValue<int>("Repeat"),
-						Answer = document.GetValue<string>("Answer")
+						Answer = document.GetValue<string>("Answer"),
+						TimeStamp = document.GetValue<string>("TimeStamp")
 					};
 
 					if (!includeStatus3Tasks)
@@ -504,7 +506,8 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
                                 ImageFormat = document.GetValue<bool>("ImageFormat"),
                                 Status = document.GetValue<int>("Status"),
                                 Repeat = document.GetValue<int>("Repeat"),
-                                Answer = document.GetValue<string>("Answer")
+                                Answer = document.GetValue<string>("Answer"),
+                                TimeStamp = document.GetValue<string>("TimeStamp")
                             };
 
                             verifiedTasks.Add(newTask); // Add custom task to the list
@@ -546,6 +549,9 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 				
 				newTask.transform.GetChild(9).GetComponent<TextMeshProUGUI>().text = V_TaskData[i].Description;
 				newTask.transform.GetChild(10).GetComponent<TextMeshProUGUI>().text = V_TaskData[i].Emoji;
+				newTask.transform.GetChild(11)
+				       .GetComponent<TextMeshProUGUI>()
+				       .text = V_TaskData[i].TimeStamp;
 
 				if (V_TaskData[i].ImageFormat)
 				{
@@ -664,11 +670,14 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 	public async System.Threading.Tasks.Task submitTask(string user, string answer)
 	{
 		DocumentReference newRef = currentSnapshot.Reference;
+		
+		string timeStamp = DateTime.Now.ToString("HH:mm\ndd/MM");
 
 		Dictionary<string, object> updates = new Dictionary<string, object>
 		{
 			{ "Answer", answer },
-			{ "Status", 1 }
+			{ "Status", 1 },
+			{ "TimeStamp", timeStamp }
 		};
 
 		await newRef.UpdateAsync(updates);
@@ -705,7 +714,8 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 				    { "ImageFormat", newTask.ImageFormat },
 				    { "Status", newTask.Status },
 				    { "Repeat", newTask.Repeat },
-				    { "Answer", newTask.Answer }
+				    { "Answer", newTask.Answer },
+				    { "TimeStamp", newTask.TimeStamp}
 			    };
 
 			    // Add task to selected user's Tasks subcollection
