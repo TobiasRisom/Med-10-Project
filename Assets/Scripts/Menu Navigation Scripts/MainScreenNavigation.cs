@@ -44,6 +44,8 @@ public class MainScreenNavigation : MonoBehaviour
 	    
 	    fish.ScheduleManager();
 	    
+	    petName.text = PlayerPrefs.GetString("PetName");
+	    setDollarsText();
 	    UpdateAndSpawnTasksAsync();
     }
     
@@ -56,9 +58,6 @@ public class MainScreenNavigation : MonoBehaviour
 	    }
 	    
 	    fish.spawnTasks(PlayerPrefs.GetString("Name"));
-	    
-	    petName.text = PlayerPrefs.GetString("PetName");
-	    setDollarsText();
 	    Invoke(nameof(StartCheckingForNoTasks), 1.5f);
     }
     
