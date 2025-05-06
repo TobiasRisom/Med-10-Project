@@ -182,6 +182,11 @@ public class MainScreenNavigation : MonoBehaviour
 	    petEditName.gameObject.SetActive(true);
 	    petNameAccept.gameObject.SetActive(false);
 	    petNameReject.gameObject.SetActive(false);
+
+	    GameObject.FindWithTag("PetStatus")
+	              .GetComponent<TextMeshProUGUI>()
+	              .text = inputPetName.text + " er glad for sit nye navn! \ud83d\udc95";
+
     }
 
     public void rejectPetName()
