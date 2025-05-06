@@ -68,12 +68,6 @@ public class StartMenuNavigation : MonoBehaviour
 		    float targetX = pos * windowIndex;
 		    transform.DOLocalMoveX(targetX, tweenSpeed).SetEase(tweenEase);
 	    }
-	    
-	    public void changeWindowNoAnimation(int windowIndex)
-	    {
-		    float targetX = pos * windowIndex;
-		    transform.position = new Vector3(targetX + 540, transform.position.y, transform.position.z);
-	    }
 
         public void setName(bool beboer)
         {
@@ -118,7 +112,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        }
 	        else
 	        {
-		        changeWindowNoAnimation(8);
+		        changeWindow(8);
 		        codeInput.text = "";
 	        }
         }
