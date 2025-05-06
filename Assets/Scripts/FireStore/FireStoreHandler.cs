@@ -44,8 +44,6 @@ public class FirestoreHandler : MonoBehaviour
 
 	public GameObject userToggle;
 	public GameObject moneyGraphic;
-
-	public bool onUserScreen = false;
 	
 	
 	private void Awake()
