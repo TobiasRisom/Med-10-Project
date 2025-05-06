@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\U0001F5D2\uFE0FOpgaver"
+  m_text: "\U0001F5D2\uFE0F Opgaver"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
   m_sharedMaterial: {fileID: 2941351083751065506, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
@@ -265,7 +265,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "500\U0001F4B5"
+      value: "500 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
@@ -2219,7 +2219,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "1000\U0001F4B5"
+      value: "1000 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
@@ -2392,7 +2392,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Shoppen\U0001F6D2"
+  m_text: "Shoppen \U0001F6D2"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
   m_sharedMaterial: {fileID: 2941351083751065506, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
@@ -3403,7 +3403,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "500\U0001F4B5"
+      value: "500 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
@@ -4940,7 +4940,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "300\U0001F4B5"
+      value: "300 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
@@ -5145,7 +5145,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "500\U0001F4B5"
+      value: "500 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
@@ -6041,7 +6041,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1600257604}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999936
+  m_Size: 0.99987745
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6413,7 +6413,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\U0001F43EK\xE6ledyr"
+  m_text: "\U0001F43E K\xE6ledyr"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
   m_sharedMaterial: {fileID: 2941351083751065506, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
@@ -6843,7 +6843,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "1000\U0001F4B5"
+      value: "1000 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
@@ -7265,7 +7265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00044096107}
+  m_AnchoredPosition: {x: 0, y: 0.00052537717}
   m_SizeDelta: {x: 0, y: 1250}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1131773461
@@ -7770,7 +7770,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "1000\U0001F4B5"
+      value: "1000 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
@@ -7896,7 +7896,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "300\U0001F4B5"
+      value: "300 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
@@ -8069,7 +8069,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Opgaver\U0001F5D2\uFE0F"
+  m_text: "Opgaver \U0001F5D2\uFE0F"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
   m_sharedMaterial: {fileID: 2941351083751065506, guid: be7d08bd62e55e8499dd98200fb8f53b, type: 2}
@@ -8382,7 +8382,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1323292114617459397, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: m_text
-      value: "300\U0001F4B5"
+      value: "300 \U0001F4B5"
       objectReference: {fileID: 0}
     - target: {fileID: 2974319242312085100, guid: bc2de1b0ace149f43a2a37dc3d781b04, type: 3}
       propertyPath: PetCost
