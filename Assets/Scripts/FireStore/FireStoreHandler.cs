@@ -247,7 +247,7 @@ public class FirestoreHandler : MonoBehaviour
 			GameObject stats = GameObject.FindWithTag("Stats");
 
 			stats.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Opgaver klaret i alt: " + (points / 100);
-			stats.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Opgaver ikke klaret: " + tasksNotDone;
+			stats.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Ignorerede Opgaver: " + tasksNotDone;
 			stats.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Dage hvor alle opgaver blev gjort: " + daysCleared;
 		}
 	}
