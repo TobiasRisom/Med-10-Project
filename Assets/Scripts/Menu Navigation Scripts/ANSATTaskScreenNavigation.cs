@@ -208,6 +208,10 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 		    
 		    case Repetition.Weekly:
 			    newTask.Repeat = dropdown.value + 2; // 2 = Monday, 3 = Tuesday, etc...
+			    if (dropdown.value != ((int)DateTime.Now.DayOfWeek + 6) % 7)
+			    {
+				    newTask.Status = 3;
+			    }
 			    break;
 	    }
 	    
