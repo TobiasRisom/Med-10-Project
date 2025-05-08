@@ -50,7 +50,7 @@ public class PetForSaleScript : MonoBehaviour
         buyWindow.transform.GetChild(5).GetComponent<Animator>().Play(newPetStateName);
 
         // Show or hide the buy button depending on available dollars
-        if (PlayerPrefs.GetInt("Dollars") > PetCost)
+        if (PlayerPrefs.GetInt("Dollars") >= PetCost)
         {
             buyWindow.transform.GetChild(6)
                 .gameObject.SetActive(true);
