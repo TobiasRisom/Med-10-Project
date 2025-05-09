@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -11,7 +12,9 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 	public GameObject content;
 	public GameObject taskStatusPrefab;
 	public GameObject deleteWindow;
-	public GameObject taskToDelete;
+	private GameObject taskToDelete;
+
+	public Toggle onlyTodaysTasks;
 
 	public TextMeshProUGUI usersName;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -19,7 +22,7 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
     {
 	    fish = GameObject.FindWithTag("dataManager")
 	                     .GetComponent<FirestoreHandler>();
-	    ShowUserInfo(fish.currentUserInfo);
+	    ShowUserInfo(fish.currentUserInfo, true);
 	    usersName.text = fish.currentUserInfo;
 	    fish.GetUserStats(fish.currentUserInfo);
     }
@@ -29,13 +32,20 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 	    SceneManager.LoadScene("ANSAT_MainScreen");
     }
 
-    public void ShowUserInfo(string userName)
+    public void ShowUserInfo(string userName, bool onlyToday)
     {
 	    fish.GetTasksAndCount(userName, true, (taskCount, taskList) =>
 	    {
 		    foreach (var t in taskList)
 		    {
 			    FirestoreHandler.Task task = t.TaskData;
+			    if (onlyToday)
+			    {
+				    if (task.Repeat > 1 && task.Repeat != (((int)DateTime.Now.DayOfWeek + 6) % 7) + 2)
+				    {
+					    continue;
+				    }
+			    }
 			    ContentHandler ch = content.GetComponent<ContentHandler>();
 			    GameObject userTaskInfo = Instantiate(taskStatusPrefab, content.transform, false);
 			    userTaskInfo.transform.GetChild(1)
@@ -71,8 +81,57 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 					    userTaskInfo.transform.GetChild(5).gameObject.SetActive(false);
 					    break;
 			    }
-			    
-			    userTaskInfo.transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = task.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
+
+			    switch (task.Repeat)
+			    {
+				    case 0:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "En Gang";
+					    break;
+				    case 1:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "Daglig";
+					    break;
+				    case 2:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "Mandag";
+					    break;
+				    case 3:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "Tirsdag";
+					    break;
+				    case 4:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "Onsdag";
+					    break;
+				    case 5:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "Torsdag";
+					    break;
+				    case 6:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "Fredag";
+					    break;
+				    case 7:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "Lørdag";
+					    break;
+				    case 8:
+					    userTaskInfo.transform.GetChild(7)
+					                .GetComponent<TextMeshProUGUI>()
+					                .text = "Søndag";
+					    break;
+			    }
+
+			    //userTaskInfo.transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = task.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
 
 			    userTaskInfo.transform.GetChild(9)
 			                .GetComponent<Button>()
@@ -122,7 +181,7 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
     public async Task DeleteForUser()
     {
 	    await fish.DeleteTaskForUser(taskToDelete.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text, fish.currentUserInfo);
-	    ShowUserInfo(fish.currentUserInfo);
+	    ShowUserInfo(fish.currentUserInfo, onlyTodaysTasks.isOn);
 	    fish.GetUserStats(fish.currentUserInfo);
 	    DeleteWindowClose();
     }
@@ -130,8 +189,15 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
     public async Task DeleteForAll()
     {
 	    await fish.DeleteTaskForAllUsers(taskToDelete.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text);
-	    ShowUserInfo(fish.currentUserInfo);
+	    ShowUserInfo(fish.currentUserInfo, onlyTodaysTasks.isOn);
 	    fish.GetUserStats(fish.currentUserInfo);
 	    DeleteWindowClose();
+    }
+
+    public void ToggleChanged()
+    {
+	    ClearTask();
+	    ShowUserInfo(fish.currentUserInfo, onlyTodaysTasks.isOn);
+	    fish.GetUserStats(fish.currentUserInfo);
     }
 }
