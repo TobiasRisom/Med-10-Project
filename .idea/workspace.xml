@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d95eea35-cf44-440d-8e49-932eff0e978c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Black SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Black SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Bold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Bold SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-ExtraBold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-ExtraBold SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-ExtraLight SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-ExtraLight SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Italic SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Italic SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Light SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Light SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-LightItalic SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-LightItalic SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Medium SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Medium SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Regular SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-Regular SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-SemiBold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Font/BeVietnamPro-SemiBold SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/StartScreen.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/StartScreen.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PetForSaleScript.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PetForSaleScript.cs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2woPqO4mc1DPy0VGD0MB3Hizy1X" />
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d95eea35-cf44-440d-8e49-932eff0e978c" name="Changes" comment="" />
+      <created>1746705145010</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746705145010</updated>
+    </task>
+    <servers />
+  </component>
+</project>

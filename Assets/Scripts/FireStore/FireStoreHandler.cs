@@ -903,4 +903,27 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		    }
 	    });
     }
+    
+    public async System.Threading.Tasks.Task DeleteTaskForUser(string title, string userName)
+    {
+	    CollectionReference tasksRef = firestore.Collection("Users").Document(userName).Collection("Tasks");
+	    QuerySnapshot snapshot = await tasksRef.WhereEqualTo("Titel", title).GetSnapshotAsync();
+
+	    foreach (DocumentSnapshot doc in snapshot.Documents)
+	    {
+		    await doc.Reference.DeleteAsync();
+		    Debug.Log($"Deleted task '{title}' for user '{userName}'.");
+	    }
+    }
+
+    public async System.Threading.Tasks.Task DeleteTaskForAllUsers(string title)
+    {
+	    QuerySnapshot userSnapshot = await firestore.Collection("Users").GetSnapshotAsync();
+
+	    foreach (DocumentSnapshot userDoc in userSnapshot.Documents)
+	    {
+		    string currentUser = userDoc.Id;
+		    await DeleteTaskForUser(title, currentUser);
+	    }
+    }
 }

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,8 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 	private FirestoreHandler fish;
 	public GameObject content;
 	public GameObject taskStatusPrefab;
+	public GameObject deleteWindow;
+	public GameObject taskToDelete;
 
 	public TextMeshProUGUI usersName;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -70,9 +73,65 @@ public class ANSATUserOverviewNavigation : MonoBehaviour
 			    }
 			    
 			    userTaskInfo.transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = task.ImageFormat ? "\ud83d\udcf8" : "\ud83d\udcdd";
+
+			    userTaskInfo.transform.GetChild(9)
+			                .GetComponent<Button>()
+			                .onClick.AddListener(() => {DeleteWindow(userTaskInfo.gameObject); });
 			    
 			    ch.AddItem(userTaskInfo);
 		    }
 	    });
+    }
+
+    public void DeleteWindow(GameObject parent)
+    {
+	    Debug.Log("delete window opened");
+	    deleteWindow.SetActive(true);
+	    taskToDelete = Instantiate(parent, deleteWindow.transform.GetChild(0));
+	    taskToDelete.transform.localPosition = Vector3.zero;
+	    taskToDelete.transform.GetChild(9)
+	                .GetComponent<Button>().onClick.RemoveAllListeners();
+    }
+
+    public void DeleteWindowClose()
+    {
+	    deleteWindow.SetActive(false);
+	    Destroy(taskToDelete);
+    }
+
+    public void ClearTask()
+    {
+	    foreach (Transform child in content.transform)
+	    {
+		    ContentHandler ch = content.GetComponent<ContentHandler>();
+		    ch.RemoveItem(child.gameObject);
+		    Destroy(child.gameObject);
+	    }
+    }
+    
+    public void DeleteForUserWrapper()
+    {
+	    _ = DeleteForUser(); // fire and forget
+    }
+
+    public void DeleteForAllWrapper()
+    {
+	    _ = DeleteForAll();
+    }
+
+    public async Task DeleteForUser()
+    {
+	    await fish.DeleteTaskForUser(taskToDelete.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text, fish.currentUserInfo);
+	    ShowUserInfo(fish.currentUserInfo);
+	    fish.GetUserStats(fish.currentUserInfo);
+	    DeleteWindowClose();
+    }
+    
+    public async Task DeleteForAll()
+    {
+	    await fish.DeleteTaskForAllUsers(taskToDelete.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text);
+	    ShowUserInfo(fish.currentUserInfo);
+	    fish.GetUserStats(fish.currentUserInfo);
+	    DeleteWindowClose();
     }
 }
