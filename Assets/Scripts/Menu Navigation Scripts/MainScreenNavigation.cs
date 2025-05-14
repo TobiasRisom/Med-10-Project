@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DG.Tweening;
@@ -28,6 +29,8 @@ public class MainScreenNavigation : MonoBehaviour
 
 	public GameObject noTasksText;
 	private bool buffer;
+	
+	public GameObject leaderboardText;
 
 	[SerializeField]
 	private Color darkStripe;
@@ -46,6 +49,7 @@ public class MainScreenNavigation : MonoBehaviour
 	    
 	    petName.text = PlayerPrefs.GetString("PetName");
 	    setDollarsText();
+        SetUpLeaderboard();
 	    UpdateAndSpawnTasksAsync();
     }
     
@@ -204,6 +208,76 @@ public class MainScreenNavigation : MonoBehaviour
 	    if (shopPanel != null)
 	    {
 		    shopPanel.SetActive(false);   
+	    }
+    }
+    
+    private async void SetUpLeaderboard()
+    {
+	    Dictionary<string, string> leaderboard = await fish.GetLeaderboard();
+
+	    leaderboardText.transform.GetChild(6)
+	                   .GetComponent<TextMeshProUGUI>()
+	                   .text = "";
+	    leaderboardText.transform.GetChild(7)
+	                   .GetComponent<TextMeshProUGUI>()
+	                   .text = "";
+
+	    for (int i = 0; i < leaderboard.Count; i++)
+	    {
+		    if (i == 0)
+		    {
+			    leaderboardText.transform.GetChild(0)
+			                   .GetComponent<TextMeshProUGUI>()
+			                   .text = leaderboard.ElementAt(i)
+			                                      .Key;
+			    leaderboardText.transform.GetChild(3)
+			                   .GetComponent<TextMeshProUGUI>()
+			                   .text = leaderboard.ElementAt(i)
+			                                      .Value;
+			    continue;
+		    }
+		    
+		    if (i == 1)
+		    {
+			    leaderboardText.transform.GetChild(1)
+			                   .GetComponent<TextMeshProUGUI>()
+			                   .text = leaderboard.ElementAt(i)
+			                                      .Key;
+			    leaderboardText.transform.GetChild(4)
+			                   .GetComponent<TextMeshProUGUI>()
+			                   .text = leaderboard.ElementAt(i)
+			                                      .Value;
+			    continue;
+		    }
+		    
+		    if (i == 2)
+		    {
+			    leaderboardText.transform.GetChild(2)
+			                   .GetComponent<TextMeshProUGUI>()
+			                   .text = leaderboard.ElementAt(i)
+			                                      .Key;
+			    leaderboardText.transform.GetChild(5)
+			                   .GetComponent<TextMeshProUGUI>()
+			                   .text = leaderboard.ElementAt(i)
+			                                      .Value;
+			    continue;
+		    }
+		    
+		    leaderboardText.transform.GetChild(6)
+		                   .GetComponent<TextMeshProUGUI>()
+		                   .text += leaderboard.ElementAt(i)
+		                                      .Key + "\n";
+		    
+		    leaderboardText.transform.GetChild(7)
+		                   .GetComponent<TextMeshProUGUI>()
+		                   .text += leaderboard.ElementAt(i)
+		                                      .Value + "\n";
+	    }
+	    
+	    foreach (var entry in leaderboard)
+	    {
+		    Debug.Log(entry.Key);
+		    Debug.Log(entry.Value);
 	    }
     }
 }
