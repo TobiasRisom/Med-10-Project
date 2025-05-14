@@ -234,23 +234,48 @@ public class FirestoreHandler : MonoBehaviour
 
 	public async void GetUserStats(string user)
 	{
-		DocumentReference userRef = firestore.Collection("Users")
-		                                     .Document(user);
-		DocumentSnapshot snapshot = await userRef.GetSnapshotAsync();
+		GameObject stats = GameObject.FindWithTag("Stats");
 
-		if (snapshot.Exists)
+		if (user == "Alle Beboere")
 		{
-			int points = snapshot.GetValue<int>("Points");
-			int tasksNotDone = snapshot.GetValue<int>("TasksNotDone");
-			int daysCleared = snapshot.GetValue<int>("DaysWithAllTasksCleared");
+			QuerySnapshot allUsersSnapshot = await firestore.Collection("Users").GetSnapshotAsync();
 
-			GameObject stats = GameObject.FindWithTag("Stats");
+			int totalPoints = 0;
+			int totalTasksNotDone = 0;
+			int totalDaysCleared = 0;
 
-			stats.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Opgaver klaret i alt: " + (points / 100);
-			stats.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Ignorerede Opgaver: " + tasksNotDone;
-			stats.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Dage hvor alle opgaver blev gjort: " + daysCleared;
+			foreach (DocumentSnapshot doc in allUsersSnapshot.Documents)
+			{
+				if (doc.Exists)
+				{
+					totalPoints += doc.GetValue<int>("Points");
+					totalTasksNotDone += doc.GetValue<int>("TasksNotDone");
+					totalDaysCleared += doc.GetValue<int>("DaysWithAllTasksCleared");
+				}
+			}
+
+			stats.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Opgaver klaret i alt: " + (totalPoints / 100);
+			stats.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Ignorerede Opgaver: " + totalTasksNotDone;
+			stats.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Dage hvor alle opgaver blev gjort: " + totalDaysCleared;
+		}
+		else
+		{
+			DocumentReference userRef = firestore.Collection("Users").Document(user);
+			DocumentSnapshot snapshot = await userRef.GetSnapshotAsync();
+
+			if (snapshot.Exists)
+			{
+				int points = snapshot.GetValue<int>("Points");
+				int tasksNotDone = snapshot.GetValue<int>("TasksNotDone");
+				int daysCleared = snapshot.GetValue<int>("DaysWithAllTasksCleared");
+
+				stats.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Opgaver klaret i alt: " + (points / 100);
+				stats.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Ignorerede Opgaver: " + tasksNotDone;
+				stats.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Dage hvor alle opgaver blev gjort: " + daysCleared;
+			}
 		}
 	}
+
 	
 	public class TaskWithSnapshot
 	{
@@ -311,6 +336,62 @@ public class FirestoreHandler : MonoBehaviour
 			}
 		});
 	}
+	
+	public class TaskWithUser
+	{
+		public string UserId { get; set; }
+		public TaskWithSnapshot TaskData { get; set; }
+	}
+	
+	public void GetAllUsersTasksAndCount(bool includeStatus3Tasks, System.Action<int, List<TaskWithUser>> callback)
+	{
+		firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(userTask =>
+		{
+			if (!userTask.IsCompletedSuccessfully)
+			{
+				Debug.LogError("Error fetching user list: " + userTask.Exception);
+				callback(0, new List<TaskWithUser>());
+				return;
+			}
+
+			var userDocs = userTask.Result.Documents;
+			int totalUsers = userDocs.Count();
+			if (totalUsers == 0)
+			{
+				callback(0, new List<TaskWithUser>());
+				return;
+			}
+
+			int usersProcessed = 0;
+			List<TaskWithUser> allTasks = new List<TaskWithUser>();
+
+			foreach (var userDoc in userDocs)
+			{
+				string userId = userDoc.Id;
+
+				GetTasksAndCount(userId, includeStatus3Tasks, (count, tasks) =>
+				{
+					foreach (var t in tasks)
+					{
+						allTasks.Add(new TaskWithUser
+						{
+							UserId = userId,
+							TaskData = t
+						});
+					}
+
+					usersProcessed++;
+
+					if (usersProcessed == totalUsers)
+					{
+						callback(allTasks.Count, allTasks);
+					}
+				});
+			}
+		});
+	}
+
+
 
 private List<TaskWithSnapshot> taskWithSnapshots = new List<TaskWithSnapshot>();
 

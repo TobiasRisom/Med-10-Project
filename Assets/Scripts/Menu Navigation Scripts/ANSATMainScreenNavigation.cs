@@ -196,6 +196,17 @@ public class ANSATMainScreenNavigation : MonoBehaviour
 		    
 		    btn.onClick.AddListener(delegate { OnButtonClick(user); });
 	    }
+
+	    GameObject allUsersButton = Instantiate(userButtonPrefab, glg.transform);
+	    allUsersButton.transform.GetChild(0)
+	                  .GetComponent<Image>()
+	                  .color = new Color(1, 0.75f, 0.38f, 1);
+	    allUsersButton.transform.GetChild(1)
+	                  .GetComponent<TextMeshProUGUI>()
+	                  .text = "ALLE";
+	    Button all_btn = allUsersButton.GetComponentInChildren<Button>();
+		    
+	    all_btn.onClick.AddListener(delegate { OnButtonClick("Alle Beboere"); });
     }
 
     private async void SetUpLeaderboard()
