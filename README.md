@@ -1,4 +1,4 @@
-A gamified domestic task app made for individuals with ASD at Østre Gasværk.
+**ØG App**
 
 ØG App is a Unity project for a gamified domestic task app made for individuals with ASD at Østre Gasværk, with Google Firestore integration. 
 It is designed to be built for Android and iOS, and can also run in the Unity Editor (there may be problems accessing the webcam for photo tasks).
