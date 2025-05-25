@@ -142,12 +142,11 @@ public class MainScreenNavigation : MonoBehaviour
 
 	    for (int i = 0; i < 7; i++)
 	    {
-		    TextMeshProUGUI weekText = weekNames[i]; // Or TextMeshProUGUI
+		    TextMeshProUGUI weekText = weekNames[i];
 		    string originalText = weekText.text;
 
 		    if (Regex.IsMatch(originalText, pattern))
 		    {
-			    // Bold only the exact word match
 			    string boldedText = Regex.Replace(
 				    originalText,
 				    pattern,
@@ -155,14 +154,6 @@ public class MainScreenNavigation : MonoBehaviour
 			    );
 
 			    weekText.text = boldedText;
-
-			    // Highlight background
-			    //weekStripes[i].color = new Color(1f, 0.447f, 0.125f, 1f);
-		    }
-		    else
-		    {
-			    // Reset background stripe
-			    //weekStripes[i].color = (i % 2 == 1) ? darkStripe : lightStripe;
 		    }
 	    }
     }

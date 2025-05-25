@@ -11,6 +11,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
+// The main Firestore Class. Handles all communication with Google Firestore.
+
 public class FirestoreHandler : MonoBehaviour
 {
 	private FirebaseFirestore firestore;
@@ -85,8 +87,8 @@ public class FirestoreHandler : MonoBehaviour
 	public void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e) {
 		UnityEngine.Debug.Log("Received a new message from: " + e.Message.From);
 	}
-
-
+	
+	// Gets the data for the weekly dinner schedule.
 	public void ScheduleManager()
 	{
 		
@@ -101,7 +103,7 @@ public class FirestoreHandler : MonoBehaviour
 			{
 				
 				Debug.Log("Weekly Schedule Accessed");
-				// The snapshot contains the results of our query!
+				// The snapshot has our intended data!
 				DocumentSnapshot snapshot = task.Result;
 				
 				// Convert snapshot to a dictionary
@@ -117,6 +119,7 @@ public class FirestoreHandler : MonoBehaviour
 		});
 	}
 
+	// Puts the weekly schedule data into the weekly schedule
 	public void SetSchedule(Dictionary<string, object> schedule)
 	{
 		GameObject nameList = GameObject.FindWithTag("ScheduleNames");
@@ -138,6 +141,7 @@ public class FirestoreHandler : MonoBehaviour
 		Debug.Log("Weekly schedule names added");
 	}
 
+	// Updates the schedule when it's been edited by ØG staff
 	public async void UpdateSchedule(Dictionary<string, object> newNames)
 	{
 		DocumentReference doc = firestore.Collection("Schedule").Document("Ugeskema");
@@ -155,6 +159,7 @@ public class FirestoreHandler : MonoBehaviour
 		}
 	}
 
+	// When a new user is created, inserts them into the database
 	public void AddNewUser(string newUserName)
 	{
 		CollectionReference users = firestore.Collection("Users");
@@ -185,7 +190,6 @@ public class FirestoreHandler : MonoBehaviour
 					     };
 					     
 					     // Add the new user data 
-
 					     newUserDoc.SetAsync(data).ContinueWithOnMainThread(setTask =>
 						     {
 							     if (setTask.IsCompleted)
@@ -210,6 +214,7 @@ public class FirestoreHandler : MonoBehaviour
 		     });
 	}
 	
+	// Gets the list of current users
 	public async Task<List<string>> GetUsers()
 	{
 		List<string> userNames = new List<string>();
@@ -232,6 +237,7 @@ public class FirestoreHandler : MonoBehaviour
 		return userNames;
 	}
 
+	// Get the statistics for the user shown in the User Overview
 	public async void GetUserStats(string user)
 	{
 		GameObject stats = GameObject.FindWithTag("Stats");
@@ -276,7 +282,7 @@ public class FirestoreHandler : MonoBehaviour
 		}
 	}
 
-	
+	// Class that pairs tasks with their associated snapshot, used to ensure that tasks in the app point to the same task in the database
 	public class TaskWithSnapshot
 	{
 		public Task TaskData { get; set; }
@@ -337,12 +343,14 @@ public class FirestoreHandler : MonoBehaviour
 		});
 	}
 	
+	// Class which pairs tasks with their associated user
 	public class TaskWithUser
 	{
 		public string UserId { get; set; }
 		public TaskWithSnapshot TaskData { get; set; }
 	}
 	
+	// Returns the list of all tasks among all users, and the total amount of tasks
 	public void GetAllUsersTasksAndCount(bool includeStatus3Tasks, System.Action<int, List<TaskWithUser>> callback)
 	{
 		firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(userTask =>
@@ -395,6 +403,7 @@ public class FirestoreHandler : MonoBehaviour
 
 private List<TaskWithSnapshot> taskWithSnapshots = new List<TaskWithSnapshot>();
 
+// Spawn current tasks for the resident
 public void spawnTasks(string user)
 {
     Debug.Log("Running SpawnTasks");
@@ -420,12 +429,11 @@ public void spawnTasks(string user)
             {
 	            thisTask.Description = "Du har klaret opgaven!\nTryk for at tjene ØG Dollars!";
             }
-
-            // Skip tasks with status 3
+            
+            // We do not want to show tasks that are not active
             if (thisTask.Status == 3)
                 continue;
-
-            // Instantiate the task GameObject
+            
             GameObject newTask = Instantiate(taskTemplate, content.transform, false);
             Task taskCopy = thisTask;
             DocumentSnapshot snapshotCopy = taskEntry.Snapshot;
@@ -441,7 +449,7 @@ public void spawnTasks(string user)
                 case 0:
                     newTask.transform.GetChild(4).gameObject.SetActive(true);
                     newTask.transform.GetChild(5).gameObject.SetActive(false);
-                    newTask.transform.GetChild(6).gameObject.SetActive(false); // capture correctly for delegate
+                    newTask.transform.GetChild(6).gameObject.SetActive(false);
                     taskButton.onClick.AddListener(() => goToTask(taskCopy, snapshotCopy));
                     break;
                 case 1:
@@ -458,20 +466,20 @@ public void spawnTasks(string user)
                     taskButton.GetComponent<Image>().color = new Color(0.47f, 0.78f, 0.49f);
                     newTask.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = "\ud83d\udcb8"; // 💸 Emoji
                     taskButton.onClick.AddListener(() => {
-                        ClaimTaskReward(user, taskEntry, newTask, ch);  // Pass `ch` for removal
+                        ClaimTaskReward(user, taskEntry, newTask, ch); 
                     });
                     break;
             }
-
-            // Add the newly created task GameObject to the list
+            
             tasks.Add(newTask);
-            ch.AddItem(newTask);  // Add to ContentHandler
+            ch.AddItem(newTask);
         }
 
         Debug.Log("Tasks spawned");
     });
 }
 
+// Navigating to the task screen, while keeping track of which task the user has tapped
 public void goToTask(Task task, DocumentSnapshot snapshot)
 {
 	currentTask = task;
@@ -481,22 +489,19 @@ public void goToTask(Task task, DocumentSnapshot snapshot)
 
 
 
-    
+// Get a reward from a completed task and set it as inactive
 private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject button, ContentHandler ch)
 {
 	GameObject instance = Instantiate(moneyGraphic);
 	instance.GetComponent<MoneyAnimation>().Play(button.transform.position, GameObject.FindWithTag("MainCanvas").transform);
-
-	// 🎁 Give the dollars
+	
 	int currentDollars = PlayerPrefs.GetInt("Dollars", 0);
 	PlayerPrefs.SetInt("Dollars", currentDollars + 100);
 	PlayerPrefs.Save();
 	GameObject.FindWithTag("PanelHolder").GetComponent<MainScreenNavigation>().setDollarsText();
-
-	// 🧠 Check Repeat field
+	
 	if (taskEntry.TaskData.Repeat == 0)
 	{
-		// 🗑️ Delete task if no repeats
 		firestore.Collection("Users")
 		         .Document(user)
 		         .Collection("Tasks")
@@ -512,7 +517,6 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 	}
 	else
 	{
-		// ♻️ Otherwise, set status to 3 (hidden)
 		firestore.Collection("Users")
 		         .Document(user)
 		         .Collection("Tasks")
@@ -521,20 +525,13 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 			         { "Status", 3 }
 		         });
 	}
-
-	// Remove the task from the ContentHandler
-	ch.RemoveItem(button); // Remove from ContentHandler's list
-
-	// ❌ Destroy the button (task UI element)
+	
+	ch.RemoveItem(button); 
 	Destroy(button);
-
-	// ✅ OPTIONAL: Remove the task entry from your tracking list (if needed)
-	taskWithSnapshots.Remove(taskEntry); // Only if you're keeping this list somewhere globally
+	taskWithSnapshots.Remove(taskEntry);
 }
 
-
-
-    
+// Get the data for tasks awaiting verification for staff
 	public void GetTasksAwaitingVerification(System.Action<int, List<Task>> callback)
 {
 	V_Users.Clear();
@@ -609,6 +606,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
         });
     });
 }
+	// Spawn the tasks awaiting verification in the staff app
 	public void spawnVerifiedTasks()
 	{
 		V_tasks.Clear();
@@ -639,25 +637,21 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 					newTask.transform.GetChild(4).gameObject.SetActive(false);
 					newTask.transform.GetChild(8).GetComponent<TextMeshProUGUI>().text = "\ud83d\udcf8";
 					
-					// Convert base64 to byte array
 					byte[] imageBytes = Convert.FromBase64String(V_TaskData[i].Answer);
 
-					// Create a texture from the bytes
-					Texture2D texture = new Texture2D(2, 2); // The size will be replaced by LoadImage
+					Texture2D texture = new Texture2D(2, 2);
 					if (!texture.LoadImage(imageBytes))
 					{
 						Debug.LogError("Failed to load image from base64 string.");
 						continue;
 					}
 					
-					// Create a Sprite from the texture
 					Sprite sprite = Sprite.Create(
 						texture,
 						new Rect(0, 0, texture.width, texture.height),
 						new Vector2(0.5f, 0.5f)
 					);
 					
-					// Assign the sprite to the Image component
 					Image img = newTask.transform.GetChild(2).GetComponent<Image>();
 					img.sprite = sprite;
 				}
@@ -697,6 +691,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		});
 	}
 
+	// Handles staff either accepting or rejecting a completed task
 	public async void acceptOrRejectTask(string user, string taskTitle, int status)
 	{
 		GameObject content = GameObject.FindWithTag("content");
@@ -746,6 +741,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		Debug.Log("Task updated successfully!");
 	}
 
+	// Handles the submission of task answers
 	public async System.Threading.Tasks.Task submitTask(string user, string answer)
 	{
 		DocumentReference newRef = currentSnapshot.Reference;
@@ -762,8 +758,8 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		await newRef.UpdateAsync(updates);
 		Debug.Log("Task updated successfully!");
 	}
-
-
+	
+	// Add a new task to users based on the parameters set by the staff creating it
     public void addTaskToUsers(Task newTask, List<string> users)
     {
 	    firestore.Collection("Users").GetSnapshotAsync().ContinueWithOnMainThread(userTask =>
@@ -814,6 +810,8 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		    }
 	    });
     }
+    
+    // Updates Google Firebase statistics and the status of repeating tasks based on the current day
    public async System.Threading.Tasks.Task UpdateDailyAndWeeklyTasks(int today)
 {
     int yesterday = (today == 2) ? 8 : today - 1;
@@ -899,8 +897,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
     }
 }
 
-
-    
+   // Get stats for the leaderboard
     public async Task<Dictionary<string, string>> GetLeaderboard()
     {
 	    Dictionary<string, string> leaderboard = new Dictionary<string, string>();
@@ -927,6 +924,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 	    return leaderboard;
     }
     
+    // Function for easily increasing stats in Firestore such as "TasksNotDone"
     public void UpdateStats(string userName, string statToUpdate, int amountToIncrease)
     {
 	    DocumentReference docRef = firestore.Collection("Users")
@@ -945,7 +943,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		                   {
 			                   Dictionary<string, object> updates = new Dictionary<string, object>
 			                   {
-				                   {statToUpdate, FieldValue.Increment(amountToIncrease)} // Example: add a timestamp for last login
+				                   {statToUpdate, FieldValue.Increment(amountToIncrease)}
 			                   };
 			                   
 			                   docRef.UpdateAsync(updates);
@@ -953,6 +951,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 	    });
     }
 
+    // Handles the toggles that allows staff to select which users get a new task in the task creation screen
     public void SetUserToggles()
     {
 	    GameObject content = GameObject.FindWithTag("content");
@@ -985,6 +984,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 	    });
     }
     
+    // Deletes a task for a user
     public async System.Threading.Tasks.Task DeleteTaskForUser(string title, string userName)
     {
 	    CollectionReference tasksRef = firestore.Collection("Users").Document(userName).Collection("Tasks");
@@ -997,6 +997,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 	    }
     }
 
+    // Deletes a task for all users that currently have it
     public async System.Threading.Tasks.Task DeleteTaskForAllUsers(string title)
     {
 	    QuerySnapshot userSnapshot = await firestore.Collection("Users").GetSnapshotAsync();
