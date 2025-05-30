@@ -6,6 +6,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Firebase.Auth;
+using Firebase.Messaging;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -160,59 +162,122 @@ public class FirestoreHandler : MonoBehaviour
 	}
 
 	// When a new user is created, inserts them into the database
-	public void AddNewUser(string newUserName)
+	public Task<bool> AddNewUser(string userId, string newUserName)
 	{
 		CollectionReference users = firestore.Collection("Users");
-		users.WhereEqualTo("Name", newUserName)
-		     .GetSnapshotAsync()
-		     .ContinueWithOnMainThread(task =>
-		     {
-			     if (task.IsCompletedSuccessfully)
-			     {
-				     QuerySnapshot snapshot = task.Result;
+		var tcs = new TaskCompletionSource<bool>();
 
-				     // Checking if the user's name already exists
-				     if (!snapshot.Documents.Any())
-				     {
-					     DocumentReference newUserDoc = users.Document(newUserName);
-					     
-					     // Data for new user
-					     var data = new Dictionary<string, object>
-					     {
-						     {"Name", newUserName},
-						     {"Points", 0},
-						     {"TasksNotDone", 0},
-						     {"DaysWithAllTasksCleared", 0},
-						     {"ScheduleAccessedAmount", 0},
-						     {"PetsBought", 0},
-						     {"MoneySpentOnPets", 0},
-						     {"DaysActive", 1}
-					     };
-					     
-					     // Add the new user data 
-					     newUserDoc.SetAsync(data).ContinueWithOnMainThread(setTask =>
-						     {
-							     if (setTask.IsCompleted)
-							     {
-								     Debug.Log($"User {newUserName} added successfully!");
-							     }
-							     else
-							     {
-								     Debug.LogError($"Error adding user {newUserName}:" + setTask.Exception);
-							     }       
-						     });
-				     }
-				     else
-				     {
-					     Debug.Log($"User {newUserName} already exists, new user has not been added.");
-				     }
-			     }
-			     else
-			     {
-				     Debug.LogError("Error during check for user already existing: " + task.Exception);
-			     }
-		     });
+		DocumentReference userDocRef = users.Document(userId);
+
+		userDocRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+		{
+			if (task.IsCompletedSuccessfully)
+			{
+				var snapshot = task.Result;
+
+				if (!snapshot.Exists)
+				{
+					var data = new Dictionary<string, object>
+					{
+						{"UserId", userId},
+						{"Name", newUserName},
+						{"Points", 0},
+						{"TasksNotDone", 0},
+						{"DaysWithAllTasksCleared", 0},
+						{"ScheduleAccessedAmount", 0},
+						{"PetsBought", 0},
+						{"MoneySpentOnPets", 0},
+						{"DaysActive", 1},
+						{"TimeOfCreation", Timestamp.GetCurrentTimestamp()}
+					};
+
+					userDocRef.SetAsync(data).ContinueWithOnMainThread(setTask =>
+					{
+						if (setTask.IsCompleted)
+						{
+							Debug.Log($"User {newUserName} added successfully!");
+							tcs.SetResult(true);
+						}
+						else
+						{
+							Debug.LogError($"Error adding user {newUserName}: " + setTask.Exception);
+							tcs.SetResult(false);
+						}
+					});
+				}
+				else
+				{
+					Debug.Log($"User {newUserName} already exists.");
+					tcs.SetResult(false);
+				}
+			}
+			else
+			{
+				Debug.LogError("Error checking user existence: " + task.Exception);
+				tcs.SetResult(false);
+			}
+		});
+
+		return tcs.Task;
 	}
+
+
+	
+	public Task<bool> AddStaffMember(string staffUserId, string staffName)
+	{
+		CollectionReference staffCollection = firestore.Collection("Staff");
+		var tcs = new TaskCompletionSource<bool>();
+
+		// Check if staff user already exists by userId (assuming userId is the doc ID)
+		DocumentReference staffDocRef = staffCollection.Document(staffUserId);
+
+		staffDocRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+		{
+			if (task.IsCompletedSuccessfully)
+			{
+				var snapshot = task.Result;
+
+				if (!snapshot.Exists)
+				{
+					// Staff data - only necessary fields
+					var data = new Dictionary<string, object>
+					{
+						{"Name", staffName},
+						{"UserId", staffUserId},
+						{"TimeOfCreation", Timestamp.GetCurrentTimestamp()}
+					};
+
+					staffDocRef.SetAsync(data).ContinueWithOnMainThread(setTask =>
+					{
+						if (setTask.IsCompleted)
+						{
+							Debug.Log($"Staff member {staffName} added successfully!");
+							tcs.SetResult(true);
+						}
+						else
+						{
+							Debug.LogError($"Error adding staff member {staffName}: " + setTask.Exception);
+							tcs.SetResult(false);
+						}
+					});
+				}
+				else
+				{
+					Debug.Log($"Staff member {staffName} already exists.");
+					tcs.SetResult(false);
+				}
+			}
+			else
+			{
+				Debug.LogError("Error checking staff existence: " + task.Exception);
+				tcs.SetResult(false);
+			}
+		});
+
+		return tcs.Task;
+	}
+	
+	
 	
 	// Gets the list of current users
 	public async Task<List<string>> GetUsers()
@@ -1007,5 +1072,72 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		    string currentUser = userDoc.Id;
 		    await DeleteTaskForUser(title, currentUser);
 	    }
+    }
+    
+    public string UserAuthentication()
+    {
+	    FirebaseAuth.DefaultInstance.SignInAnonymouslyAsync().ContinueWith(task =>
+	    {
+		    if (task.IsCompleted && !task.IsFaulted)
+		    {
+			    AuthResult authResult = task.Result;
+			    FirebaseUser newUser = authResult.User;
+			    Debug.Log("Signed in anonymously with UID: " + newUser.UserId);
+			    return newUser.UserId;
+		    }
+		    else
+		    {
+			    Debug.LogError("Failed to sign in: " + task.Exception);
+			    return "";
+		    }
+	    });
+	    return "";
+    }
+    
+    public void RegisterDeviceTokenForUser(string userId)
+    {
+	    FirebaseMessaging.TokenReceived += (sender, token) =>
+	    {
+		    Debug.Log("FCM Token received: " + token.Token);
+
+		    // Check if user is staff by checking existence in "Staff" collection
+		    var staffDoc = firestore.Collection("Staff").Document(userId);
+		    staffDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+		    {
+			    bool isStaff = false;
+			    if (task.IsCompletedSuccessfully && task.Result.Exists)
+			    {
+				    isStaff = true;
+			    }
+
+			    SaveDeviceToken(userId, token.Token, isStaff);
+		    });
+	    };
+
+	    // Request permission (iOS) and get token (Android/iOS)
+	    FirebaseMessaging.RequestPermissionAsync().ContinueWithOnMainThread(task =>
+	    {
+	    });
+    }
+
+    void SaveDeviceToken(string userId, string token, bool isStaff)
+    {
+	    var devices = firestore.Collection("devices");
+	    var deviceDoc = devices.Document(userId);
+
+	    var deviceData = new Dictionary<string, object>
+	    {
+		    { "fcmToken", token },
+		    { "role", isStaff ? "staff" : "resident" },
+		    { "lastUpdated", Timestamp.GetCurrentTimestamp() }
+	    };
+
+	    deviceDoc.SetAsync(deviceData).ContinueWithOnMainThread(task =>
+	    {
+		    if (task.IsCompleted)
+			    Debug.Log("Device token saved successfully for user " + userId);
+		    else
+			    Debug.LogError("Failed to save device token: " + task.Exception);
+	    });
     }
 }

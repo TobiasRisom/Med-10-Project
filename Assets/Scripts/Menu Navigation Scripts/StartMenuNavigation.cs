@@ -23,6 +23,7 @@ public class StartMenuNavigation : MonoBehaviour
     public TextMeshProUGUI nameDisplay2;
     
     private FirestoreHandler fish;
+    private string userID;
     
     private float tweenSpeed = 0.5f;
     private Ease tweenEase = Ease.OutQuad;
@@ -48,6 +49,7 @@ public class StartMenuNavigation : MonoBehaviour
 		    // No user
 		    startNoUser.SetActive(true);
 		    startUserExists.SetActive(false);
+		    userID = fish.UserAuthentication();
 	    }
 	    else
 	    {
@@ -122,7 +124,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        PlayerPrefs.SetString("Role", role);
         }
 
-        public void goToMainScreen()
+        public async void goToMainScreen()
         {
 	        // Set Start Time and Date
 	        DateTime tomorrow = DateTime.Now.Date.AddDays(1);
@@ -131,14 +133,38 @@ public class StartMenuNavigation : MonoBehaviour
 	        PlayerPrefs.SetInt("Dollars", 0);
 	        PlayerPrefs.SetInt("DaysActive", 1);
 	        
-	        
-	        fish.AddNewUser(PlayerPrefs.GetString("Name"));
-	        SceneManager.LoadScene("MainScreen");
+	        bool added = await fish.AddNewUser(userID, PlayerPrefs.GetString("Name", "NoN"));
+
+	        if (added)
+	        {
+		        fish.RegisterDeviceTokenForUser(userID);
+		        SceneManager.LoadScene("MainScreen");
+	        }
+	        else
+	        {
+		        Debug.LogWarning("User creation failed or user already exists.");
+		        // Handle accordingly (maybe still register token or just proceed)
+		        fish.RegisterDeviceTokenForUser(userID);
+		        SceneManager.LoadScene("MainScreen");
+	        }
         }
 
-        public void goToAnsatMainScreen()
+        public async void goToAnsatMainScreen()
         {
-	        SceneManager.LoadScene("ANSAT_MainScreen");
+	        bool added = await fish.AddStaffMember(userID, PlayerPrefs.GetString("Name", "NoN"));
+
+	        if (added)
+	        {
+		        fish.RegisterDeviceTokenForUser(userID);
+		        SceneManager.LoadScene("ANSAT_MainScreen");
+	        }
+	        else
+	        {
+		        Debug.LogWarning("Staff creation failed or staff already exists.");
+		        // Optionally still register token & load scene if desired
+		        fish.RegisterDeviceTokenForUser(userID);
+		        SceneManager.LoadScene("ANSAT_MainScreen");
+	        }
         }
 
         public void goToEitherMain()
