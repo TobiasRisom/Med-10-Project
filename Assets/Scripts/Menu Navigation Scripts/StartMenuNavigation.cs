@@ -23,52 +23,75 @@ public class StartMenuNavigation : MonoBehaviour
     public TextMeshProUGUI nameDisplay2;
     
     private FirestoreHandler fish;
-    private string userID;
+    
+    private bool isUserReady = false;
     
     private float tweenSpeed = 0.5f;
     private Ease tweenEase = Ease.OutQuad;
 
     private string userName;
+    private string userID;
     
     public List<Toggle> toggles;
     public List<GameObject> hearts;
 
     public TMP_InputField petName;
 
-    void Start()
+    async void Start()
     {
-	    fish = GameObject.FindWithTag("dataManager")
-	                     .GetComponent<FirestoreHandler>();
-	    
-	    
-		//PlayerPrefs.SetString("Name", "NoN");
-		userName = PlayerPrefs.GetString("Name", "NoN");
+	    var dependencyStatus = await Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
 
-	    if (userName == "NoN")
+	    if (dependencyStatus == Firebase.DependencyStatus.Available)
 	    {
-		    // No user
-		    startNoUser.SetActive(true);
-		    startUserExists.SetActive(false);
-		    userID = fish.UserAuthentication();
+		    fish = GameObject.FindWithTag("dataManager").GetComponent<FirestoreHandler>();
+
+		    await fish.InitializeFirestore();  // Make sure FirestoreHandler is ready before calling any Firebase functions
+
+		    userName = PlayerPrefs.GetString("Name", "NoN");
+
+		    if (userName == "NoN")
+		    {
+			    startNoUser.SetActive(true);
+			    startUserExists.SetActive(false);
+
+			    userID = await fish.UserAuthentication();
+
+			    if (string.IsNullOrEmpty(userID))
+			    {
+				    Debug.LogError("UserAuthentication failed or returned null/empty userID!");
+			    }
+
+			    PlayerPrefs.SetString("UserID", userID);
+			    PlayerPrefs.Save();
+		    }
+		    else
+		    {
+			    startNoUser.SetActive(false);
+			    startUserExists.SetActive(true);
+			    welcomeWithName.text = "Velkommen tilbage" + "\n" + userName + "!";
+		    }
+
+		    isUserReady = true;
+
+		    foreach (Toggle toggle in toggles)
+		    {
+			    toggle.onValueChanged.AddListener((isOn) => OnToggleChanged(toggle, isOn));
+		    }
 	    }
 	    else
 	    {
-		    // User exists
-		    startNoUser.SetActive(false);
-		    startUserExists.SetActive(true);
-		    welcomeWithName.text = "Velkommen tilbage" + "\n" + userName + "!";
-	    }
-	    
-	    foreach (Toggle toggle in toggles)
-	    {
-		    toggle.onValueChanged.AddListener((isOn) => OnToggleChanged(toggle, isOn));
+		    Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
 	    }
     }
-    
-	    public void changeWindow(int windowIndex)
+
+
+    public void changeWindow(int windowIndex)
 	    {
+		    if (isUserReady)
+		    {
 		    float targetX = pos * windowIndex;
 		    transform.DOLocalMoveX(targetX, tweenSpeed).SetEase(tweenEase);
+		    }
 	    }
 
         public void setName(bool beboer)
@@ -126,46 +149,72 @@ public class StartMenuNavigation : MonoBehaviour
 
         public async void goToMainScreen()
         {
+	        Debug.Log($"goToMainScreen called; isUserReady={isUserReady}; UserID={PlayerPrefs.GetString("UserID")}");
+
 	        // Set Start Time and Date
 	        DateTime tomorrow = DateTime.Now.Date.AddDays(1);
 	        DateTime nextUpdate = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 3, 0, 0);
 	        PlayerPrefs.SetString("UpdateTime", nextUpdate.ToString("yyyy-MM-dd"));
 	        PlayerPrefs.SetInt("Dollars", 0);
 	        PlayerPrefs.SetInt("DaysActive", 1);
-	        
-	        bool added = await fish.AddNewUser(userID, PlayerPrefs.GetString("Name", "NoN"));
+
+	        string userId = PlayerPrefs.GetString("UserID", "");
+	        string name = PlayerPrefs.GetString("Name", "NoN");
+
+	        if (string.IsNullOrEmpty(userId))
+	        {
+		        Debug.LogError("Cannot proceed: UserID is empty or not yet set.");
+		        return;
+	        }
+
+	        bool added = await fish.AddNewUser(userId, name);
+
+	        fish.RegisterDeviceTokenForUser(userId);
 
 	        if (added)
 	        {
-		        fish.RegisterDeviceTokenForUser(userID);
 		        SceneManager.LoadScene("MainScreen");
 	        }
 	        else
 	        {
 		        Debug.LogWarning("User creation failed or user already exists.");
-		        // Handle accordingly (maybe still register token or just proceed)
-		        fish.RegisterDeviceTokenForUser(userID);
 		        SceneManager.LoadScene("MainScreen");
 	        }
         }
 
+
         public async void goToAnsatMainScreen()
         {
-	        bool added = await fish.AddStaffMember(userID, PlayerPrefs.GetString("Name", "NoN"));
+	        Debug.Log($"goToMainScreen called; isUserReady={isUserReady}; UserID={PlayerPrefs.GetString("UserID")}");
 
-	        if (added)
+	        if (!isUserReady)
 	        {
-		        fish.RegisterDeviceTokenForUser(userID);
-		        SceneManager.LoadScene("ANSAT_MainScreen");
+		        Debug.LogError("UserID not ready yet — aborting navigation.");
+		        return;
 	        }
-	        else
+
+	        string userId = PlayerPrefs.GetString("UserID", "");
+	        string name = PlayerPrefs.GetString("Name", "NoN");
+
+	        if (string.IsNullOrEmpty(userId))
+	        {
+		        Debug.LogError("Cannot proceed: UserID is empty or not yet set.");
+		        return;
+	        }
+
+	        bool added = await fish.AddStaffMember(userId, name);
+
+	        fish.RegisterDeviceTokenForUser(userId);
+	        fish.staffTokenSave(userId);
+
+	        if (!added)
 	        {
 		        Debug.LogWarning("Staff creation failed or staff already exists.");
-		        // Optionally still register token & load scene if desired
-		        fish.RegisterDeviceTokenForUser(userID);
-		        SceneManager.LoadScene("ANSAT_MainScreen");
 	        }
+
+	        SceneManager.LoadScene("ANSAT_MainScreen");
         }
+
 
         public void goToEitherMain()
         {

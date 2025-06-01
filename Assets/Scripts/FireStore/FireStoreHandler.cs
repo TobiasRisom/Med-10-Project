@@ -49,37 +49,26 @@ public class FirestoreHandler : MonoBehaviour
 	public GameObject userToggle;
 	public GameObject moneyGraphic;
 	
+	private bool initialized = false;
+	
 	
 	private void Awake()
 	{
 		DontDestroyOnLoad(this);
-		InitializeFirestore();
 	}
-
-	void InitializeFirestore()
+	
+	public async System.Threading.Tasks.Task InitializeFirestore()
 	{
-		
-		// Firstly, Firebase checks and attempts to fix any asynchronous dependencies, then continues
-		FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-		           {
-			           if (task.IsCompletedSuccessfully && task.Result == DependencyStatus.Available)
-			           {
-				           // Get the instance of Firebase associated with this project
-				           FirebaseApp app = FirebaseApp.DefaultInstance;
-				           firestore = FirebaseFirestore.GetInstance(app);
-                           
-                           	Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
-                           	Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
-				           
-				           // Successful initialization
-				           Debug.Log("FireStore Initialized!");
-			           }
-			           else
-			           {
-				           // Something went wrong
-				           Debug.LogError("Firebase was not successfully initialized.");
-			           }
-		           });
+		// Assumes dependency check done outside already
+		FirebaseApp app = FirebaseApp.DefaultInstance;
+		firestore = FirebaseFirestore.GetInstance(app);
+
+		Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
+		Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
+
+		initialized = true;
+		Debug.Log("FireStore Initialized!");
+		await System.Threading.Tasks.Task.CompletedTask;  // Just to match async signature
 	}
 	
 	public void OnTokenReceived(object sender, Firebase.Messaging.TokenReceivedEventArgs token) {
@@ -1074,24 +1063,21 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 	    }
     }
     
-    public string UserAuthentication()
+    public async Task<string> UserAuthentication()
     {
-	    FirebaseAuth.DefaultInstance.SignInAnonymouslyAsync().ContinueWith(task =>
+	    try
 	    {
-		    if (task.IsCompleted && !task.IsFaulted)
-		    {
-			    AuthResult authResult = task.Result;
-			    FirebaseUser newUser = authResult.User;
-			    Debug.Log("Signed in anonymously with UID: " + newUser.UserId);
-			    return newUser.UserId;
-		    }
-		    else
-		    {
-			    Debug.LogError("Failed to sign in: " + task.Exception);
-			    return "";
-		    }
-	    });
-	    return "";
+		    var authResult = await FirebaseAuth.DefaultInstance.SignInAnonymouslyAsync();
+		    var newUser = authResult.User;
+		    Debug.Log("Signed in anonymously with UID: " + newUser.UserId);
+		    PlayerPrefs.SetString("UserID", newUser.UserId);
+		    return newUser.UserId;
+	    }
+	    catch (Exception ex)
+	    {
+		    Debug.LogError("Failed to sign in: " + ex);
+		    return null;
+	    }
     }
     
     public void RegisterDeviceTokenForUser(string userId)
@@ -1138,6 +1124,35 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 			    Debug.Log("Device token saved successfully for user " + userId);
 		    else
 			    Debug.LogError("Failed to save device token: " + task.Exception);
+	    });
+    }
+    
+    void SaveFcmTokenToFirestore(string staffUserId, string fcmToken) {
+	    DocumentReference docRef = firestore.Collection("Staff").Document(staffUserId);
+
+	    Dictionary<string, object> updates = new Dictionary<string, object> {
+		    { "fcmToken", fcmToken }
+	    };
+
+	    docRef.SetAsync(updates, SetOptions.MergeAll).ContinueWithOnMainThread(task => {
+		    if (task.IsCompleted) {
+			    Debug.Log("FCM token saved to Firestore");
+		    } else {
+			    Debug.LogError("Error saving FCM token: " + task.Exception);
+		    }
+	    });
+    }
+
+    public void staffTokenSave(string staffUserId)
+    {
+	    Firebase.Messaging.FirebaseMessaging.GetTokenAsync().ContinueWith(task => {
+		    if (task.IsCompleted && !task.IsFaulted) {
+			    string fcmToken = task.Result;
+			    Debug.Log("FCM Token: " + fcmToken);
+
+			    // Now save this to Firestore in the 'Staff' collection
+			    SaveFcmTokenToFirestore(staffUserId, fcmToken);
+		    }
 	    });
     }
 }
