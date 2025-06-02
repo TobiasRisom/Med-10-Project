@@ -1155,4 +1155,44 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		    }
 	    });
     }
+    
+    void SaveFcmTokenToFirestore(string userId, string fcmToken, bool isStaff)
+    {
+
+	    DocumentReference docRef;
+
+	    if (isStaff)
+	    {
+		    docRef = firestore.Collection("Staff").Document(userId);
+	    }
+	    else
+	    {
+		    docRef = firestore.Collection("Users").Document(userId);
+	    }
+
+	    Dictionary<string, object> updates = new Dictionary<string, object> {
+		    { "fcmToken", fcmToken }
+	    };
+
+	    docRef.SetAsync(updates, SetOptions.MergeAll).ContinueWithOnMainThread(task => {
+		    if (task.IsCompleted) {
+			    Debug.Log("FCM token saved to Firestore");
+		    } else {
+			    Debug.LogError("Error saving FCM token: " + task.Exception);
+		    }
+	    });
+    }
+
+    public void TokenSave(string userId, bool isStaff)
+    {
+	    FirebaseMessaging.GetTokenAsync().ContinueWith(task => {
+		    if (task.IsCompleted && !task.IsFaulted) {
+			    string fcmToken = task.Result;
+			    Debug.Log("FCM Token: " + fcmToken);
+
+			    // Now save this to Firestore in the 'Staff' collection
+			    SaveFcmTokenToFirestore(userId, fcmToken, isStaff);
+		    }
+	    });
+    }
 }

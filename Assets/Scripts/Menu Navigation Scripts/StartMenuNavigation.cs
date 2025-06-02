@@ -161,25 +161,24 @@ public class StartMenuNavigation : MonoBehaviour
 	        string userId = PlayerPrefs.GetString("UserID", "");
 	        string name = PlayerPrefs.GetString("Name", "NoN");
 
-	        if (string.IsNullOrEmpty(userId))
+	        if (!isUserReady)
 	        {
-		        Debug.LogError("Cannot proceed: UserID is empty or not yet set.");
+		        Debug.LogError("UserID not ready yet — aborting navigation.");
 		        return;
 	        }
 
 	        bool added = await fish.AddNewUser(userId, name);
 
 	        fish.RegisterDeviceTokenForUser(userId);
-
-	        if (added)
-	        {
-		        SceneManager.LoadScene("MainScreen");
-	        }
-	        else
+	        fish.TokenSave(userId, false);
+	        
+	        if (!added)
 	        {
 		        Debug.LogWarning("User creation failed or user already exists.");
-		        SceneManager.LoadScene("MainScreen");
 	        }
+	        
+			SceneManager.LoadScene("MainScreen");
+
         }
 
 
@@ -205,7 +204,7 @@ public class StartMenuNavigation : MonoBehaviour
 	        bool added = await fish.AddStaffMember(userId, name);
 
 	        fish.RegisterDeviceTokenForUser(userId);
-	        fish.staffTokenSave(userId);
+	        fish.TokenSave(userId, true);
 
 	        if (!added)
 	        {
