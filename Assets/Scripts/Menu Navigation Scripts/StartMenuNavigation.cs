@@ -169,8 +169,8 @@ public class StartMenuNavigation : MonoBehaviour
 
 	        bool added = await fish.AddNewUser(userId, name);
 
-	        fish.RegisterDeviceTokenForUser(userId);
-	        fish.TokenSave(userId, false);
+	        fish.RegisterDeviceTokenForUser(name);
+	        fish.TokenSave(name, false);
 	        
 	        if (!added)
 	        {
@@ -203,8 +203,8 @@ public class StartMenuNavigation : MonoBehaviour
 
 	        bool added = await fish.AddStaffMember(userId, name);
 
-	        fish.RegisterDeviceTokenForUser(userId);
-	        fish.TokenSave(userId, true);
+	        fish.RegisterDeviceTokenForUser(name);
+	        fish.TokenSave(name, true);
 
 	        if (!added)
 	        {

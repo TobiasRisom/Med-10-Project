@@ -32,7 +32,8 @@ public class FirestoreHandler : MonoBehaviour
 		public int Status { get; set; }
 		public int Repeat { get; set; }
 		public string Answer { get; set; }
-		public string TimeStamp { get; set; }
+		public string SubmitTime { get; set; }
+		public Timestamp CreationTime { get; set; }
 	}
 
 	public Task currentTask;
@@ -156,7 +157,7 @@ public class FirestoreHandler : MonoBehaviour
 		CollectionReference users = firestore.Collection("Users");
 		var tcs = new TaskCompletionSource<bool>();
 
-		DocumentReference userDocRef = users.Document(userId);
+		DocumentReference userDocRef = users.Document(newUserName);
 
 		userDocRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
 		{
@@ -218,7 +219,7 @@ public class FirestoreHandler : MonoBehaviour
 		var tcs = new TaskCompletionSource<bool>();
 
 		// Check if staff user already exists by userId (assuming userId is the doc ID)
-		DocumentReference staffDocRef = staffCollection.Document(staffUserId);
+		DocumentReference staffDocRef = staffCollection.Document(staffName);
 
 		staffDocRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
 		{
@@ -371,7 +372,8 @@ public class FirestoreHandler : MonoBehaviour
 						Status = status,
 						Repeat = document.GetValue<int>("Repeat"),
 						Answer = document.GetValue<string>("Answer"),
-						TimeStamp = document.GetValue<string>("TimeStamp")
+						SubmitTime = document.GetValue<string>("TimeStamp"),
+						CreationTime = document.GetValue<Timestamp>("CreationTime")
 					};
 
 					if (!includeStatus3Tasks)
@@ -637,7 +639,8 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
                                 Status = document.GetValue<int>("Status"),
                                 Repeat = document.GetValue<int>("Repeat"),
                                 Answer = document.GetValue<string>("Answer"),
-                                TimeStamp = document.GetValue<string>("TimeStamp")
+                                SubmitTime = document.GetValue<string>("TimeStamp"),
+                                CreationTime = document.GetValue<Timestamp>("CreationTime")
                             };
 
                             verifiedTasks.Add(newTask); // Add custom task to the list
@@ -682,7 +685,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 				newTask.transform.GetChild(10).GetComponent<TextMeshProUGUI>().text = V_TaskData[i].Emoji;
 				newTask.transform.GetChild(11)
 				       .GetComponent<TextMeshProUGUI>()
-				       .text = V_TaskData[i].TimeStamp;
+				       .text = V_TaskData[i].SubmitTime;
 
 				if (V_TaskData[i].ImageFormat)
 				{
@@ -806,7 +809,7 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 		{
 			{ "Answer", answer },
 			{ "Status", 1 },
-			{ "TimeStamp", timeStamp }
+			{ "SubmitTime", timeStamp }
 		};
 
 		await newRef.UpdateAsync(updates);
@@ -844,7 +847,8 @@ private void ClaimTaskReward(string user, TaskWithSnapshot taskEntry, GameObject
 				    { "Status", newTask.Status },
 				    { "Repeat", newTask.Repeat },
 				    { "Answer", newTask.Answer },
-				    { "TimeStamp", newTask.TimeStamp}
+				    { "SubmitTime", newTask.SubmitTime},
+				    { "CreationTime", newTask.CreationTime}
 			    };
 
 			    // Add task to selected user's Tasks subcollection

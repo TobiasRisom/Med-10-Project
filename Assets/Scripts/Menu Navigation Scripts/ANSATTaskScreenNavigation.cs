@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using DG.Tweening;
+using Firebase.Firestore;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -195,6 +196,7 @@ public class ANSATTaskScreenNavigation : MonoBehaviour
 	    newTask.Description = confirmDescription.text;
 	    newTask.ImageFormat = imageFormat;
 	    newTask.Status = 0;
+	    newTask.CreationTime = Timestamp.GetCurrentTimestamp();
 	    
 	    switch(howOften)
 	    {
